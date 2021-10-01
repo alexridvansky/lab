@@ -2,17 +2,18 @@ package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.TagService;
 import com.epam.esm.spring.service.dto.TagDto;
+import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
  * Controller provides service within Tag.class entities.
  */
+@Component
 @RestController
 @RequestMapping("/api/tags")
 public class TagController {
@@ -29,7 +30,7 @@ public class TagController {
      * @return TagDto
      */
     @GetMapping("/{id}")
-    public TagDto findById(@PathVariable Long id) {
+    public TagDto findById(@PathVariable long id) throws EntryNotFoundException {
         return tagService.findById(id);
     }
 
@@ -41,5 +42,26 @@ public class TagController {
     @GetMapping
     public List<TagDto> findAll() {
         return tagService.findAll();
+    }
+
+    /**
+     * Is used for inserting new Tag
+     *
+     * @return List<TagDto> the list of certificates
+     */
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public TagDto insert(@RequestBody TagDto tagDto) {
+        return tagService.insert(tagDto);
+    }
+
+    /**
+     * Is used for Removing Tag by ID given
+     *
+     * @param id the id of Tag to remove
+     */
+    @DeleteMapping("/{id}")
+    public void deleteTag(@PathVariable long id) {
+        System.out.println(id);
     }
 }
