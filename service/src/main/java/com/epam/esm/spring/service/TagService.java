@@ -1,11 +1,9 @@
 package com.epam.esm.spring.service;
 
-import com.epam.esm.spring.repository.model.Tag;
 import com.epam.esm.spring.service.dto.TagDto;
-import lombok.Builder;
+import com.epam.esm.spring.service.exception.EntryNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TagService {
     /**
@@ -21,7 +19,7 @@ public interface TagService {
      * @param id is id of the Tag
      * @return Optional.TagDto class instance if Tag with id given is present in the db
      */
-    TagDto findById(long id);
+    TagDto findById(long id) throws EntryNotFoundException;
 
     /**
      * Adds new entry to the db
@@ -29,6 +27,6 @@ public interface TagService {
      * @param tag Tag.class object to be added to
      * @return Tag.class object just added to the db
      */
-    Tag insert(Tag tag);
+    TagDto insert(TagDto tag);
 
 }
