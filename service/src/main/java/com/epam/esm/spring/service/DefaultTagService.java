@@ -4,6 +4,7 @@ import com.epam.esm.spring.repository.jdbc.dao.TagDao;
 import com.epam.esm.spring.service.converter.DtoToTagConverter;
 import com.epam.esm.spring.service.converter.TagToDtoConverter;
 import com.epam.esm.spring.service.dto.TagDto;
+import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,10 @@ public class DefaultTagService implements TagService {
 
     @Override
     public TagDto findById(long id) throws EntryNotFoundException {
+        if (!tagDao.isExists(id)) {
+            throw new EntryNotFoundException("Tag with id '" + id + "' not found");
+        }
+
         return tagDao.findById(id)
                 .map(tagToDtoConverter::convert)
                 .orElseThrow(EntryNotFoundException::new);
@@ -42,6 +47,10 @@ public class DefaultTagService implements TagService {
 
     @Override
     public TagDto insert(TagDto tagDto) {
+        if (tagDao.isExists(tagDto.getName())) {
+            throw new EntryAlreadyExistsException("Tag with name '" + tagDto.getName() + "' already exists");
+        }
+
         return tagToDtoConverter.convert(tagDao.insert(dtoToTagConverter.convert(tagDto)));
     }
 }
