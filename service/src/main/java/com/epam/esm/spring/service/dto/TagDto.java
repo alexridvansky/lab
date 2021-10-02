@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TagDto implements Serializable {
-    private long id;
+    private Long id;
     private String name;
 
 }
