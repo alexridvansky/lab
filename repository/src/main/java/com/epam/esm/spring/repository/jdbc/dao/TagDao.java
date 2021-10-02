@@ -28,4 +28,21 @@ public interface TagDao {
      * @return Tag.class object just added to the db
      */
     Tag insert(Tag tag);
+
+    /**
+     * Is used to check it out whether Tag with NAME given exists
+     *
+     * @param name the name of Tag to be looked for
+     * @return true in case such Tag found in the DB
+     */
+    boolean isExists(String name);
+
+    /**
+     * Is used to check it out whether Tag with ID given exists
+     *
+     * @param id the name of Tag to be looked for
+     * @return true in case such Tag found in the DB
+     */
+    boolean isExists(long id);
+
 }
