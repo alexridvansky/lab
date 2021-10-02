@@ -2,10 +2,8 @@ package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.TagService;
 import com.epam.esm.spring.service.dto.TagDto;
-import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,7 +11,6 @@ import java.util.List;
 /**
  * Controller provides service within Tag.class entities.
  */
-@Component
 @RestController
 @RequestMapping("/api/tags")
 public class TagController {
@@ -30,7 +27,7 @@ public class TagController {
      * @return TagDto
      */
     @GetMapping("/{id}")
-    public TagDto findById(@PathVariable Long id) throws EntryNotFoundException {
+    public TagDto findById(@PathVariable Long id) {
         return tagService.findById(id);
     }
 
@@ -47,7 +44,7 @@ public class TagController {
     /**
      * Is used for inserting new Tag
      *
-     * @return List<TagDto> the list of certificates
+     * @return TagDto just inserted
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -63,5 +60,7 @@ public class TagController {
     @DeleteMapping("/{id}")
     public void deleteTag(@PathVariable Long id) {
         //todo:  Do we really need delete method?
+        //todo:  It appears to me we mustn't delete anything from the DB, can we?
+        //todo:  It causes backward-compatibility issues and related entries can't be deleted either...
     }
 }
