@@ -1,25 +1,36 @@
 package com.epam.esm.spring.web.exception;
 
-import org.springframework.dao.EmptyResultDataAccessException;
+import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
+import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @ControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ResponseEntity<Object> handleEntryNotFoundException(EmptyResultDataAccessException e) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("message", e.getMessage());
+    @ExceptionHandler(EntryNotFoundException.class)
+    public ResponseEntity<Object> handleEntryNotFoundException(EntryNotFoundException e) {
+        Map<String, Object> response = new LinkedHashMap<>();
 
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+        response.put("errorMessage", "Requested entry doesn't exist");
+        response.put("errorCode", 40401);
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EntryAlreadyExistsException.class)
+    public ResponseEntity<Object> handleEntryAlreadyExistsException(EntryAlreadyExistsException e) {
+        Map<String, Object> response = new LinkedHashMap<>();
+
+        response.put("errorMessage", "Entry already exist and can't be created");
+        response.put("errorCode", 40001);
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
