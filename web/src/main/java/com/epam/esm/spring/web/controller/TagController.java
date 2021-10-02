@@ -30,7 +30,7 @@ public class TagController {
      * @return TagDto
      */
     @GetMapping("/{id}")
-    public TagDto findById(@PathVariable long id) throws EntryNotFoundException {
+    public TagDto findById(@PathVariable Long id) throws EntryNotFoundException {
         return tagService.findById(id);
     }
 
@@ -61,7 +61,7 @@ public class TagController {
      * @param id the id of Tag to remove
      */
     @DeleteMapping("/{id}")
-    public void deleteTag(@PathVariable long id) {
-        System.out.println(id);
+    public void deleteTag(@PathVariable Long id) {
+        //todo:  Do we really need delete method?
     }
 }
