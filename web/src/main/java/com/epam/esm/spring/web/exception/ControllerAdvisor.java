@@ -1,6 +1,6 @@
 package com.epam.esm.spring.web.exception;
 
-import com.epam.esm.spring.service.exception.EntryNotFoundException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,8 +14,8 @@ import java.util.Map;
 @ControllerAdvice
 public class ControllerAdvisor extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(EntryNotFoundException.class)
-    public ResponseEntity<Object> handleEntryNotFoundException(EntryNotFoundException e) {
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity<Object> handleEntryNotFoundException(EmptyResultDataAccessException e) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", e.getMessage());
