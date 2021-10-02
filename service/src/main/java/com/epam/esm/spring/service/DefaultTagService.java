@@ -5,6 +5,7 @@ import com.epam.esm.spring.service.converter.DtoToTagConverter;
 import com.epam.esm.spring.service.converter.TagToDtoConverter;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
+import com.epam.esm.spring.service.exception.EntryCreationException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,8 @@ public class DefaultTagService implements TagService {
     public TagDto insert(TagDto tagDto) {
         if (tagDao.isExists(tagDto.getName())) {
             throw new EntryAlreadyExistsException("Tag with name '" + tagDto.getName() + "' already exists");
+        } else if (tagDto.getName() == null) {
+            throw new EntryCreationException("Tag's name mustn't be empty");
         }
 
         return tagToDtoConverter.convert(tagDao.insert(dtoToTagConverter.convert(tagDto)));
