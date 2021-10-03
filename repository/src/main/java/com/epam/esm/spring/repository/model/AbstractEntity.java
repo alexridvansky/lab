@@ -6,5 +6,5 @@ import lombok.experimental.SuperBuilder;
 @Data
 @SuperBuilder
 public abstract class AbstractEntity {
-    private long id;
+    private Long id;
 }
