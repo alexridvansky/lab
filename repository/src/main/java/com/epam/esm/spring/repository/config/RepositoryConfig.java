@@ -13,7 +13,7 @@ import org.springframework.transaction.TransactionManager;
 import javax.sql.DataSource;
 
 @Configuration
-@ComponentScan("com.epam.esm.spring.repository.jdbc")
+@ComponentScan("com.epam.esm.spring")
 @PropertySource("classpath:jdbc.properties")
 public class RepositoryConfig {
     @Value("${db.driver}")
