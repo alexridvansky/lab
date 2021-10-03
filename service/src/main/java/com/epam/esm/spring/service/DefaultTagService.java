@@ -50,7 +50,7 @@ public class DefaultTagService implements TagService {
     public TagDto insert(TagDto tagDto) {
         if (tagDao.isExists(tagDto.getName())) {
             throw new EntryAlreadyExistsException("Tag with name '" + tagDto.getName() + "' already exists");
-        } else if (tagDto.getName() == null) {
+        } else if (tagDto.getName() == null || tagDto.getName().isEmpty()) {
             throw new EntryCreationException("Tag's name mustn't be empty");
         }
 
