@@ -38,7 +38,7 @@ public class DefaultTagService implements TagService {
     @Override
     public TagDto findById(long id) throws EntryNotFoundException {
         if (!tagDao.isExists(id)) {
-            throw new EntryNotFoundException("Tag with id '" + id + "' not found");
+            throw new EntryNotFoundException();
         }
 
         return tagDao.findById(id)
@@ -49,9 +49,9 @@ public class DefaultTagService implements TagService {
     @Override
     public TagDto insert(TagDto tagDto) {
         if (tagDao.isExists(tagDto.getName())) {
-            throw new EntryAlreadyExistsException("Tag with name '" + tagDto.getName() + "' already exists");
+            throw new EntryAlreadyExistsException();
         } else if (tagDto.getName() == null || tagDto.getName().isEmpty()) {
-            throw new EntryCreationException("Tag's name mustn't be empty");
+            throw new EntryCreationException();
         }
 
         return tagToDtoConverter.convert(tagDao.insert(dtoToTagConverter.convert(tagDto)));

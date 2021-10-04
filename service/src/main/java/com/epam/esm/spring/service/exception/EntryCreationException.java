@@ -1,18 +1,9 @@
 package com.epam.esm.spring.service.exception;
 
 public class EntryCreationException extends RuntimeException {
-    public EntryCreationException() {
-    }
+    private final int ERROR_CODE = 40001;
 
-    public EntryCreationException(String message) {
-        super(message);
-    }
-
-    public EntryCreationException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public EntryCreationException(Throwable cause) {
-        super(cause);
+    public int getErrorCode() {
+        return ERROR_CODE;
     }
 }

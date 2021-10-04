@@ -3,47 +3,52 @@ package com.epam.esm.spring.web.exception;
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
 import com.epam.esm.spring.service.exception.EntryCreationException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @ControllerAdvice
-public class ControllerAdvisor extends ResponseEntityExceptionHandler {
+public class ControllerAdvisor {
     private static final String ERROR_MESSAGE = "errorMessage";
     private static final String ERROR_CODE = "errorCode";
+    private final ResourceBundleMessageSource messages;
+
+    @Autowired
+    public ControllerAdvisor(ResourceBundleMessageSource messages) {
+        this.messages = messages;
+    }
 
     @ExceptionHandler(EntryNotFoundException.class)
-    public ResponseEntity<Object> handleEntryNotFoundException(EntryNotFoundException e) {
-        Map<String, Object> response = new LinkedHashMap<>();
-
-        response.put(ERROR_MESSAGE, e.getMessage());
-        response.put(ERROR_CODE, 40401);
-
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> handleEntryNotFoundException(EntryNotFoundException e, Locale locale) {
+       return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EntryAlreadyExistsException.class)
-    public ResponseEntity<Object> handleEntryAlreadyExistsException(EntryAlreadyExistsException e) {
-        Map<String, Object> response = new LinkedHashMap<>();
-
-        response.put(ERROR_MESSAGE, e.getMessage());
-        response.put(ERROR_CODE, 40001);
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> handleEntryAlreadyExistsException(EntryAlreadyExistsException e, Locale locale) {
+        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(EntryCreationException.class)
-    public ResponseEntity<Object> handleEntryAlreadyExistsException(EntryCreationException e) {
+    public ResponseEntity<Object> handleEntryAlreadyExistsException(EntryCreationException e, Locale locale) {
+        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.BAD_REQUEST);
+    }
+
+    private Map<String, Object> createResponse(int errorCode, Locale locale) {
         Map<String, Object> response = new LinkedHashMap<>();
+        response.put(ERROR_CODE, messages.getMessage(getMessageByCode(errorCode), null, locale));
+        response.put(ERROR_MESSAGE, errorCode);
 
-        response.put(ERROR_MESSAGE, e.getMessage());
-        response.put(ERROR_CODE, 40002);
+        return response;
+    }
 
-        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+    private String getMessageByCode(int errorCode) {
+        return "error_msg." + errorCode;
     }
 }
