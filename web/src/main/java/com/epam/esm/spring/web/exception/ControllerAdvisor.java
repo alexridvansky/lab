@@ -48,8 +48,8 @@ public class ControllerAdvisor {
 
     private Map<String, Object> createResponse(int errorCode, Locale locale) {
         Map<String, Object> response = new LinkedHashMap<>();
-        response.put(ERROR_CODE, messages.getMessage(getMessageByCode(errorCode), null, locale));
-        response.put(ERROR_MESSAGE, errorCode);
+        response.put(ERROR_MESSAGE, messages.getMessage(getMessageByCode(errorCode), null, locale));
+        response.put(ERROR_CODE, errorCode);
 
         return response;
     }
