@@ -29,4 +29,11 @@ public interface TagService {
      */
     TagDto insert(TagDto tag);
 
+    /**
+     * Is used to delete tag by its ID
+     *
+     * @param id - tag ID
+     * @return TagDto which was deleted
+     */
+    TagDto deleteById(long id);
 }

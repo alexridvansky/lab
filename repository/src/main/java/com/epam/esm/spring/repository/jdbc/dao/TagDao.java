@@ -45,4 +45,11 @@ public interface TagDao {
      */
     boolean isExists(long id);
 
+    /**
+     * Is used to delete tag by its ID
+     *
+     * @param id - tag ID
+     * @return true if tag was deleted and false if wasn't
+     */
+    boolean deleteById(long id);
 }

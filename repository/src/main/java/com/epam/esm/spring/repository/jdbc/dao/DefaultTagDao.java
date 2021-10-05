@@ -23,6 +23,7 @@ public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
     private static final String SQL_COUNT = "SELECT count(*) FROM tag";
     private static final String SQL_COUNT_BY_NAME = SQL_COUNT + " WHERE name = ?";
     private static final String SQL_COUNT_BY_ID = SQL_COUNT + " WHERE id = ?";
+    private static final String SQL_DELETE_BY_ID = "DELETE FROM tag WHERE id = ?";
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -52,7 +53,11 @@ public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
 
     @Override
     public Optional<Tag> findById(long id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new TagRowMapper(), id));
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new TagRowMapper(), id));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -63,5 +68,10 @@ public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
     @Override
     public boolean isExists(long id) {
         return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > 0;
+    }
+
+    @Override
+    public boolean deleteById(long id) {
+        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == 1;
     }
 }

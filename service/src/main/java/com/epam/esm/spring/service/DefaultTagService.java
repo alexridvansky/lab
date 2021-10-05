@@ -1,6 +1,7 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.jdbc.dao.TagDao;
+import com.epam.esm.spring.repository.model.Tag;
 import com.epam.esm.spring.service.converter.DtoToTagConverter;
 import com.epam.esm.spring.service.converter.TagToDtoConverter;
 import com.epam.esm.spring.service.dto.TagDto;
@@ -55,5 +56,15 @@ public class DefaultTagService implements TagService {
         }
 
         return tagToDtoConverter.convert(tagDao.insert(dtoToTagConverter.convert(tagDto)));
+    }
+
+    @Override
+    public TagDto deleteById(long id) {
+        Tag tagToBeDeleted = tagDao.findById(id)
+                .orElseThrow(EntryNotFoundException::new);
+
+        tagDao.deleteById(id);
+
+        return tagToDtoConverter.convert(tagToBeDeleted);
     }
 }

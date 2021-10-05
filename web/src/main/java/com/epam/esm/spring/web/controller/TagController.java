@@ -58,9 +58,7 @@ public class TagController {
      * @param id the id of Tag to remove
      */
     @DeleteMapping("/{id}")
-    public void deleteTag(@PathVariable Long id) {
-        //todo:  Do we really need delete method?
-        //todo:  It appears to me we mustn't delete anything from the DB, can we?
-        //todo:  It causes backward-compatibility issues and related entries can't be deleted either...
+    public TagDto deleteTag(@PathVariable Long id) {
+        return tagService.deleteById(id);
     }
 }
