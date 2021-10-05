@@ -46,6 +46,14 @@ public interface TagDao {
     boolean isExists(long id);
 
     /**
+     * Is used to check whether Tag with ID given is used in any Certificates
+     *
+     * @param id Tag ID
+     * @return true if it has any relative certificates
+     */
+    boolean isUsed(long id);
+
+    /**
      * Is used to delete tag by its ID
      *
      * @param id - tag ID

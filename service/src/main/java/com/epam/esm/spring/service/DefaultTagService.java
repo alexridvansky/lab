@@ -7,6 +7,7 @@ import com.epam.esm.spring.service.converter.TagToDtoConverter;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
 import com.epam.esm.spring.service.exception.EntryCreationException;
+import com.epam.esm.spring.service.exception.EntryInUseException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,10 @@ public class DefaultTagService implements TagService {
     public TagDto deleteById(long id) {
         Tag tagToBeDeleted = tagDao.findById(id)
                 .orElseThrow(EntryNotFoundException::new);
+
+        if (tagDao.isUsed(id)) {
+            throw new EntryInUseException();
+        }
 
         tagDao.deleteById(id);
 

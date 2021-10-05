@@ -23,6 +23,7 @@ public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
     private static final String SQL_COUNT = "SELECT count(*) FROM tag";
     private static final String SQL_COUNT_BY_NAME = SQL_COUNT + " WHERE name = ?";
     private static final String SQL_COUNT_BY_ID = SQL_COUNT + " WHERE id = ?";
+    private static final String SQL_COUNT_IN_ACC_TABLE = "SELECT count(*) FROM certificate_tag_xref WHERE tag_id = ?";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM tag WHERE id = ?";
     private final JdbcTemplate jdbcTemplate;
 
@@ -68,6 +69,11 @@ public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
     @Override
     public boolean isExists(long id) {
         return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > 0;
+    }
+
+    @Override
+    public boolean isUsed(long id) {
+        return jdbcTemplate.queryForObject(SQL_COUNT_IN_ACC_TABLE, Integer.class, id) > 0;
     }
 
     @Override
