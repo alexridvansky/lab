@@ -1,7 +1,7 @@
 package com.epam.esm.spring.web.exception;
 
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
-import com.epam.esm.spring.service.exception.EntryCreationException;
+import com.epam.esm.spring.service.exception.EntryNonValidNameException;
 import com.epam.esm.spring.service.exception.EntryInUseException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +41,8 @@ public class ControllerAdvisor {
         return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(EntryCreationException.class)
-    public ResponseEntity<Object> handleEntryAlreadyExistsException(EntryCreationException e, Locale locale) {
+    @ExceptionHandler(EntryNonValidNameException.class)
+    public ResponseEntity<Object> handleEntryAlreadyExistsException(EntryNonValidNameException e, Locale locale) {
         return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.BAD_REQUEST);
     }
 
