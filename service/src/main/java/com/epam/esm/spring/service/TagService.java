@@ -17,9 +17,19 @@ public interface TagService {
      * Is used to get Tag by id given
      *
      * @param id is id of the Tag
-     * @return Optional.TagDto class instance if Tag with id given is present in the db
+     * @return TagDto object instance if Tag with ID given found
+     * @throws EntryNotFoundException if Tag with ID given not found
      */
     TagDto findById(long id) throws EntryNotFoundException;
+
+    /**
+     * Is used to get Tag by NAME given
+     *
+     * @param name is the NAME of the Tag
+     * @return TagDto object instance if Tag with NAME given found
+     * @throws EntryNotFoundException if Tag with NAME given not found
+     */
+    TagDto findByName(String name) throws EntryNotFoundException;
 
     /**
      * Adds new entry to the db
@@ -36,4 +46,12 @@ public interface TagService {
      * @return TagDto which was deleted
      */
     TagDto deleteById(long id);
+
+    /**
+     * Is used to check it out whether Tag with NAME given exists
+     *
+     * @param name the name of Tag
+     * @return true in case such Tag found in the DB
+     */
+    boolean isExists(String name);
 }

@@ -3,6 +3,7 @@ package com.epam.esm.spring.repository.jdbc.dao;
 import com.epam.esm.spring.repository.jdbc.mapper.TagRowMapper;
 import com.epam.esm.spring.repository.model.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -19,6 +20,7 @@ public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
     private static final String SQL_INSERT = "INSERT INTO tag (name) VALUES (?)";
     private static final String SQL_FIND_ALL = "SELECT id, name FROM tag";
     private static final String SQL_FIND_BY_ID = SQL_FIND_ALL + " WHERE id = ?";
+    private static final String SQL_FIND_BY_NAME = SQL_FIND_ALL + " WHERE name = ?";
     private static final String SQL_ORDER_BY_ID = " ORDER BY id";
     private static final String SQL_COUNT = "SELECT count(*) FROM tag";
     private static final String SQL_COUNT_BY_NAME = SQL_COUNT + " WHERE name = ?";
@@ -56,7 +58,16 @@ public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
     public Optional<Tag> findById(long id) {
         try {
             return Optional.of(jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new TagRowMapper(), id));
-        } catch (Exception e) {
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Tag> findByName(String name) {
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(SQL_FIND_BY_NAME, new TagRowMapper(), name));
+        } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }

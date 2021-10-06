@@ -6,8 +6,8 @@ import com.epam.esm.spring.service.converter.DtoToTagConverter;
 import com.epam.esm.spring.service.converter.TagToDtoConverter;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
-import com.epam.esm.spring.service.exception.EntryCreationException;
 import com.epam.esm.spring.service.exception.EntryInUseException;
+import com.epam.esm.spring.service.exception.EntryNonValidNameException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,13 +39,17 @@ public class DefaultTagService implements TagService {
 
     @Override
     public TagDto findById(long id) throws EntryNotFoundException {
-        if (!tagDao.isExists(id)) {
-            throw new EntryNotFoundException();
-        }
-
         return tagDao.findById(id)
                 .map(tagToDtoConverter::convert)
                 .orElseThrow(EntryNotFoundException::new);
+    }
+
+    @Override
+    public TagDto findByName(String name) throws EntryNotFoundException {
+        return tagDao.findByName(name)
+                .map(tagToDtoConverter::convert)
+                .orElseThrow(EntryNotFoundException::new);
+
     }
 
     @Override
@@ -53,7 +57,7 @@ public class DefaultTagService implements TagService {
         if (tagDao.isExists(tagDto.getName())) {
             throw new EntryAlreadyExistsException();
         } else if (tagDto.getName() == null || tagDto.getName().isEmpty()) {
-            throw new EntryCreationException();
+            throw new EntryNonValidNameException();
         }
 
         return tagToDtoConverter.convert(tagDao.insert(dtoToTagConverter.convert(tagDto)));
@@ -71,5 +75,10 @@ public class DefaultTagService implements TagService {
         tagDao.deleteById(id);
 
         return tagToDtoConverter.convert(tagToBeDeleted);
+    }
+
+    @Override
+    public boolean isExists(String name) {
+        return tagDao.isExists(name);
     }
 }
