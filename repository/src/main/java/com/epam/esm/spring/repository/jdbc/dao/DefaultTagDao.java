@@ -75,12 +75,12 @@ public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
     }
 
     @Override
-    public boolean isExists(String name) {
+    public boolean exists(String name) {
         return jdbcTemplate.queryForObject(SQL_COUNT_BY_NAME, Integer.class, name) > 0;
     }
 
     @Override
-    public boolean isExists(long id) {
+    public boolean exists(long id) {
         return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > 0;
     }
 

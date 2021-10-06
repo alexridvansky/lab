@@ -72,12 +72,12 @@ public class DefaultCertificateDao extends AbstractDao<Certificate> implements C
     }
 
     @Override
-    public boolean isExists(long id) {
+    public boolean exists(long id) {
         return false;
     }
 
     @Override
-    public boolean isExists(String name) {
+    public boolean exists(String name) {
         return false;
     }
 

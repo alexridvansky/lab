@@ -1,7 +1,6 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.service.dto.TagDto;
-import com.epam.esm.spring.service.exception.EntryNotFoundException;
 
 import java.util.List;
 
@@ -18,18 +17,16 @@ public interface TagService {
      *
      * @param id is id of the Tag
      * @return TagDto object instance if Tag with ID given found
-     * @throws EntryNotFoundException if Tag with ID given not found
      */
-    TagDto findById(long id) throws EntryNotFoundException;
+    TagDto findById(long id);
 
     /**
      * Is used to get Tag by NAME given
      *
      * @param name is the NAME of the Tag
      * @return TagDto object instance if Tag with NAME given found
-     * @throws EntryNotFoundException if Tag with NAME given not found
      */
-    TagDto findByName(String name) throws EntryNotFoundException;
+    TagDto findByName(String name);
 
     /**
      * Adds new entry to the db
@@ -53,5 +50,5 @@ public interface TagService {
      * @param name the name of Tag
      * @return true in case such Tag found in the DB
      */
-    boolean isExists(String name);
+    boolean exists(String name);
 }

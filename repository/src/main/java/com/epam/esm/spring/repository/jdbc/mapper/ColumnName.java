@@ -1,5 +1,8 @@
 package com.epam.esm.spring.repository.jdbc.mapper;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class ColumnName {
     // Tag table columns' names
     static final String T_ID = "t_id";
@@ -15,5 +18,4 @@ public class ColumnName {
     static final String C_LAST_UPDATE_DATE = "last_update_date";
     static final String C_TAG_NAME = "t_name";
 
-    private ColumnName() {}
 }

@@ -20,30 +20,30 @@ import java.util.stream.Collectors;
 public class DefaultCertificateService implements CertificateService {
     private final CertificateDao certificateDao;
     private final TagService tagService;
-    private final CertificateToDtoConverter toDtoConverter;
-    private final DtoToCertificateConverter toCertificateConverter;
+    private final CertificateToDtoConverter certificateToDtoConverter;
+    private final DtoToCertificateConverter dtoToCertificateConverter;
 
     @Autowired
     public DefaultCertificateService(CertificateDao certificateDao,
                                      TagService tagService,
-                                     CertificateToDtoConverter toDtoConverter,
-                                     DtoToCertificateConverter toCertificateConverter) {
+                                     CertificateToDtoConverter certificateToDtoConverter,
+                                     DtoToCertificateConverter dtoToCertificateConverter) {
         this.certificateDao = certificateDao;
         this.tagService = tagService;
-        this.toDtoConverter = toDtoConverter;
-        this.toCertificateConverter = toCertificateConverter;
+        this.certificateToDtoConverter = certificateToDtoConverter;
+        this.dtoToCertificateConverter = dtoToCertificateConverter;
     }
 
     @Override
     public List<CertificateDto> findAll() {
         return certificateDao.findAll().stream()
-                .map(toDtoConverter::convert)
+                .map(certificateToDtoConverter::convert)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public CertificateDto findById(long id) throws EntryNotFoundException {
-        return toDtoConverter.convert(certificateDao.findById(id).orElseThrow(EntryNotFoundException::new));
+    public CertificateDto findById(long id) {
+        return certificateToDtoConverter.convert(certificateDao.findById(id).orElseThrow(EntryNotFoundException::new));
     }
 
     @Transactional
@@ -57,7 +57,7 @@ public class DefaultCertificateService implements CertificateService {
         }
 
         for (int i = 0; i < certificateDto.getTags().size(); i++) {
-            if (!tagService.isExists(certificateDto.getTags().get(i).getName())) {
+            if (!tagService.exists(certificateDto.getTags().get(i).getName())) {
                 certificateDto.getTags().set(i, tagService.insert(certificateDto.getTags().get(i)));
             } else {
                 certificateDto.getTags().set(i, tagService.findByName(certificateDto.getTags().get(i).getName()));
@@ -67,10 +67,10 @@ public class DefaultCertificateService implements CertificateService {
         certificateDto.setCreateDate(LocalDateTime.now());
         certificateDto.setLastUpdateDate(LocalDateTime.now());
 
-        Certificate certificate = certificateDao.insert(toCertificateConverter.convert(certificateDto));
+        Certificate certificate = certificateDao.insert(dtoToCertificateConverter.convert(certificateDto));
         certificateDao.insertTagIntoXrefTable(certificate.getTags(), certificate.getId());
 
-        return toDtoConverter.convert(certificate);
+        return certificateToDtoConverter.convert(certificate);
     }
 
     @Transactional
@@ -81,11 +81,11 @@ public class DefaultCertificateService implements CertificateService {
         certificateDao.detachTagFromXrefTable(id);
         certificateDao.deleteById(id);
 
-        return toDtoConverter.convert(certificate);
+        return certificateToDtoConverter.convert(certificate);
     }
 
     @Override
-    public boolean isExists(String name) {
+    public boolean exists(String name) {
         return false;
     }
 }

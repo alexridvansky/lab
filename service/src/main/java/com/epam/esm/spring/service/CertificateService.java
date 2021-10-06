@@ -1,8 +1,6 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.service.dto.CertificateDto;
-import com.epam.esm.spring.service.dto.TagDto;
-import com.epam.esm.spring.service.exception.EntryNotFoundException;
 
 import java.util.List;
 
@@ -20,7 +18,7 @@ public interface CertificateService {
      * @param id is id of the Certificate
      * @return TagDto.class instance if Certificate with id given is present in the db
      */
-    CertificateDto findById(long id) throws EntryNotFoundException;
+    CertificateDto findById(long id);
 
     /**
      * Adds new Certificate entry to the db
@@ -44,5 +42,5 @@ public interface CertificateService {
      * @param name the name of Certificate
      * @return true in case such Certificate found in the DB
      */
-    boolean isExists(String name);
+    boolean exists(String name);
 }

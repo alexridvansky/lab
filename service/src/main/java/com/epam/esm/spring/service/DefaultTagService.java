@@ -38,14 +38,14 @@ public class DefaultTagService implements TagService {
     }
 
     @Override
-    public TagDto findById(long id) throws EntryNotFoundException {
+    public TagDto findById(long id) {
         return tagDao.findById(id)
                 .map(tagToDtoConverter::convert)
                 .orElseThrow(EntryNotFoundException::new);
     }
 
     @Override
-    public TagDto findByName(String name) throws EntryNotFoundException {
+    public TagDto findByName(String name) {
         return tagDao.findByName(name)
                 .map(tagToDtoConverter::convert)
                 .orElseThrow(EntryNotFoundException::new);
@@ -54,7 +54,7 @@ public class DefaultTagService implements TagService {
 
     @Override
     public TagDto insert(TagDto tagDto) {
-        if (tagDao.isExists(tagDto.getName())) {
+        if (tagDao.exists(tagDto.getName())) {
             throw new EntryAlreadyExistsException();
         } else if (tagDto.getName() == null || tagDto.getName().isEmpty()) {
             throw new EntryNonValidNameException();
@@ -78,7 +78,7 @@ public class DefaultTagService implements TagService {
     }
 
     @Override
-    public boolean isExists(String name) {
-        return tagDao.isExists(name);
+    public boolean exists(String name) {
+        return tagDao.exists(name);
     }
 }
