@@ -1,6 +1,10 @@
 package com.epam.esm.spring.repository.jdbc.mapper;
 
 public class ColumnName {
+    // Tag table columns' names
+    static final String T_ID = "t_id";
+    static final String T_NAME = "t_name";
+
     // Certificate table columns' names
     static final String C_ID = "id";
     static final String C_NAME = "name";
