@@ -2,12 +2,14 @@ package com.epam.esm.spring.repository.jdbc.mapper;
 
 import com.epam.esm.spring.repository.model.Certificate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static com.epam.esm.spring.repository.jdbc.mapper.ColumnName.*;
 
+@Component
 public class CertificateRowMapper implements RowMapper<Certificate> {
     @Override
     public Certificate mapRow(ResultSet rs, int rowNum) throws SQLException {
