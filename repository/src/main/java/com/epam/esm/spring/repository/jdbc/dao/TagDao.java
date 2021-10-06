@@ -5,7 +5,7 @@ import com.epam.esm.spring.repository.model.Tag;
 import java.util.List;
 import java.util.Optional;
 
-public interface TagDao {
+public interface TagDao extends Dao<Tag> {
     /**
      * Is used to get the list of all certificates' tags
      *

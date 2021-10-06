@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Repository
-public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
+public class DefaultTagDao implements TagDao {
     private static final String SQL_INSERT = "INSERT INTO tag (name) VALUES (?)";
     private static final String SQL_FIND_ALL = "SELECT id AS t_id, name AS t_name FROM tag";
     private static final String SQL_FIND_BY_ID = SQL_FIND_ALL + " WHERE id = ?";
