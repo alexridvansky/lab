@@ -2,6 +2,7 @@ package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.CertificateService;
 import com.epam.esm.spring.service.dto.CertificateDto;
+import com.epam.esm.spring.service.dto.TagDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -50,5 +51,15 @@ public class CertificateController {
     @ResponseStatus(HttpStatus.CREATED)
     public CertificateDto insert(@RequestBody CertificateDto certificateDto) {
         return certificateService.insert(certificateDto);
+    }
+
+    /**
+     * Is used for Removing Certificate by ID given
+     *
+     * @param id the id of Certificate to remove
+     */
+    @DeleteMapping("/{id}")
+    public CertificateDto deleteCertificate(@PathVariable Long id) {
+        return certificateService.deleteById(id);
     }
 }

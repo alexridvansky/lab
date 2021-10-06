@@ -72,4 +72,16 @@ public class DefaultCertificateService implements CertificateService {
 
         return toDtoConverter.convert(certificate);
     }
+
+    @Override
+    public CertificateDto deleteById(long id) {
+        Certificate certificate = certificateDao.findById(id).orElseThrow(EntryNotFoundException::new);
+
+        return null;
+    }
+
+    @Override
+    public boolean isExists(String name) {
+        return false;
+    }
 }

@@ -1,6 +1,6 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
-import com.epam.esm.spring.repository.jdbc.mapper.CertificateRowMapper;
+import com.epam.esm.spring.repository.jdbc.mapper.CertificateExtractor;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +29,18 @@ public class DefaultCertificateDao extends AbstractDao<Certificate> implements C
             "VALUES (?, ?, ?, ?)";
     private static final String SQL_TAG_ATTACH = "INSERT INTO certificate_tag_xref (certificate_id, tag_id) " +
             "VALUES (?, ?)";
+    private final CertificateExtractor certificateExtractor;
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public DefaultCertificateDao(JdbcTemplate jdbcTemplate) {
+    public DefaultCertificateDao(JdbcTemplate jdbcTemplate, CertificateExtractor certificateExtractor) {
         this.jdbcTemplate = jdbcTemplate;
+        this.certificateExtractor = certificateExtractor;
     }
 
     @Override
     public List<Certificate> findAll() {
-        return jdbcTemplate.query(SQL_FIND_ALL + SQL_ORDER_BY_ID, new CertificateRowMapper());
+        return jdbcTemplate.query(SQL_FIND_ALL + SQL_ORDER_BY_ID, certificateExtractor);
     }
 
     @Override
@@ -79,7 +81,7 @@ public class DefaultCertificateDao extends AbstractDao<Certificate> implements C
         List<Object[]> batch = new ArrayList<>();
 
         for (Tag tag : tags) {
-            Object[] values = new Object[] {
+            Object[] values = new Object[]{
                     certificateId,
                     tag.getId()};
             batch.add(values);
