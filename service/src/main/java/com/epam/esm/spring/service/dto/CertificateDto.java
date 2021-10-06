@@ -1,9 +1,7 @@
 package com.epam.esm.spring.service.dto;
 
 import com.epam.esm.spring.repository.model.Tag;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,6 +10,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CertificateDto {
     private Long id;
     private String name;
@@ -20,5 +20,5 @@ public class CertificateDto {
     private Integer duration;
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
-    private List<Tag> tags;
+    private List<TagDto> tags;
 }
