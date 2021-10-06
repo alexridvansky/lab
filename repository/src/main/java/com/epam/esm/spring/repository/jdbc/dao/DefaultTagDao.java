@@ -18,7 +18,7 @@ import java.util.Optional;
 @Repository
 public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
     private static final String SQL_INSERT = "INSERT INTO tag (name) VALUES (?)";
-    private static final String SQL_FIND_ALL = "SELECT id, name FROM tag";
+    private static final String SQL_FIND_ALL = "SELECT id AS t_id, name AS t_name FROM tag";
     private static final String SQL_FIND_BY_ID = SQL_FIND_ALL + " WHERE id = ?";
     private static final String SQL_FIND_BY_NAME = SQL_FIND_ALL + " WHERE name = ?";
     private static final String SQL_ORDER_BY_ID = " ORDER BY id";
@@ -28,10 +28,12 @@ public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
     private static final String SQL_COUNT_IN_ACC_TABLE = "SELECT count(*) FROM certificate_tag_xref WHERE tag_id = ?";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM tag WHERE id = ?";
     private final JdbcTemplate jdbcTemplate;
+    private final TagRowMapper tagRowMapper;
 
     @Autowired
-    public DefaultTagDao(JdbcTemplate jdbcTemplate) {
+    public DefaultTagDao(JdbcTemplate jdbcTemplate, TagRowMapper tagRowMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.tagRowMapper = tagRowMapper;
     }
 
     @Override
@@ -51,13 +53,13 @@ public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
 
     @Override
     public List<Tag> findAll() {
-        return jdbcTemplate.query(SQL_FIND_ALL + SQL_ORDER_BY_ID, new TagRowMapper());
+        return jdbcTemplate.query(SQL_FIND_ALL + SQL_ORDER_BY_ID, tagRowMapper);
     }
 
     @Override
     public Optional<Tag> findById(long id) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new TagRowMapper(), id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_FIND_BY_ID, tagRowMapper, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -66,7 +68,7 @@ public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
     @Override
     public Optional<Tag> findByName(String name) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject(SQL_FIND_BY_NAME, new TagRowMapper(), name));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_FIND_BY_NAME, tagRowMapper, name));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
