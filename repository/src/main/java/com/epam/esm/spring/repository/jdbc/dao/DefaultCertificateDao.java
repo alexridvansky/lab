@@ -4,6 +4,7 @@ import com.epam.esm.spring.repository.jdbc.mapper.CertificateExtractor;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -11,10 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class DefaultCertificateDao extends AbstractDao<Certificate> implements CertificateDao {
@@ -25,10 +23,13 @@ public class DefaultCertificateDao extends AbstractDao<Certificate> implements C
                     "FROM gift_certificate AS gc " +
                     "LEFT JOIN certificate_tag_xref AS ctx on gc.id = ctx.certificate_id " +
                     "LEFT JOIN tag t on ctx.tag_id = t.id ";
+    private final String SQL_FIND_BY_ID = SQL_FIND_ALL + "WHERE gc.id = ?" ;
     private static final String SQL_INSERT = "INSERT INTO gift_certificate (name, description, price, duration) " +
             "VALUES (?, ?, ?, ?)";
     private static final String SQL_TAG_ATTACH = "INSERT INTO certificate_tag_xref (certificate_id, tag_id) " +
             "VALUES (?, ?)";
+    private static final String SQL_TAG_DETACH = "DELETE FROM certificate_tag_xref WHERE certificate_id = ?" ;
+    private static final String SQL_DELETE_BY_ID = "DELETE FROM gift_certificate WHERE id = ?" ;
     private final CertificateExtractor certificateExtractor;
     private final JdbcTemplate jdbcTemplate;
 
@@ -45,7 +46,11 @@ public class DefaultCertificateDao extends AbstractDao<Certificate> implements C
 
     @Override
     public Optional<Certificate> findById(long id) {
-        return Optional.empty();
+        try {
+            return Optional.of(jdbcTemplate.query(SQL_FIND_BY_ID, certificateExtractor, id).stream().findAny().get());
+        } catch (EmptyResultDataAccessException | NoSuchElementException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -77,12 +82,12 @@ public class DefaultCertificateDao extends AbstractDao<Certificate> implements C
     }
 
     @Override
-    public boolean insertTagIntoXrefTable(List<Tag> tags, long certificateId) {
+    public boolean insertTagIntoXrefTable(List<Tag> tags, long id) {
         List<Object[]> batch = new ArrayList<>();
 
         for (Tag tag : tags) {
             Object[] values = new Object[]{
-                    certificateId,
+                    id,
                     tag.getId()};
             batch.add(values);
         }
@@ -93,7 +98,12 @@ public class DefaultCertificateDao extends AbstractDao<Certificate> implements C
     }
 
     @Override
+    public boolean detachTagFromXrefTable(long id) {
+        return jdbcTemplate.update(SQL_TAG_DETACH, id) > 0;
+    }
+
+    @Override
     public boolean deleteById(long id) {
-        return false;
+        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) > 0;
     }
 }

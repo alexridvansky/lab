@@ -68,7 +68,7 @@ public class DefaultTagDao extends AbstractDao<Tag> implements TagDao {
     @Override
     public Optional<Tag> findByName(String name) {
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_FIND_BY_NAME, tagRowMapper, name));
+            return Optional.of(jdbcTemplate.queryForObject(SQL_FIND_BY_NAME, tagRowMapper, name));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

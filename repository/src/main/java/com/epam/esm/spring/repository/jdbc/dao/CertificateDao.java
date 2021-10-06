@@ -50,10 +50,18 @@ public interface CertificateDao {
      * Is used for storing tag list, related to the specific certificate
      *
      * @param tags List of Tags, to be stored
-     * @param certificateId Certificate id to attach tags to
+     * @param id Certificate id to attach tags to
      * @return true if process causes no errors
      */
-    boolean insertTagIntoXrefTable(List<Tag> tags, long certificateId);
+    boolean insertTagIntoXrefTable(List<Tag> tags, long id);
+
+    /**
+     * Is used for removing all tags attached to the specific certificate
+     *
+     * @param id Certificate id to remove connected tags
+     * @return true if process causes no errors
+     */
+    boolean detachTagFromXrefTable(long id);
 
     /**
      * Is used to delete Certificate by its ID

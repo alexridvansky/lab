@@ -43,7 +43,7 @@ public class DefaultCertificateService implements CertificateService {
 
     @Override
     public CertificateDto findById(long id) throws EntryNotFoundException {
-        return null; //todo:
+        return toDtoConverter.convert(certificateDao.findById(id).orElseThrow(EntryNotFoundException::new));
     }
 
     @Transactional
@@ -77,7 +77,10 @@ public class DefaultCertificateService implements CertificateService {
     public CertificateDto deleteById(long id) {
         Certificate certificate = certificateDao.findById(id).orElseThrow(EntryNotFoundException::new);
 
-        return null;
+        certificateDao.detachTagFromXrefTable(id);
+        certificateDao.deleteById(id);
+
+        return toDtoConverter.convert(certificate);
     }
 
     @Override
