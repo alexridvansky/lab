@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class CertificateExtractor implements ResultSetExtractor<List<Certificate
 
     @Override
     public List<Certificate> extractData(ResultSet rs) throws SQLException, DataAccessException {
-        Map<Long, Certificate> certificates = new HashMap<>();
+        Map<Long, Certificate> certificates = new LinkedHashMap<>();
         while (rs.next()) {
             Long id = rs.getLong(C_ID);
             Certificate certificate = certificates.get(id);
@@ -42,6 +43,6 @@ public class CertificateExtractor implements ResultSetExtractor<List<Certificate
             certificate.getTags().add(tag);
             certificates.put(certificate.getId(), certificate);
         }
-        return new ArrayList<>(certificates.values());
+            return new ArrayList<>(certificates.values());
     }
 }
