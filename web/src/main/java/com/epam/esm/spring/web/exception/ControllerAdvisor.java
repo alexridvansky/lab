@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.sql.SQLSyntaxErrorException;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -62,6 +63,11 @@ public class ControllerAdvisor {
     @ExceptionHandler(EntryNonValidTagNameException.class)
     public ResponseEntity<Object> handleEntryNonValidTagNameException(EntryNonValidTagNameException e, Locale locale) {
         return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(SQLSyntaxErrorException.class)
+    public ResponseEntity<Object> handleSQLSyntaxErrorException(SQLSyntaxErrorException e, Locale locale) {
+        return new ResponseEntity<>(createResponse(40007, locale), HttpStatus.BAD_REQUEST);
     }
 
     private Map<String, Object> createResponse(int errorCode, Locale locale) {
