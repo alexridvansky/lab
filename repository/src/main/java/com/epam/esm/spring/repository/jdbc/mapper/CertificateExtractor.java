@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +38,11 @@ public class CertificateExtractor implements ResultSetExtractor<List<Certificate
             }
 
             Tag tag = tagRowMapper.mapRow(rs, 8);
-            assert certificate != null;
-            certificate.getTags().add(tag);
+            if (tag != null && tag.getId() != 0) {
+                certificate.getTags().add(tag);
+            }
             certificates.put(certificate.getId(), certificate);
         }
-            return new ArrayList<>(certificates.values());
+        return new ArrayList<>(certificates.values());
     }
 }

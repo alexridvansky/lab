@@ -1,6 +1,8 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.jdbc.mapper.CertificateExtractor;
+import com.epam.esm.spring.repository.jdbc.querybuilder.CertificateFieldType;
+import com.epam.esm.spring.repository.jdbc.querybuilder.QueryBuilder;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,20 +30,29 @@ public class DefaultCertificateDao implements CertificateDao {
                     "FROM gift_certificate AS gc " +
                     "LEFT JOIN certificate_tag_xref AS ctx on gc.id = ctx.certificate_id " +
                     "LEFT JOIN tag t on ctx.tag_id = t.id ";
-    private final String SQL_FIND_BY_ID = SQL_FIND_ALL + "WHERE gc.id = ?";
+    private static final String SQL_FIND_BY_ID = SQL_FIND_ALL + "WHERE gc.id = ?";
     private static final String SQL_INSERT = "INSERT INTO gift_certificate (name, description, price, duration) " +
             "VALUES (?, ?, ?, ?)";
     private static final String SQL_TAG_ATTACH = "INSERT INTO certificate_tag_xref (certificate_id, tag_id) " +
             "VALUES (?, ?)";
     private static final String SQL_TAG_DETACH = "DELETE FROM certificate_tag_xref WHERE certificate_id = ?";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM gift_certificate WHERE id = ?";
+    private static final String SQL_COUNT = "SELECT count(*) FROM gift_certificate ";
+    private static final String SQL_COUNT_BY_ID = SQL_COUNT + "WHERE id = ?";
+    private static final String SQL_UPDATE_NAME = "INSERT INTO gift_certificate (name) VALUES (?)";
+    private static final String SQL_UPDATE_DESCRIPTION = "INSERT INTO gift_certificate (description) VALUES (?)";
+
     private final CertificateExtractor certificateExtractor;
     private final JdbcTemplate jdbcTemplate;
+    private final QueryBuilder queryBuilder;
 
     @Autowired
-    public DefaultCertificateDao(JdbcTemplate jdbcTemplate, CertificateExtractor certificateExtractor) {
+    public DefaultCertificateDao(JdbcTemplate jdbcTemplate,
+                                 CertificateExtractor certificateExtractor,
+                                 QueryBuilder queryBuilder) {
         this.jdbcTemplate = jdbcTemplate;
         this.certificateExtractor = certificateExtractor;
+        this.queryBuilder = queryBuilder;
     }
 
     @Override
@@ -76,8 +88,18 @@ public class DefaultCertificateDao implements CertificateDao {
     }
 
     @Override
+    public boolean update(Long id, Map<String, Object> data) {
+        String updateQuery = queryBuilder.buildQueryForUpdate(data);
+        List<Object> value = new ArrayList<>(data.values());
+        value.add(id);
+        jdbcTemplate.update(updateQuery, value.toArray());
+
+        return true;
+    }
+
+    @Override
     public boolean exists(long id) {
-        return false;
+        return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > 0;
     }
 
     @Override

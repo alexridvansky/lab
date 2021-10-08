@@ -29,6 +29,23 @@ public interface CertificateService {
     CertificateDto insert(CertificateDto certificateDto);
 
     /**
+     * Update existing Certificate
+     *
+     * @param certificateDto with only fields to be updated
+     * @return CertificateDto updated object
+     */
+    CertificateDto update(CertificateDto certificateDto);
+
+    /**
+     * Method checks whether every Tag stored to the list
+     * is present in the db, if so - read and store id for it,
+     * if not - creates and stores id of just created one
+     *
+     * @param certificateDto CertificateDto entity
+     */
+    void checkAndCreateTag(CertificateDto certificateDto);
+
+    /**
      * Is used to delete Certificate by its ID
      *
      * @param id - Certificate ID

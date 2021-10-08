@@ -1,7 +1,10 @@
 package com.epam.esm.spring.service.dto;
 
-import com.epam.esm.spring.repository.model.Tag;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

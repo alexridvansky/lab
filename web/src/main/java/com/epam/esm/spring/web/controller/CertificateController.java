@@ -53,6 +53,12 @@ public class CertificateController {
         return certificateService.insert(certificateDto);
     }
 
+    @PatchMapping
+    @ResponseStatus(HttpStatus.OK)
+    public CertificateDto update(@RequestBody CertificateDto certificateDto) {
+        return certificateService.update(certificateDto);
+    }
+
     /**
      * Is used for Removing Certificate by ID given
      *

@@ -4,6 +4,7 @@ import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.Tag;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface CertificateDao extends Dao<Certificate> {
@@ -29,6 +30,15 @@ public interface CertificateDao extends Dao<Certificate> {
      * @return Certificate.class object just added to the db
      */
     Certificate insert(Certificate certificate);
+
+    /**
+     * Updates only fields that not null
+     *
+     * @param id id of Certificate to be updated
+     * @param data Map<String, Object> of data for fields to be updated
+     * @return true of there were no errors during updating process
+     */
+    boolean update(Long id, Map<String, Object> data);
 
     /**
      * Is used to check it out whether Certificate with ID given exists
