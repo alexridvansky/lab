@@ -27,9 +27,11 @@ public class CertificateToDtoConverter implements Converter<Certificate, Certifi
                 .duration(source.getDuration())
                 .createDate(source.getCreateDate())
                 .lastUpdateDate(source.getLastUpdateDate())
-                .tags(source.getTags().stream()
-                        .map(tagToDtoConverter::convert)
-                        .collect(Collectors.toList()))
+                .tags(source.getTags() != null ?
+                        source.getTags().stream()
+                                .map(tagToDtoConverter::convert)
+                                .collect(Collectors.toList())
+                        : null)
                 .build();
     }
 }
