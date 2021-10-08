@@ -3,6 +3,7 @@ package com.epam.esm.spring.service;
 import com.epam.esm.spring.service.dto.CertificateDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CertificateService {
     /**
@@ -11,6 +12,14 @@ public interface CertificateService {
      * @return List<CertificateDto>
      */
     List<CertificateDto> findAll();
+
+    /**
+     * Is used to get the list of certificates by search params
+     *
+     * @param params
+     * @return
+     */
+    List<CertificateDto> findAllByParam(Map<String, String> params);
 
     /**
      * Is used to get Certificate by id given

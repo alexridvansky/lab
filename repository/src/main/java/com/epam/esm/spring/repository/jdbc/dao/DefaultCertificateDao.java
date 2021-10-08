@@ -1,7 +1,6 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.jdbc.mapper.CertificateExtractor;
-import com.epam.esm.spring.repository.jdbc.querybuilder.CertificateFieldType;
 import com.epam.esm.spring.repository.jdbc.querybuilder.QueryBuilder;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.Tag;
@@ -58,6 +57,13 @@ public class DefaultCertificateDao implements CertificateDao {
     @Override
     public List<Certificate> findAll() {
         return jdbcTemplate.query(SQL_FIND_ALL + SQL_ORDER_BY_ID, certificateExtractor);
+    }
+
+    @Override
+    public List<Certificate> findAllByParam(Map<String, String> params) {
+        params.put("query", SQL_FIND_ALL);
+        String sqlQuery = queryBuilder.buildQueryForSearch(params);
+        return jdbcTemplate.query(sqlQuery, certificateExtractor);
     }
 
     @Override

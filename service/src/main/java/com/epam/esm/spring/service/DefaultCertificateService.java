@@ -38,7 +38,16 @@ public class DefaultCertificateService implements CertificateService {
 
     @Override
     public List<CertificateDto> findAll() {
-        return certificateDao.findAll().stream()
+        return certificateDao.findAll()
+                .stream()
+                .map(certificateToDtoConverter::convert)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CertificateDto> findAllByParam(Map<String, String> params) {
+        return certificateDao.findAllByParam(params)
+                .stream()
                 .map(certificateToDtoConverter::convert)
                 .collect(Collectors.toList());
     }
