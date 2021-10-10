@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -59,7 +60,7 @@ public class TagController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public TagDto insert(@Validated @RequestBody TagDto tagDto) {
+    public TagDto insert(@Valid @RequestBody TagDto tagDto) {
         return tagService.insert(tagDto);
     }
 
