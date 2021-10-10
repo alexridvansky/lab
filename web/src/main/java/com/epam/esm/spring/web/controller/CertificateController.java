@@ -4,6 +4,8 @@ import com.epam.esm.spring.service.CertificateService;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -23,6 +25,7 @@ import java.util.Map;
  * Controller provides service within GiftCertificate.class entities.
  */
 @RestController
+@Validated
 @RequestMapping("/api/certificates")
 public class CertificateController {
     private final CertificateService certificateService;
@@ -45,10 +48,10 @@ public class CertificateController {
     /**
      * Is used for getting list of Certificates
      *
-     * @param tag
-     * @param search
-     * @param sort
-     * @param order
+     * @param tag tag name
+     * @param search part of Certificate's name or description
+     * @param sort field to sort by
+     * @param order ASC or DESC
      * @return List<CertificateDto> the list of certificates
      */
     @GetMapping()
@@ -74,9 +77,10 @@ public class CertificateController {
      *
      * @return CertificateDto just inserted
      */
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public CertificateDto insert(@RequestBody CertificateDto certificateDto) {
+    public CertificateDto insert(@Validated @RequestBody CertificateDto certificateDto) {
         return certificateService.insert(certificateDto);
     }
 
