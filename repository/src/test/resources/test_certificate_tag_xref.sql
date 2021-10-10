@@ -9,4 +9,4 @@ CREATE TABLE certificate_tag_xref
     FOREIGN KEY (tag_id)
         REFERENCES tags(id)
         ON DELETE CASCADE
-)
+);
