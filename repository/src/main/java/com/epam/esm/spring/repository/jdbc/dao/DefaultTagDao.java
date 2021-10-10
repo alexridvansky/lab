@@ -25,7 +25,7 @@ public class DefaultTagDao implements TagDao {
     private static final String SQL_COUNT = "SELECT count(*) FROM tag";
     private static final String SQL_COUNT_BY_NAME = SQL_COUNT + " WHERE name = ?";
     private static final String SQL_COUNT_BY_ID = SQL_COUNT + " WHERE id = ?";
-    private static final String SQL_COUNT_IN_ACC_TABLE = "SELECT count(*) FROM certificate_tag_xref WHERE tag_id = ?";
+    private static final String SQL_COUNT_IN_CROSS_TABLE = "SELECT count(*) FROM certificate_tag_xref WHERE tag_id = ?";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM tag WHERE id = ?";
     private final JdbcTemplate jdbcTemplate;
     private final TagRowMapper tagRowMapper;
@@ -86,7 +86,7 @@ public class DefaultTagDao implements TagDao {
 
     @Override
     public boolean isUsed(long id) {
-        return jdbcTemplate.queryForObject(SQL_COUNT_IN_ACC_TABLE, Integer.class, id) > 0;
+        return jdbcTemplate.queryForObject(SQL_COUNT_IN_CROSS_TABLE, Integer.class, id) > 0;
     }
 
     @Override
