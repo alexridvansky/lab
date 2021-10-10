@@ -128,9 +128,4 @@ public class DefaultCertificateService implements CertificateService {
 
         return certificateToDtoConverter.convert(certificate);
     }
-
-    @Override
-    public boolean exists(String name) {
-        return false;
-    }
 }

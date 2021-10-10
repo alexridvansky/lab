@@ -61,12 +61,4 @@ public interface CertificateService {
      * @return CertificateDto which was deleted
      */
     CertificateDto deleteById(long id);
-
-    /**
-     * Is used to check it out whether Certificate with NAME given exists
-     *
-     * @param name the name of Certificate
-     * @return true in case such Certificate found in the DB
-     */
-    boolean exists(String name);
 }
