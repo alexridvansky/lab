@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.epam.esm.spring.repository.jdbc.mapper.ColumnName.C_ID;
+import static com.epam.esm.spring.repository.jdbc.mapper.ColumnName.CERTIFICATE_ID;
 
 @Component
 public class CertificateExtractor implements ResultSetExtractor<List<Certificate>> {
@@ -31,7 +31,7 @@ public class CertificateExtractor implements ResultSetExtractor<List<Certificate
     public List<Certificate> extractData(ResultSet rs) throws SQLException, DataAccessException {
         Map<Long, Certificate> certificates = new LinkedHashMap<>();
         while (rs.next()) {
-            Long id = rs.getLong(C_ID);
+            Long id = rs.getLong(CERTIFICATE_ID);
             Certificate certificate = certificates.get(id);
             if (certificate == null) {
                 certificate = certificateRowMapper.mapRow(rs, 1);

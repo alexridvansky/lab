@@ -15,13 +15,13 @@ public class CertificateRowMapper implements RowMapper<Certificate> {
     public Certificate mapRow(ResultSet rs, int rowNum) throws SQLException {
 
         return Certificate.builder()
-                .id(rs.getLong(C_ID))
-                .name(rs.getString(C_NAME))
-                .description(rs.getString(C_DESCRIPTION))
-                .price(rs.getBigDecimal(C_PRICE))
-                .duration(rs.getInt(C_DURATION))
-                .createDate(rs.getTimestamp(C_CREATE_DATE).toLocalDateTime())
-                .lastUpdateDate(rs.getTimestamp(C_LAST_UPDATE_DATE).toLocalDateTime())
+                .id(rs.getLong(CERTIFICATE_ID))
+                .name(rs.getString(CERTIFICATE_NAME))
+                .description(rs.getString(CERTIFICATE_DESCRIPTION))
+                .price(rs.getBigDecimal(CERTIFICATE_PRICE))
+                .duration(rs.getInt(CERTIFICATE_DURATION))
+                .createDate(rs.getTimestamp(CERTIFICATE_CREATE_DATE).toLocalDateTime())
+                .lastUpdateDate(rs.getTimestamp(CERTIFICATE_LAST_UPDATE_DATE).toLocalDateTime())
                 .build();
     }
 }
