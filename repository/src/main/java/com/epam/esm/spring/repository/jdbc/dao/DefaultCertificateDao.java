@@ -107,11 +107,6 @@ public class DefaultCertificateDao implements CertificateDao {
     }
 
     @Override
-    public boolean exists(String name) {
-        return false;
-    }
-
-    @Override
     public boolean insertTagIntoXrefTable(List<Tag> tags, long id) {
         List<Object[]> batch = new ArrayList<>();
 
