@@ -43,7 +43,7 @@ public interface TagDao extends Dao<Tag> {
      * @param name the name of Tag
      * @return true in case such Tag found in the DB
      */
-    boolean exists(String name);
+    boolean isExist(String name);
 
     /**
      * Is used to check it out whether Tag with ID given exists
@@ -51,7 +51,7 @@ public interface TagDao extends Dao<Tag> {
      * @param id the Tag ID
      * @return true in case such Tag found in the DB
      */
-    boolean exists(long id);
+    boolean isExist(long id);
 
     /**
      * Is used to check whether Tag with ID given is used in any Certificates
