@@ -2,7 +2,6 @@ package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.jdbc.dao.TagDao;
 import com.epam.esm.spring.repository.model.Tag;
-import com.epam.esm.spring.service.converter.DtoToTagConverter;
 import com.epam.esm.spring.service.converter.TagToDtoConverter;
 import com.epam.esm.spring.service.dto.TagDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,9 +43,6 @@ class DefaultTagServiceTest {
     @Mock
     private TagToDtoConverter tagToDtoConverter;
 
-    @Mock
-    private DtoToTagConverter dtoToTagConverter;
-
     @BeforeEach
     void prepare() {
         firstTagDto = TagDto.builder()
@@ -79,6 +75,9 @@ class DefaultTagServiceTest {
 
         when(tagDao.findAll()).thenReturn(tags);
         when(tagDao.findById(FIRST_TAG_ID)).thenReturn(Optional.of(firstTag));
+
+        when(tagToDtoConverter.convert(firstTag)).thenReturn(firstTagDto);
+        when(tagToDtoConverter.convert(secondTag)).thenReturn(secondTagDto);
     }
 
     @Test

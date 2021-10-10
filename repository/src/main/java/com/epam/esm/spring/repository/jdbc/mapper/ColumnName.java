@@ -5,8 +5,8 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ColumnName {
     // Tag table columns' names
-    public static final String T_ID = "t_id";
-    public static final String T_NAME = "t_name";
+    public static final String TAG_ID = "t_id";
+    public static final String TAG_NAME = "t_name";
 
     // Certificate table columns' names
     public static final String C_ID = "id";
