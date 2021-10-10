@@ -81,7 +81,7 @@ public class DefaultCertificateService implements CertificateService {
     public CertificateDto update(CertificateDto certificateDto) {
         CertificateValidator.isCertificateValidForUpdate(certificateDto);
 
-        if (!certificateDao.exists(certificateDto.getId())) {
+        if (!certificateDao.isExist(certificateDto.getId())) {
             throw new EntryNotFoundException();
         }
         CertificateValidator.isCertificateValidForUpdate(certificateDto);
@@ -111,7 +111,7 @@ public class DefaultCertificateService implements CertificateService {
     @Override
     public void checkAndCreateTag(CertificateDto certificateDto) {
         for (int i = 0; certificateDto.getTags() != null && i < certificateDto.getTags().size(); i++) {
-            if (!tagService.exists(certificateDto.getTags().get(i).getName())) {
+            if (!tagService.isExist(certificateDto.getTags().get(i).getName())) {
                 certificateDto.getTags().set(i, tagService.insert(certificateDto.getTags().get(i)));
             } else {
                 certificateDto.getTags().set(i, tagService.findByName(certificateDto.getTags().get(i).getName()));

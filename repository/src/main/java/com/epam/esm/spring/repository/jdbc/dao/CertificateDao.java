@@ -54,7 +54,7 @@ public interface CertificateDao extends Dao<Certificate> {
      * @param id the name of Certificate to be looked for
      * @return true in case such Certificate found in the DB
      */
-    boolean exists(long id);
+    boolean isExist(long id);
 
     /**
      * Is used for storing tag list, related to the specific certificate

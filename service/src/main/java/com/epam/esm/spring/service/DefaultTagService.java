@@ -53,7 +53,7 @@ public class DefaultTagService implements TagService {
 
     @Override
     public TagDto insert(TagDto tagDto) {
-        if (tagDao.exists(tagDto.getName())) {
+        if (tagDao.isExist(tagDto.getName())) {
             throw new EntryAlreadyExistsException();
         } else if (tagDto.getName() == null || tagDto.getName().isEmpty()) {
             throw new EntryNonValidNameException();
@@ -73,7 +73,7 @@ public class DefaultTagService implements TagService {
     }
 
     @Override
-    public boolean exists(String name) {
-        return tagDao.exists(name);
+    public boolean isExist(String name) {
+        return tagDao.isExist(name);
     }
 }

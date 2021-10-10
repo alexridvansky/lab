@@ -50,5 +50,5 @@ public interface TagService {
      * @param name the name of Tag
      * @return true in case such Tag found in the DB
      */
-    boolean exists(String name);
+    boolean isExist(String name);
 }

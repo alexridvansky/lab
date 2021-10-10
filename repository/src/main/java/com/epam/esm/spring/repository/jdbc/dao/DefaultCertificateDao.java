@@ -103,7 +103,7 @@ public class DefaultCertificateDao implements CertificateDao {
     }
 
     @Override
-    public boolean exists(long id) {
+    public boolean isExist(long id) {
         return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > 0;
     }
 
