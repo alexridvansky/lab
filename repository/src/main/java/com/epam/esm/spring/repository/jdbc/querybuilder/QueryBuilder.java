@@ -20,16 +20,11 @@ public class QueryBuilder {
         int count = 1;
         for (Map.Entry<String, Object> entry : dataToBeUpdated.entrySet()) {
             if (count < dataToBeUpdated.size()) {
-                sb.append(entry.getKey());
-                sb.append(INJECT);
-                sb.append(COMMA);
+                sb.append(entry.getKey()).append(INJECT).append(COMMA);
                 count++;
             } else {
-                sb.append(entry.getKey());
-                sb.append(INJECT);
-                sb.append(WHERE);
-                sb.append(CertificateFieldType.ID.getName());
-                sb.append(INJECT);
+                sb.append(entry.getKey()).append(INJECT).append(WHERE).append(CertificateFieldType.ID.getName())
+                        .append(INJECT);
             }
         }
         return sb.toString();
