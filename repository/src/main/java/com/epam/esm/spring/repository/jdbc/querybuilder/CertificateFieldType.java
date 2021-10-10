@@ -1,7 +1,8 @@
 package com.epam.esm.spring.repository.jdbc.querybuilder;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public enum CertificateFieldType {
 
@@ -30,11 +31,8 @@ public enum CertificateFieldType {
     }
 
     public static List<String> getFields() {
-        List<String> fields = new ArrayList<>();
-        CertificateFieldType[] values = CertificateFieldType.values();
-        for (CertificateFieldType e : values) {
-            fields.add(e.getName());
-        }
-        return fields;
+        return Stream.of(CertificateFieldType.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
     }
 }
