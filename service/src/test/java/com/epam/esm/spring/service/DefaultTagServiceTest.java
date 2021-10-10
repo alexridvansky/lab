@@ -12,14 +12,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.OngoingStubbing;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
@@ -42,10 +40,8 @@ class DefaultTagServiceTest {
     private Tag secondTag;
     private Tag thirdTag;
     private List<TagDto> tagsDto;
-    private List<TagDto> tagsDtoAfterInsert;
     private List<TagDto> tagsDtoAfterDelete;
     private List<Tag> tags;
-    private List<Tag> tagsAfterInsert;
     private List<Tag> tagsAfterDelete;
 
     @InjectMocks
@@ -96,22 +92,12 @@ class DefaultTagServiceTest {
         tagsDto.add(firstTagDto);
         tagsDto.add(secondTagDto);
 
-        tagsDtoAfterInsert = new ArrayList<>();
-        tagsDto.add(firstTagDto);
-        tagsDto.add(secondTagDto);
-        tagsDto.add(thirdTagDto);
-
         tagsDtoAfterDelete = new ArrayList<>();
         tagsDtoAfterDelete.add(firstTagDto);
 
         tags = new ArrayList<>();
         tags.add(firstTag);
         tags.add(secondTag);
-
-        tagsAfterInsert = new ArrayList<>();
-        tags.add(firstTag);
-        tags.add(secondTag);
-        tags.add(thirdTag);
 
         tagsAfterDelete = new ArrayList<>();
         tagsAfterDelete.add(firstTag);
