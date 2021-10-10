@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class DefaultCertificateDao implements CertificateDao {
@@ -108,14 +109,9 @@ public class DefaultCertificateDao implements CertificateDao {
 
     @Override
     public boolean insertTagIntoXrefTable(List<Tag> tags, long id) {
-        List<Object[]> batch = new ArrayList<>();
-
-        for (Tag tag : tags) {
-            Object[] values = new Object[]{
-                    id,
-                    tag.getId()};
-            batch.add(values);
-        }
+        List<Object[]> batch = tags.stream().map(tag -> new Object[]{
+                id,
+                tag.getId()}).collect(Collectors.toList());
 
         jdbcTemplate.batchUpdate(SQL_TAG_ATTACH, batch);
 
