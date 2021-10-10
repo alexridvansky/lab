@@ -38,8 +38,6 @@ public class DefaultCertificateDao implements CertificateDao {
     private static final String SQL_DELETE_BY_ID = "DELETE FROM gift_certificate WHERE id = ?";
     private static final String SQL_COUNT = "SELECT count(*) FROM gift_certificate ";
     private static final String SQL_COUNT_BY_ID = SQL_COUNT + "WHERE id = ?";
-    private static final String SQL_UPDATE_NAME = "INSERT INTO gift_certificate (name) VALUES (?)";
-    private static final String SQL_UPDATE_DESCRIPTION = "INSERT INTO gift_certificate (description) VALUES (?)";
 
     private final CertificateExtractor certificateExtractor;
     private final JdbcTemplate jdbcTemplate;
@@ -136,6 +134,6 @@ public class DefaultCertificateDao implements CertificateDao {
 
     @Override
     public boolean deleteById(long id) {
-        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) > 0;
+        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == 0;
     }
 }
