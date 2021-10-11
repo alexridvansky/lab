@@ -14,9 +14,9 @@ import javax.sql.DataSource;
 
 @Configuration
 @ComponentScan("com.epam.esm.spring")
-@PropertySource("classpath:jdbc.properties")
-@Profile("prod")
-public class RepositoryConfig {
+@PropertySource("classpath:jdbc-dev.properties")
+@Profile("dev")
+public class RepositoryConfigDev {
     @Value("${db.driver}")
     private String driverClassName;
     @Value("${db.url}")
