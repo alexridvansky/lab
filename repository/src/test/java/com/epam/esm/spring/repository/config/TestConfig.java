@@ -15,7 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class TestConfig {
 
     private static final String SQL_TABLE_GC = "classpath:test_gift_certificate.sql";
-    private static final String SQL_TABLE_T = "classpath:test_tags.sql";
+    private static final String SQL_TABLE_T = "classpath:test_tag.sql";
     private static final String SQL_TABLE_XREF = "classpath:test_certificate_tag_xref.sql";
     private static final String SQL_FILL_UP = "classpath:db_fillup.sql";
 
