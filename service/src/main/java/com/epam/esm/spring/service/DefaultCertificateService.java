@@ -61,7 +61,7 @@ public class DefaultCertificateService implements CertificateService {
     public CertificateDto insert(CertificateDto certificateDto) {
         CertificateValidator.isCertificateValidForInsert(certificateDto);
 
-        checkAndCreateTag(certificateDto);
+        processTagList(certificateDto);
 
         certificateDto.setCreateDate(LocalDateTime.now());
         certificateDto.setLastUpdateDate(LocalDateTime.now());
@@ -84,7 +84,7 @@ public class DefaultCertificateService implements CertificateService {
             throw new EntryNotFoundException();
         }
         CertificateValidator.isCertificateValidForUpdate(certificateDto);
-        checkAndCreateTag(certificateDto);
+        processTagList(certificateDto);
 
         Certificate c = dtoToCertificateConverter.convert(certificateDto);
 
@@ -107,7 +107,7 @@ public class DefaultCertificateService implements CertificateService {
     }
 
     @Override
-    public void checkAndCreateTag(CertificateDto certificateDto) {
+    public void processTagList(CertificateDto certificateDto) {
         for (int i = 0; certificateDto.getTags() != null && i < certificateDto.getTags().size(); i++) {
             if (!tagService.isExist(certificateDto.getTags().get(i).getName())) {
                 certificateDto.getTags().set(i, tagService.insert(certificateDto.getTags().get(i)));

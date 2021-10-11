@@ -52,7 +52,7 @@ public interface CertificateService {
      *
      * @param certificateDto CertificateDto entity
      */
-    void checkAndCreateTag(CertificateDto certificateDto);
+    void processTagList(CertificateDto certificateDto);
 
     /**
      * Deletes Certificate by its ID
