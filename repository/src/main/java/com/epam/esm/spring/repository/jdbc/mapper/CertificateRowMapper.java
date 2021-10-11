@@ -7,7 +7,13 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static com.epam.esm.spring.repository.jdbc.mapper.ColumnName.*;
+import static com.epam.esm.spring.repository.jdbc.mapper.ColumnName.CERTIFICATE_CREATE_DATE;
+import static com.epam.esm.spring.repository.jdbc.mapper.ColumnName.CERTIFICATE_DESCRIPTION;
+import static com.epam.esm.spring.repository.jdbc.mapper.ColumnName.CERTIFICATE_DURATION;
+import static com.epam.esm.spring.repository.jdbc.mapper.ColumnName.CERTIFICATE_ID;
+import static com.epam.esm.spring.repository.jdbc.mapper.ColumnName.CERTIFICATE_LAST_UPDATE_DATE;
+import static com.epam.esm.spring.repository.jdbc.mapper.ColumnName.CERTIFICATE_NAME;
+import static com.epam.esm.spring.repository.jdbc.mapper.ColumnName.CERTIFICATE_PRICE;
 
 @Component
 public class CertificateRowMapper implements RowMapper<Certificate> {
