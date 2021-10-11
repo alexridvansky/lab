@@ -27,7 +27,7 @@ public interface CertificateDao extends Dao<Certificate> {
      * Returns Certificate by id given.
      *
      * @param id is id of the Certificate
-     * @return Certificate
+     * @return Certificate if found or Optional.empty if not
      */
     Optional<Certificate> findById(long id);
 
