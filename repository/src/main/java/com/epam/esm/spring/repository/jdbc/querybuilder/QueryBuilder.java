@@ -4,21 +4,23 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.ASC;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.COMMA;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.INJECT;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.ORDER_BY;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.QUOTE;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.SEARCH_QUERY;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.SPACE;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.UPDATE;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.WHERE;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.SearchRequestDictionary.ORDER;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.SearchRequestDictionary.QUERY;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.SearchRequestDictionary.SEARCH;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.SearchRequestDictionary.SORT;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.SearchRequestDictionary.TAG;
+
 @Component
 public class QueryBuilder {
-    private static final String UPDATE = "UPDATE gift_certificate SET ";
-    private static final String WHERE = " WHERE ";
-    private static final String COMMA = ", ";
-    private static final String INJECT = "=?";
-    private static final String SPACE = " ";
-    private static final String ORDER_BY = " ORDER BY ";
-    private static final String ASC = "asc";
-    private static final String SEARCH = "WHERE t.name like ('%%' %s '%%') and (gc.name LIKE concat ('%%', '%s', '%%') " +
-            "or gc.description LIKE concat ('%%', '%s', '%%')) ";
-    private static final String TAG_LIKE = " t.name like ('%%' %s '%%') ";
-    private static final String AND = " AND ";
-    private static final String NAME_DESC_LIKE = " (gc.name LIKE concat ('%%', '%s', '%%') \" +\n" +
-            "            \"or gc.description LIKE concat ('%%', '%s', '%%')) ";
 
     public String buildQueryForUpdate(Map<String, Object> dataToBeUpdated) {
         StringBuilder sb = new StringBuilder(UPDATE);
@@ -35,15 +37,15 @@ public class QueryBuilder {
     }
 
     public String buildQueryForSearch(Map<String, String> params) {
-        String query = String.format(params.get("query") + SEARCH,"'" + params.get("tag")
-                + "'" , params.get("search"), params.get("search"));
+        String query = String.format(params.get(QUERY) + SEARCH_QUERY,QUOTE + params.get(TAG)
+                + QUOTE , params.get(SEARCH), params.get(SEARCH_QUERY));
         StringBuilder sb = new StringBuilder(query);
 
-        if (params.get("sort") != null && !params.get("sort").isEmpty()) {
-            if (params.get("order") != null && !params.get("order").isEmpty()) {
-                sb.append(ORDER_BY).append(params.get("sort")).append(SPACE).append(params.get("order"));
+        if (params.get(SORT) != null && !params.get(SORT).isEmpty()) {
+            if (params.get(ORDER) != null && !params.get(ORDER).isEmpty()) {
+                sb.append(ORDER_BY).append(params.get(SORT)).append(SPACE).append(params.get(ORDER));
             } else {
-                sb.append(ORDER_BY).append(params.get("sort")).append(SPACE).append(ASC);
+                sb.append(ORDER_BY).append(params.get(SORT)).append(SPACE).append(ASC);
             }
         }
 

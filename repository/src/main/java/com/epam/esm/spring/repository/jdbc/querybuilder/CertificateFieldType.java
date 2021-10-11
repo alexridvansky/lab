@@ -7,17 +7,11 @@ import java.util.stream.Stream;
 public enum CertificateFieldType {
 
     ID("id"),
-
     NAME("name"),
-
     DESCRIPTION("description"),
-
     PRICE("price"),
-
     DURATION("duration"),
-
     CREATE_DATE("create_date"),
-
     LAST_UPDATE_DATE("last_update_date");
 
     private String name;
@@ -30,9 +24,4 @@ public enum CertificateFieldType {
         return name;
     }
 
-    public static List<String> getFields() {
-        return Stream.of(CertificateFieldType.values())
-                .map(Enum::name)
-                .collect(Collectors.toList());
-    }
 }
