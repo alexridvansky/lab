@@ -7,6 +7,6 @@ CREATE TABLE certificate_tag_xref
         REFERENCES gift_certificate(id)
         ON DELETE CASCADE,
     FOREIGN KEY (tag_id)
-        REFERENCES tags(id)
+        REFERENCES tag(id)
         ON DELETE CASCADE
 );

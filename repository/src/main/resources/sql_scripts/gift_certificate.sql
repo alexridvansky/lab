@@ -1,11 +1,11 @@
 create table gift_certificate
 (
     id                      BIGINT AUTO_INCREMENT,
-    name                    varchar(100)  NOT NULL,
+    name                    varchar(100) NOT NULL UNIQUE,
     description             VARCHAR(200) NOT NULL,
-    price                   DOUBLE NOT NULL,
+    price                   DECIMAL NOT NULL,
     duration                INT NOT NULL,
-    create_date             TIMESTAMP NOT NULL,
-    last_update_date        TIMESTAMP NOT NULL,
+    create_date             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_update_date        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
