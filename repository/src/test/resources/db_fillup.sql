@@ -6,7 +6,8 @@ VALUES (1, 'food'),
        (5, 'gym'),
        (6, 'cardio'),
        (7, 'health'),
-       (8, 'fitness');
+       (8, 'fitness'),
+       (9, 'fishing');
 
 INSERT INTO gift_certificate (id, name, description, price, duration, create_date,last_update_date)
 VALUES (1, 'Beef and pork fall weekend party', 'unlimited food for a couple of visitors', 50, 2, '2019-11-17 11:11:11', '2021-10-18 11:11:11'),
