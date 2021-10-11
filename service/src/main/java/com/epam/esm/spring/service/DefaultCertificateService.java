@@ -5,7 +5,6 @@ import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.service.converter.CertificateToDtoConverter;
 import com.epam.esm.spring.service.converter.DtoToCertificateConverter;
 import com.epam.esm.spring.service.dto.CertificateDto;
-import com.epam.esm.spring.service.exception.EntryNonValidRequestException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.util.CertificateToMapMapper;
 import com.epam.esm.spring.service.util.CertificateValidator;
@@ -101,11 +100,10 @@ public class DefaultCertificateService implements CertificateService {
             Map<String, Object> data = CertificateToMapMapper.toMap(c);
             certificateDao.update(c.getId(), data);
 
-            return certificateToDtoConverter.convert(certificateDao.findById(c.getId())
-                    .orElseThrow(EntryNotFoundException::new));
-        } else {
-            throw new EntryNonValidRequestException();
         }
+
+        return certificateToDtoConverter.convert(certificateDao.findById(c.getId())
+                    .orElseThrow(EntryNotFoundException::new));
     }
 
     @Override
