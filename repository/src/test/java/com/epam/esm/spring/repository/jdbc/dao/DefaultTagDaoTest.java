@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -20,6 +21,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -217,6 +219,18 @@ class DefaultTagDaoTest {
     }
 
     @Test
+    @Order(4)
     void insert() {
+        Tag newTag = Tag.builder().id(11L).name("somename").build();
+
+        Tag actual = tagDao.insert(newTag);
+
+        assertEquals(newTag, actual);
+    }
+
+    @Test
+    @Order(4)
+    void insertAlreadyExistingEntryExceptionExpected() {
+        assertThrowsExactly(DuplicateKeyException.class, () -> tagDao.insert(tag_five));
     }
 }
