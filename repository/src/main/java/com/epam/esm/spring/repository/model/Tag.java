@@ -1,6 +1,7 @@
 package com.epam.esm.spring.repository.model;
 
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
 @EqualsAndHashCode(callSuper = true)
