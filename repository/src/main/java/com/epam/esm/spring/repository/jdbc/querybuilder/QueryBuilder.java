@@ -12,8 +12,13 @@ public class QueryBuilder {
     private static final String INJECT = "=?";
     private static final String SPACE = " ";
     private static final String ORDER_BY = " ORDER BY ";
+    private static final String ASC = "asc";
     private static final String SEARCH = "WHERE t.name like ('%%' %s '%%') and (gc.name LIKE concat ('%%', '%s', '%%') " +
             "or gc.description LIKE concat ('%%', '%s', '%%')) ";
+    private static final String TAG_LIKE = " t.name like ('%%' %s '%%') ";
+    private static final String AND = " AND ";
+    private static final String NAME_DESC_LIKE = " (gc.name LIKE concat ('%%', '%s', '%%') \" +\n" +
+            "            \"or gc.description LIKE concat ('%%', '%s', '%%')) ";
 
     public String buildQueryForUpdate(Map<String, Object> dataToBeUpdated) {
         StringBuilder sb = new StringBuilder(UPDATE);
@@ -23,8 +28,7 @@ public class QueryBuilder {
                 sb.append(entry.getKey()).append(INJECT).append(COMMA);
                 count++;
             } else {
-                sb.append(entry.getKey()).append(INJECT).append(WHERE).append(CertificateFieldType.ID.getName())
-                        .append(INJECT);
+                sb.append(entry.getKey()).append(INJECT).append(WHERE).append(CertificateFieldType.ID.getName()).append(INJECT);
             }
         }
         return sb.toString();
@@ -35,8 +39,12 @@ public class QueryBuilder {
                 + "'" , params.get("search"), params.get("search"));
         StringBuilder sb = new StringBuilder(query);
 
-        if (!params.get("sort").isEmpty()) {
-            sb.append(ORDER_BY).append(params.get("sort")).append(SPACE).append(params.get("order"));
+        if (params.get("sort") != null && !params.get("sort").isEmpty()) {
+            if (params.get("order") != null && !params.get("order").isEmpty()) {
+                sb.append(ORDER_BY).append(params.get("sort")).append(SPACE).append(params.get("order"));
+            } else {
+                sb.append(ORDER_BY).append(params.get("sort")).append(SPACE).append(ASC);
+            }
         }
 
         return sb.toString();
