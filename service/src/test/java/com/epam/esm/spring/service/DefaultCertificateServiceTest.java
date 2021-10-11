@@ -69,17 +69,16 @@ class DefaultCertificateServiceTest {
             .description("First certificate description")
             .price(BigDecimal.valueOf(100))
             .duration(10)
-            .tags(Stream.of(firstTag, secondTag)
-                    .collect(Collectors.toList()))
+            .tags(Arrays.asList(firstTag, secondTag))
             .build();
+
     private Certificate secondCertificate = Certificate.builder()
             .id(2L)
             .name("Second certificate")
             .description("Second certificate description")
             .price(BigDecimal.valueOf(200))
             .duration(20)
-            .tags(Stream.of(firstTag)
-                    .collect(Collectors.toList()))
+            .tags(Arrays.asList(firstTag))
             .build();
 
     private CertificateDto firstCertificateDto = CertificateDto.builder()
@@ -88,17 +87,16 @@ class DefaultCertificateServiceTest {
             .description("First certificate description")
             .price(BigDecimal.valueOf(100))
             .duration(10)
-            .tags(Stream.of(firstTagDto, secondTagDto)
-                    .collect(Collectors.toList()))
+            .tags(Arrays.asList(firstTagDto, secondTagDto))
             .build();
+
     private CertificateDto secondCertificateDto = CertificateDto.builder()
             .id(2L)
             .name("Second certificate")
             .description("Second certificate description")
             .price(BigDecimal.valueOf(200))
             .duration(20)
-            .tags(Stream.of(firstTagDto)
-                    .collect(Collectors.toList()))
+            .tags(Arrays.asList(firstTagDto))
             .build();
 
     private final List<Certificate> certificates = Arrays.asList(firstCertificate, secondCertificate);
