@@ -23,16 +23,19 @@ public class DefaultCertificateService implements CertificateService {
     private final TagService tagService;
     private final CertificateToDtoConverter certificateToDtoConverter;
     private final DtoToCertificateConverter dtoToCertificateConverter;
+    private final CertificateValidator certificateValidator;
 
     @Autowired
     public DefaultCertificateService(CertificateDao certificateDao,
                                      TagService tagService,
                                      CertificateToDtoConverter certificateToDtoConverter,
-                                     DtoToCertificateConverter dtoToCertificateConverter) {
+                                     DtoToCertificateConverter dtoToCertificateConverter,
+                                     CertificateValidator certificateValidator) {
         this.certificateDao = certificateDao;
         this.tagService = tagService;
         this.certificateToDtoConverter = certificateToDtoConverter;
         this.dtoToCertificateConverter = dtoToCertificateConverter;
+        this.certificateValidator = certificateValidator;
     }
 
     @Override
@@ -59,7 +62,7 @@ public class DefaultCertificateService implements CertificateService {
     @Transactional
     @Override
     public CertificateDto insert(CertificateDto certificateDto) {
-        CertificateValidator.isCertificateValidForInsert(certificateDto);
+        certificateValidator.isCertificateValidForInsert(certificateDto);
 
         processTagList(certificateDto);
 
@@ -78,12 +81,12 @@ public class DefaultCertificateService implements CertificateService {
     @Transactional
     @Override
     public CertificateDto update(CertificateDto certificateDto) {
-        CertificateValidator.isCertificateValidForUpdate(certificateDto);
+        certificateValidator.isCertificateValidForUpdate(certificateDto);
 
         if (!certificateDao.isExist(certificateDto.getId())) {
             throw new EntryNotFoundException();
         }
-        CertificateValidator.isCertificateValidForUpdate(certificateDto);
+        certificateValidator.isCertificateValidForUpdate(certificateDto);
         processTagList(certificateDto);
 
         Certificate c = dtoToCertificateConverter.convert(certificateDto);

@@ -9,11 +9,12 @@ import com.epam.esm.spring.service.exception.EntryNonValidRequestException;
 import com.epam.esm.spring.service.exception.EntryNonValidTagNameException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
-@UtilityClass
+@Component
 public class CertificateValidator {
     // we could use some regexp from properties.file here
 
