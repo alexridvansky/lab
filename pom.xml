@@ -8,6 +8,7 @@
     <artifactId>module-twoo</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
     <modules>
         <module>web</module>
         <module>repository</module>
@@ -18,5 +19,4 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-
 </project>
