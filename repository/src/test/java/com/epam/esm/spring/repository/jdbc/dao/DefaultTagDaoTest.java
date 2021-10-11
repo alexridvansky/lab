@@ -4,6 +4,7 @@ import com.epam.esm.spring.repository.config.TestConfig;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.Tag;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ class DefaultTagDaoTest {
     private static final int ONE = 1;
     private static final int TWO = 2;
     private static final int THREE = 3;
-    private static final int NINE = 0;
+    private static final int NINE = 9;
     private static final int TEN = 10;
     private static final String TAG_ONE_NAME = "food";
     private static final String TAG_TWO_NAME = "bbq";
@@ -101,10 +102,7 @@ class DefaultTagDaoTest {
     }
 
     @Test
-    void insert() {
-    }
-
-    @Test
+    @Order(1)
     void findAll() {
         List<Tag> actuals = tagDao.findAll();
 
@@ -112,13 +110,15 @@ class DefaultTagDaoTest {
     }
 
     @Test
-    void findByIdOne() {
-        Optional<Tag> actual = tagDao.findById(ONE);
+    @Order(1)
+    void findByIdTwo() {
+        Optional<Tag> actual = tagDao.findById(TWO);
 
-        assertEquals(tag_one, actual.get());
+        assertEquals(tag_two, actual.get());
     }
 
     @Test
+    @Order(1)
     void findByIdThree() {
         Optional<Tag> actual = tagDao.findById(THREE);
 
@@ -126,6 +126,7 @@ class DefaultTagDaoTest {
     }
 
     @Test
+    @Order(1)
     void findByIdNonExistingId() {
         Optional<Tag> actual = tagDao.findById(TEN);
 
@@ -133,6 +134,7 @@ class DefaultTagDaoTest {
     }
 
     @Test
+    @Order(1)
     void findByNameOne() {
         Optional<Tag> actual = tagDao.findByName(TAG_ONE_NAME);
 
@@ -140,6 +142,7 @@ class DefaultTagDaoTest {
     }
 
     @Test
+    @Order(1)
     void findByNameTwo() {
         Optional<Tag> actual = tagDao.findByName(TAG_TWO_NAME);
 
@@ -147,6 +150,7 @@ class DefaultTagDaoTest {
     }
 
     @Test
+    @Order(1)
     void findByNameNonExisting() {
         Optional<Tag> actual = tagDao.findByName(TAG_TEN_NAME);
 
@@ -154,6 +158,7 @@ class DefaultTagDaoTest {
     }
 
     @Test
+    @Order(1)
     void isExistTagOne() {
         boolean actual = tagDao.isExist(ONE);
 
@@ -161,6 +166,7 @@ class DefaultTagDaoTest {
     }
 
     @Test
+    @Order(1)
     void isExistTagThree() {
         boolean actual = tagDao.isExist(THREE);
 
@@ -168,6 +174,7 @@ class DefaultTagDaoTest {
     }
 
     @Test
+    @Order(1)
     void isExistTagThreeNonExisting() {
         boolean actual = tagDao.isExist(TEN);
 
@@ -175,6 +182,7 @@ class DefaultTagDaoTest {
     }
 
     @Test
+    @Order(1)
     void isUsedTagOne() {
         boolean actual = tagDao.isExist(ONE);
 
@@ -182,6 +190,7 @@ class DefaultTagDaoTest {
     }
 
     @Test
+    @Order(1)
     void isUsedTagThree() {
         boolean actual = tagDao.isExist(THREE);
 
@@ -189,6 +198,7 @@ class DefaultTagDaoTest {
     }
 
     @Test
+    @Order(2)
     void isUsedTagNine() {
         boolean actual = tagDao.isExist(NINE);
 
@@ -196,6 +206,7 @@ class DefaultTagDaoTest {
     }
 
     @Test
+    @Order(3)
     void deleteByIdOne() {
         boolean actual = tagDao.deleteById(ONE);
 
@@ -203,9 +214,14 @@ class DefaultTagDaoTest {
     }
 
     @Test
-    void deleteByIdNineNonExisting() {
-        boolean actual = tagDao.deleteById(NINE);
+    @Order(3)
+    void deleteByIdTenNonExisting() {
+        boolean actual = tagDao.deleteById(TEN);
 
         assertFalse(actual);
+    }
+
+    @Test
+    void insert() {
     }
 }
