@@ -1,4 +1,4 @@
-create table gift_certificate
+CREATE TABLE gift_certificate
 (
     id                      BIGINT AUTO_INCREMENT,
     name                    varchar(100) NOT NULL UNIQUE,
