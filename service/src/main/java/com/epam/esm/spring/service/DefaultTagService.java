@@ -8,6 +8,7 @@ import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
 import com.epam.esm.spring.service.exception.EntryNonValidNameException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,14 +49,13 @@ public class DefaultTagService implements TagService {
         return tagDao.findByName(name)
                 .map(tagToDtoConverter::convert)
                 .orElseThrow(EntryNotFoundException::new);
-
     }
 
     @Override
     public TagDto insert(TagDto tagDto) {
         if (tagDao.isExist(tagDto.getName())) {
             throw new EntryAlreadyExistsException();
-        } else if (tagDto.getName() == null || tagDto.getName().isEmpty()) {
+        } else if (StringUtils.isEmpty(tagDto.getName())) {
             throw new EntryNonValidNameException();
         }
 
