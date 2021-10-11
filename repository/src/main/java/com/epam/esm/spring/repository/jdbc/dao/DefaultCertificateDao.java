@@ -125,6 +125,6 @@ public class DefaultCertificateDao implements CertificateDao {
 
     @Override
     public boolean deleteById(long id) {
-        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == 0;
+        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == 1;
     }
 }
