@@ -26,23 +26,23 @@ public class CertificateValidator {
         return c.getName() != null && !c.getName().isEmpty() && c.getName().length() > 3;
     }
 
-    public static boolean isDescriptionValid(CertificateDto c) {
+    public boolean isDescriptionValid(CertificateDto c) {
         return c.getDescription() != null && !c.getDescription().isEmpty() && c.getDescription().length() > 3;
     }
 
-    public static boolean isPriceValid(CertificateDto c) {
+    public boolean isPriceValid(CertificateDto c) {
         return c.getPrice() != null && c.getPrice().compareTo(BigDecimal.ZERO) > 0;
     }
 
-    public static boolean isDurationValid(CertificateDto c) {
+    public boolean isDurationValid(CertificateDto c) {
         return c.getDuration() != null && c.getDuration() > 0;
     }
 
-    public static boolean isTagValid(TagDto t) {
+    public boolean isTagValid(TagDto t) {
         return t != null && t.getName() != null && t.getName().length() > 3;
     }
 
-    public static boolean isCertificateValidForUpdate(CertificateDto c) {
+    public boolean isCertificateValidForUpdate(CertificateDto c) {
         if (c == null) {
             throw new EntryNonValidRequestException();
         }
@@ -58,14 +58,14 @@ public class CertificateValidator {
         if (c.getDuration() != null && !isDurationValid(c)) {
             throw new EntryNonValidDurationException();
         }
-        if (c.getTags() != null && !c.getTags().stream().allMatch(CertificateValidator::isTagValid)){
+        if (c.getTags() != null && !c.getTags().stream().allMatch(this::isTagValid)){
             throw new EntryNonValidTagNameException();
         }
 
         return true;
     }
 
-    public static boolean isCertificateValidForInsert(CertificateDto c) {
+    public boolean isCertificateValidForInsert(CertificateDto c) {
         if (c == null) {
             throw new EntryNonValidRequestException();
         }
@@ -84,7 +84,7 @@ public class CertificateValidator {
         if (c.getTags() == null) {
             c.setTags(new ArrayList<>());
         }
-        if (!c.getTags().stream().allMatch(CertificateValidator::isTagValid)){
+        if (!c.getTags().stream().allMatch(this::isTagValid)){
             throw new EntryNonValidTagNameException();
         }
 
