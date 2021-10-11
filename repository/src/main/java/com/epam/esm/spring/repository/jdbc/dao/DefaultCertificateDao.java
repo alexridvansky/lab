@@ -39,7 +39,8 @@ public class DefaultCertificateDao implements CertificateDao {
     private static final String SQL_DELETE_BY_ID = "DELETE FROM gift_certificate WHERE id = ?";
     private static final String SQL_COUNT = "SELECT count(*) FROM gift_certificate ";
     private static final String SQL_COUNT_BY_ID = SQL_COUNT + "WHERE id = ?";
-
+    private static final int ONE = 1;
+    private static final int ZERO = 0;
     private final CertificateExtractor certificateExtractor;
     private final JdbcTemplate jdbcTemplate;
     private final QueryBuilder queryBuilder;
@@ -104,7 +105,7 @@ public class DefaultCertificateDao implements CertificateDao {
 
     @Override
     public boolean isExist(long id) {
-        return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > 0;
+        return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > ZERO;
     }
 
     @Override
@@ -120,11 +121,11 @@ public class DefaultCertificateDao implements CertificateDao {
 
     @Override
     public boolean detachTagFromXrefTable(long id) {
-        return jdbcTemplate.update(SQL_TAG_DETACH, id) > 0;
+        return jdbcTemplate.update(SQL_TAG_DETACH, id) > ZERO;
     }
 
     @Override
     public boolean deleteById(long id) {
-        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == 1;
+        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == ONE;
     }
 }
