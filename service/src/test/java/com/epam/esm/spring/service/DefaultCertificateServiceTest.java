@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,6 @@ class DefaultCertificateServiceTest {
     private static final long FIRST_CERTIFICATE_ID = 1;
     private static final long NON_EXISTING_CERTIFICATE_ID = 99;
 
-    ;
     private static final String FIRST_TAG_NAME = "fitness";
     private static final String SECOND_TAG_NAME = "food";
 
@@ -101,17 +101,13 @@ class DefaultCertificateServiceTest {
                     .collect(Collectors.toList()))
             .build();
 
-    private List<Certificate> certificates
-            = Stream.of(firstCertificate, secondCertificate).collect(Collectors.toList());
+    private final List<Certificate> certificates = Arrays.asList(firstCertificate, secondCertificate);
 
-    private List<Certificate> certificatesByParams
-            = Stream.of(secondCertificate).collect(Collectors.toList());
+    private final List<Certificate> certificatesByParams = Arrays.asList(secondCertificate);
 
-    private List<CertificateDto> certificateDtos
-            = Stream.of(firstCertificateDto, secondCertificateDto).collect(Collectors.toList());
+    private final List<CertificateDto> certificateDtos = Arrays.asList(firstCertificateDto, secondCertificateDto);
 
-    private List<CertificateDto> certificatesDtoByParam
-            = Stream.of(secondCertificateDto).collect(Collectors.toList());
+    private final List<CertificateDto> certificatesDtoByParam = Arrays.asList(secondCertificateDto);
 
     public Map<String, String> paramMap = new HashMap() {{
         put("tag", "fitness");
