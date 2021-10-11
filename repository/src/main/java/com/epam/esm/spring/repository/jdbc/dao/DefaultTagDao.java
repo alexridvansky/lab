@@ -16,20 +16,21 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.EXACT_ONE;
+import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_COUNT_BY_ID;
+import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_COUNT_BY_NAME;
+import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_COUNT_IN_CROSS_TABLE;
+import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_DELETE_BY_ID;
+import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_FIND_ALL;
+import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_FIND_BY_ID;
+import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_FIND_BY_NAME;
+import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_INSERT;
+import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_ORDER_BY_ID;
+import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.MORE_THAN_NOTHING;
+
 @Repository
 public class DefaultTagDao implements TagDao {
-    private static final String SQL_INSERT = "INSERT INTO tag (name) VALUES (?)";
-    private static final String SQL_FIND_ALL = "SELECT id AS t_id, name AS t_name FROM tag";
-    private static final String SQL_FIND_BY_ID = SQL_FIND_ALL + " WHERE id = ?";
-    private static final String SQL_FIND_BY_NAME = SQL_FIND_ALL + " WHERE name = ?";
-    private static final String SQL_ORDER_BY_ID = " ORDER BY id";
-    private static final String SQL_COUNT = "SELECT count(*) FROM tag";
-    private static final String SQL_COUNT_BY_NAME = SQL_COUNT + " WHERE name = ?";
-    private static final String SQL_COUNT_BY_ID = SQL_COUNT + " WHERE id = ?";
-    private static final String SQL_COUNT_IN_CROSS_TABLE = "SELECT count(*) FROM certificate_tag_xref WHERE tag_id = ?";
-    private static final String SQL_DELETE_BY_ID = "DELETE FROM tag WHERE id = ?";
-    private static final int ONE = 1;
-    private static final int ZERO = 0;
+
     private final JdbcTemplate jdbcTemplate;
     private final TagRowMapper tagRowMapper;
 
@@ -79,21 +80,21 @@ public class DefaultTagDao implements TagDao {
 
     @Override
     public boolean isExist(String name) {
-        return jdbcTemplate.queryForObject(SQL_COUNT_BY_NAME, Integer.class, name) > ZERO;
+        return jdbcTemplate.queryForObject(SQL_COUNT_BY_NAME, Integer.class, name) > MORE_THAN_NOTHING;
     }
 
     @Override
     public boolean isExist(long id) {
-        return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > ZERO;
+        return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > MORE_THAN_NOTHING;
     }
 
     @Override
     public boolean isUsed(long id) {
-        return jdbcTemplate.queryForObject(SQL_COUNT_IN_CROSS_TABLE, Integer.class, id) > ZERO;
+        return jdbcTemplate.queryForObject(SQL_COUNT_IN_CROSS_TABLE, Integer.class, id) > MORE_THAN_NOTHING;
     }
 
     @Override
     public boolean deleteById(long id) {
-        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == ONE;
+        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == EXACT_ONE;
     }
 }
