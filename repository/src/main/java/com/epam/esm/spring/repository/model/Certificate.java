@@ -22,5 +22,4 @@ public class Certificate extends AbstractEntity {
     private LocalDateTime lastUpdateDate;
     @Builder.Default
     private List<Tag> tags = new ArrayList<>();
-
 }
