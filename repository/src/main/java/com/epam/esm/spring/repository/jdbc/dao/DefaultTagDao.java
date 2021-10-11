@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -60,7 +61,7 @@ public class DefaultTagDao implements TagDao {
     public Optional<Tag> findById(long id) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(SQL_FIND_BY_ID, tagRowMapper, id));
-        } catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException | NoSuchElementException e) {
             return Optional.empty();
         }
     }
@@ -69,7 +70,7 @@ public class DefaultTagDao implements TagDao {
     public Optional<Tag> findByName(String name) {
         try {
             return Optional.of(jdbcTemplate.queryForObject(SQL_FIND_BY_NAME, tagRowMapper, name));
-        } catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException | NoSuchElementException e) {
             return Optional.empty();
         }
     }
