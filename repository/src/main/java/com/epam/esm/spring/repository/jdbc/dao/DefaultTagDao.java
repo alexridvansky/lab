@@ -28,6 +28,8 @@ public class DefaultTagDao implements TagDao {
     private static final String SQL_COUNT_BY_ID = SQL_COUNT + " WHERE id = ?";
     private static final String SQL_COUNT_IN_CROSS_TABLE = "SELECT count(*) FROM certificate_tag_xref WHERE tag_id = ?";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM tag WHERE id = ?";
+    private static final int ONE = 1;
+    private static final int ZERO = 0;
     private final JdbcTemplate jdbcTemplate;
     private final TagRowMapper tagRowMapper;
 
@@ -77,21 +79,21 @@ public class DefaultTagDao implements TagDao {
 
     @Override
     public boolean isExist(String name) {
-        return jdbcTemplate.queryForObject(SQL_COUNT_BY_NAME, Integer.class, name) > 0;
+        return jdbcTemplate.queryForObject(SQL_COUNT_BY_NAME, Integer.class, name) > ZERO;
     }
 
     @Override
     public boolean isExist(long id) {
-        return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > 0;
+        return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > ZERO;
     }
 
     @Override
     public boolean isUsed(long id) {
-        return jdbcTemplate.queryForObject(SQL_COUNT_IN_CROSS_TABLE, Integer.class, id) > 0;
+        return jdbcTemplate.queryForObject(SQL_COUNT_IN_CROSS_TABLE, Integer.class, id) > ZERO;
     }
 
     @Override
     public boolean deleteById(long id) {
-        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == 1;
+        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == ONE;
     }
 }
