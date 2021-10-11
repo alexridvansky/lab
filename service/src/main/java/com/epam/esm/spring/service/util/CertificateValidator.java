@@ -18,11 +18,11 @@ import java.util.ArrayList;
 public class CertificateValidator {
     // we could use some regexp from properties.file here
 
-    public static boolean isIdValid(CertificateDto c) {
+    public boolean isIdValid(CertificateDto c) {
         return c.getId() != null && c.getId() > 0;
     }
 
-    public static boolean isNameValid(CertificateDto c) {
+    public boolean isNameValid(CertificateDto c) {
         return c.getName() != null && !c.getName().isEmpty() && c.getName().length() > 3;
     }
 
