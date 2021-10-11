@@ -7,22 +7,22 @@ import java.util.Map;
 
 public interface CertificateService {
     /**
-     * Is used to get the list of all certificates
+     * Returns the list of all certificates.
      *
      * @return List<CertificateDto>
      */
     List<CertificateDto> findAll();
 
     /**
-     * Is used to get the list of certificates by search params
+     * Returns the list of certificates accordingly to search parameters.
      *
      * @param params
      * @return
      */
-    List<CertificateDto> findAllByParam(Map<String, String> params);
+    List<CertificateDto> findByParams(Map<String, String> params);
 
     /**
-     * Is used to get Certificate by id given
+     * Returns Certificate by id given.
      *
      * @param id is id of the Certificate
      * @return TagDto.class instance if Certificate with id given is present in the db
@@ -38,7 +38,7 @@ public interface CertificateService {
     CertificateDto insert(CertificateDto certificateDto);
 
     /**
-     * Update existing Certificate
+     * Updates existing Certificate
      *
      * @param certificateDto with only fields to be updated
      * @return CertificateDto updated object
@@ -46,7 +46,7 @@ public interface CertificateService {
     CertificateDto update(CertificateDto certificateDto);
 
     /**
-     * Method checks whether every Tag stored to the list
+     * Checks whether every Tag stored to the list
      * is present in the db, if so - read and store id for it,
      * if not - creates and stores id of just created one
      *
@@ -55,7 +55,7 @@ public interface CertificateService {
     void checkAndCreateTag(CertificateDto certificateDto);
 
     /**
-     * Is used to delete Certificate by its ID
+     * Deletes Certificate by its ID
      *
      * @param id - Certificate ID
      * @return CertificateDto which was deleted

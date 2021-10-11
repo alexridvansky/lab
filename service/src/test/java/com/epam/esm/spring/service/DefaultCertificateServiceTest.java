@@ -164,9 +164,9 @@ class DefaultCertificateServiceTest {
 
     @Test
     void findAllByParam() {
-        when(certificateDao.findAllByParam(paramMap)).thenReturn(certificatesByParams);
+        when(certificateDao.findByParams(paramMap)).thenReturn(certificatesByParams);
 
-        List<CertificateDto> actual = certificateService.findAllByParam(paramMap);
+        List<CertificateDto> actual = certificateService.findByParams(paramMap);
 
         assertEquals(certificatesDtoByParam, actual);
     }

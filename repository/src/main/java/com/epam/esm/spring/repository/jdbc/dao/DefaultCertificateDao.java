@@ -59,7 +59,7 @@ public class DefaultCertificateDao implements CertificateDao {
     }
 
     @Override
-    public List<Certificate> findAllByParam(Map<String, String> params) {
+    public List<Certificate> findByParams(Map<String, String> params) {
         params.put("query", SQL_FIND_ALL);
         String sqlQuery = queryBuilder.buildQueryForSearch(params);
         return jdbcTemplate.query(sqlQuery, certificateExtractor);

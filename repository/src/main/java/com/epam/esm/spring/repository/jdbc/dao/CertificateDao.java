@@ -9,22 +9,22 @@ import java.util.Optional;
 
 public interface CertificateDao extends Dao<Certificate> {
     /**
-     * Is used to get the list of certificates
+     * Returns the list of certificates.
      *
      * @return List<Certificate>
      */
     List<Certificate> findAll();
 
     /**
-     * Is used to get the list of certificates requested search parameters
+     * Returns the list of certificates accordingly to search parameters.
      *
      * @param params list of parameters for search
      * @return List<Certificate>
      */
-    List<Certificate> findAllByParam(Map<String, String> params);
+    List<Certificate> findByParams(Map<String, String> params);
 
     /**
-     * Is used to get Certificate by id given
+     * Returns Certificate by id given.
      *
      * @param id is id of the Certificate
      * @return Certificate
@@ -49,7 +49,7 @@ public interface CertificateDao extends Dao<Certificate> {
     boolean update(Long id, Map<String, Object> data);
 
     /**
-     * Is used to check it out whether Certificate with ID given exists
+     * Checks whether Certificate with ID given exists.
      *
      * @param id the name of Certificate to be looked for
      * @return true in case such Certificate found in the DB
@@ -57,7 +57,7 @@ public interface CertificateDao extends Dao<Certificate> {
     boolean isExist(long id);
 
     /**
-     * Is used for storing tag list, related to the specific certificate
+     * Stores tag list, related to the specific certificate.
      *
      * @param tags List of Tags, to be stored
      * @param id Certificate id to attach tags to
@@ -66,7 +66,7 @@ public interface CertificateDao extends Dao<Certificate> {
     boolean insertTagIntoXrefTable(List<Tag> tags, long id);
 
     /**
-     * Is used for removing all tags attached to the specific certificate
+     * Removes all tags attached to the specific certificate.
      *
      * @param id Certificate id to remove connected tags
      * @return true if process causes no errors
@@ -74,7 +74,7 @@ public interface CertificateDao extends Dao<Certificate> {
     boolean detachTagFromXrefTable(long id);
 
     /**
-     * Is used to delete Certificate by its ID
+     * Deletes Certificate by its ID.
      *
      * @param id - Certificate's ID
      * @return true if Certificate has been deleted and false if wasn't
