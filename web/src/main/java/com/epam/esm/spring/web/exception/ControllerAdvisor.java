@@ -2,24 +2,24 @@ package com.epam.esm.spring.web.exception;
 
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
 import com.epam.esm.spring.service.exception.EntryNonValidDurationException;
+import com.epam.esm.spring.service.exception.EntryNonValidNameException;
 import com.epam.esm.spring.service.exception.EntryNonValidPriceException;
 import com.epam.esm.spring.service.exception.EntryNonValidRequestException;
-import com.epam.esm.spring.service.exception.EntryNonValidNameException;
 import com.epam.esm.spring.service.exception.EntryNonValidTagNameException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLSyntaxErrorException;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ControllerAdvisor {
     private static final String ERROR_MESSAGE = "errorMessage";
     private static final String ERROR_CODE = "errorCode";
@@ -32,7 +32,7 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(EntryNotFoundException.class)
     public ResponseEntity<Object> handleEntryNotFoundException(EntryNotFoundException e, Locale locale) {
-       return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EntryAlreadyExistsException.class)
@@ -41,7 +41,7 @@ public class ControllerAdvisor {
     }
 
     @ExceptionHandler(EntryNonValidNameException.class)
-    public ResponseEntity<Object> handleEntryAlreadyExistsException(EntryNonValidNameException e, Locale locale) {
+    public ResponseEntity<Object> handleEntryNonValidNameException(EntryNonValidNameException e, Locale locale) {
         return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.BAD_REQUEST);
     }
 
