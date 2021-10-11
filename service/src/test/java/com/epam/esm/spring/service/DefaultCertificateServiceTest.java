@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +37,6 @@ class DefaultCertificateServiceTest {
     private static final long SECOND_TAG_ID = 2;
 
     private static final long FIRST_CERTIFICATE_ID = 1;
-    private static final long SECOND_CERTIFICATE_ID = 2;
     private static final long NON_EXISTING_CERTIFICATE_ID = 99;
 
     ;
