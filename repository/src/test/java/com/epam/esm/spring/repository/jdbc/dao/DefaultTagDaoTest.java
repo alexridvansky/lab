@@ -6,7 +6,12 @@ import com.epam.esm.spring.repository.model.Tag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,8 +24,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestConfig.class})
@@ -28,30 +35,34 @@ class DefaultTagDaoTest {
     private static final int ONE = 1;
     private static final int TWO = 2;
     private static final int THREE = 3;
+    private static final int FOUR = 4;
+    private static final int FIVE = 5;
+    private static final int SIX = 6;
+    private static final int SEVEN = 7;
+    private static final int EIGHT = 8;
     private static final int NINE = 9;
     private static final int TEN = 10;
     private static final String TAG_ONE_NAME = "food";
     private static final String TAG_TWO_NAME = "bbq";
     private static final String TAG_TEN_NAME = "non_existing";
+    private static List<Tag> findAllExpected;
+    private static Tag tag_one;
+    private static Tag tag_two;
+    private static Tag tag_three;
+    private static Tag tag_four;
+    private static Tag tag_five;
+    private static Tag tag_six;
+    private static Tag tag_seven;
+    private static Tag tag_eight;
+    private static Tag tag_nine;
     private final DefaultTagDao tagDao;
-    private List<Tag> findAllExpected;
-    private Tag tag_one;
-    private Tag tag_two;
-    private Tag tag_three;
-    private Tag tag_four;
-    private Tag tag_five;
-    private Tag tag_six;
-    private Tag tag_seven;
-    private Tag tag_eight;
-    private Tag tag_nine;
 
     @Autowired
     DefaultTagDaoTest(DefaultTagDao tagDao) {
         this.tagDao = tagDao;
     }
 
-    @BeforeEach
-    void prepare() {
+    static {
         tag_one = Tag.builder()
                 .id(1L)
                 .name("food")
@@ -109,44 +120,48 @@ class DefaultTagDaoTest {
         assertEquals(findAllExpected, actuals);
     }
 
-    @Test
+    @ParameterizedTest
     @Order(1)
-    void findByIdTwo() {
-        Optional<Tag> actual = tagDao.findById(TWO);
+    @MethodSource("dataSet")
+    void findById(int tagId, Tag tag) {
+        Optional<Tag> actual = tagDao.findById(tagId);
 
-        assertEquals(tag_two, actual.get());
+        assertEquals(tag, actual.get());
     }
 
-    @Test
-    @Order(1)
-    void findByIdThree() {
-        Optional<Tag> actual = tagDao.findById(THREE);
-
-        assertEquals(tag_three, actual.get());
+    private static Stream<Arguments> dataSet() {
+        return Stream.of(
+                arguments(ONE, tag_one),
+                arguments(TWO, tag_two),
+                arguments(THREE, tag_three),
+                arguments(FOUR, tag_four),
+                arguments(FIVE, tag_five)
+        );
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(ints = {11, 13, 15, 30, 150, Integer.MAX_VALUE})
     @Order(1)
-    void findByIdNonExistingId() {
-        Optional<Tag> actual = tagDao.findById(TEN);
+    void findByIdNonExistingId(int tagId) {
+        Optional<Tag> actual = tagDao.findById(tagId);
 
         assertEquals(Optional.empty(), actual);
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("dataSetOfNames")
     @Order(1)
-    void findByNameOne() {
-        Optional<Tag> actual = tagDao.findByName(TAG_ONE_NAME);
+    void findByNameOne(String tagName, Tag tag) {
+        Optional<Tag> actual = tagDao.findByName(tagName);
 
-        assertEquals(tag_one, actual.get());
+        assertEquals(tag, actual.get());
     }
 
-    @Test
-    @Order(1)
-    void findByNameTwo() {
-        Optional<Tag> actual = tagDao.findByName(TAG_TWO_NAME);
-
-        assertEquals(tag_two, actual.get());
+    private static Stream<Arguments> dataSetOfNames() {
+        return Stream.of(
+                arguments(TAG_ONE_NAME, tag_one),
+                arguments(TAG_TWO_NAME, tag_two)
+        );
     }
 
     @Test
@@ -157,18 +172,11 @@ class DefaultTagDaoTest {
         assertEquals(Optional.empty(), actual);
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(ints = {ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT})
     @Order(1)
-    void isExistTagOne() {
-        boolean actual = tagDao.isExist(ONE);
-
-        assertTrue(actual);
-    }
-
-    @Test
-    @Order(1)
-    void isExistTagThree() {
-        boolean actual = tagDao.isExist(THREE);
+    void isExistTagOne(int tagId) {
+        boolean actual = tagDao.isExist(tagId);
 
         assertTrue(actual);
     }
@@ -181,18 +189,11 @@ class DefaultTagDaoTest {
         assertFalse(actual);
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(ints = {ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT})
     @Order(1)
-    void isUsedTagOne() {
-        boolean actual = tagDao.isExist(ONE);
-
-        assertTrue(actual);
-    }
-
-    @Test
-    @Order(1)
-    void isUsedTagThree() {
-        boolean actual = tagDao.isExist(THREE);
+    void isUsedTagOne(int tagId) {
+        boolean actual = tagDao.isExist(tagId);
 
         assertTrue(actual);
     }
@@ -200,7 +201,7 @@ class DefaultTagDaoTest {
     @Test
     @Order(2)
     void isUsedTagNine() {
-        boolean actual = tagDao.isExist(NINE);
+        boolean actual = tagDao.isUsed(NINE);
 
         assertFalse(actual);
     }
