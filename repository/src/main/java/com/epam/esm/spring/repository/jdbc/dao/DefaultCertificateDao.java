@@ -21,26 +21,20 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.MORE_THAN_NOTHING;
+import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.EXACT_ONE;
+import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_COUNT_BY_ID;
+import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_DELETE_BY_ID;
+import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_FIND_ALL;
+import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_FIND_BY_ID;
+import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_INSERT;
+import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_ORDER_BY_ID;
+import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_TAG_ATTACH;
+import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_TAG_DETACH;
+
 @Repository
 public class DefaultCertificateDao implements CertificateDao {
-    private static final String SQL_ORDER_BY_ID = "ORDER BY id";
-    private static final String SQL_FIND_ALL =
-            "SELECT gc.id, gc.name, gc.description, gc.price, gc.duration, gc.create_date, gc.last_update_date, " +
-                    "t.id AS t_id, t.name AS t_name " +
-                    "FROM gift_certificate AS gc " +
-                    "LEFT JOIN certificate_tag_xref AS ctx on gc.id = ctx.certificate_id " +
-                    "LEFT JOIN tag t on ctx.tag_id = t.id ";
-    private static final String SQL_FIND_BY_ID = SQL_FIND_ALL + "WHERE gc.id = ?";
-    private static final String SQL_INSERT = "INSERT INTO gift_certificate (name, description, price, duration) " +
-            "VALUES (?, ?, ?, ?)";
-    private static final String SQL_TAG_ATTACH = "INSERT INTO certificate_tag_xref (certificate_id, tag_id) " +
-            "VALUES (?, ?)";
-    private static final String SQL_TAG_DETACH = "DELETE FROM certificate_tag_xref WHERE certificate_id = ?";
-    private static final String SQL_DELETE_BY_ID = "DELETE FROM gift_certificate WHERE id = ?";
-    private static final String SQL_COUNT = "SELECT count(*) FROM gift_certificate ";
-    private static final String SQL_COUNT_BY_ID = SQL_COUNT + "WHERE id = ?";
-    private static final int ONE = 1;
-    private static final int ZERO = 0;
+
     private final CertificateExtractor certificateExtractor;
     private final JdbcTemplate jdbcTemplate;
     private final QueryBuilder queryBuilder;
@@ -105,7 +99,7 @@ public class DefaultCertificateDao implements CertificateDao {
 
     @Override
     public boolean isExist(long id) {
-        return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > ZERO;
+        return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > MORE_THAN_NOTHING;
     }
 
     @Override
@@ -121,11 +115,11 @@ public class DefaultCertificateDao implements CertificateDao {
 
     @Override
     public boolean detachTagFromXrefTable(long id) {
-        return jdbcTemplate.update(SQL_TAG_DETACH, id) > ZERO;
+        return jdbcTemplate.update(SQL_TAG_DETACH, id) > MORE_THAN_NOTHING;
     }
 
     @Override
     public boolean deleteById(long id) {
-        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == ONE;
+        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == EXACT_ONE;
     }
 }
