@@ -111,8 +111,8 @@ class DefaultTagDaoTest {
     @Test
     @Order(1)
     void findAll() {
+        // Expected equality of given and provided lists
         List<Tag> actuals = tagDao.findAll();
-
         assertEquals(findAllExpected, actuals);
     }
 
@@ -120,8 +120,8 @@ class DefaultTagDaoTest {
     @Order(1)
     @MethodSource("dataSet")
     void findById(int tagId, Tag tag) {
+        // Providing existing Tags' IDs EQUALS are expected
         Optional<Tag> actual = tagDao.findById(tagId);
-
         assertEquals(tag, actual.get());
     }
 
@@ -138,18 +138,18 @@ class DefaultTagDaoTest {
     @ParameterizedTest
     @ValueSource(ints = {11, 13, 15, 30, 150, Integer.MAX_VALUE})
     @Order(1)
-    void findByIdNonExistingId(int tagId) {
+    void findByNonExistingId(int tagId) {
+        // Providing not existing Id Optional.empty is expected
         Optional<Tag> actual = tagDao.findById(tagId);
-
         assertEquals(Optional.empty(), actual);
     }
 
     @ParameterizedTest
     @MethodSource("dataSetOfNames")
     @Order(1)
-    void findByNameOne(String tagName, Tag tag) {
+    void findByName(String tagName, Tag tag) {
+        // Providing existing Tags' names EQUALS are expected
         Optional<Tag> actual = tagDao.findByName(tagName);
-
         assertEquals(tag, actual.get());
     }
 
@@ -162,75 +162,67 @@ class DefaultTagDaoTest {
 
     @Test
     @Order(1)
-    void findByNameNonExisting() {
+    void findByNonExistingName() {
+        // Providing not existing Tag name Optional.empty is expected
         Optional<Tag> actual = tagDao.findByName(TAG_TEN_NAME);
-
         assertEquals(Optional.empty(), actual);
     }
 
     @ParameterizedTest
     @ValueSource(ints = {ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT})
     @Order(1)
-    void isExistTagOne(int tagId) {
+    void isExistWithExistingId(int tagId) {
+        // Providing existing Tags' IDs TRUE is expected
         boolean actual = tagDao.isExist(tagId);
-
         assertTrue(actual);
     }
 
     @Test
     @Order(1)
-    void isExistTagThreeNonExisting() {
+    void isExistWithNotExistingId() {
+        // Providing not existing Tag ID false is expected
         boolean actual = tagDao.isExist(TEN);
-
         assertFalse(actual);
     }
 
     @ParameterizedTest
     @ValueSource(ints = {ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT})
     @Order(1)
-    void isUsedTagOne(int tagId) {
+    void isUsed(int tagId) {
+        // Providing Tags' IDs which are associated with any certificates expected TRUE
         boolean actual = tagDao.isExist(tagId);
-
         assertTrue(actual);
     }
 
     @Test
-    @Order(2)
-    void isUsedTagNine() {
-        boolean actual = tagDao.isUsed(NINE);
-
-        assertFalse(actual);
-    }
-
-    @Test
     @Order(3)
-    void deleteByIdOne() {
+    void deleteById() {
+        // Trying to delete existing Tag TRUE is expected
         boolean actual = tagDao.deleteById(ONE);
-
         assertTrue(actual);
     }
 
     @Test
     @Order(3)
-    void deleteByIdTenNonExisting() {
+    void deleteByNonExistingId() {
+        // Trying to delete NOT_existing Tag FALSE is expected
         boolean actual = tagDao.deleteById(TEN);
-
         assertFalse(actual);
     }
 
     @Test
     @Order(4)
     void insert() {
+        // Trying to add new Tag we are expecting to get the same tag back
         Tag newTag = Tag.builder().id(11L).name("somename").build();
-
         Tag actual = tagDao.insert(newTag);
-
         assertEquals(newTag, actual);
     }
 
     @Test
     @Order(4)
     void insertAlreadyExistingEntryExceptionExpected() {
+        // Inserting Tag which is already in the DB we exception is expected
         assertThrowsExactly(DuplicateKeyException.class, () -> tagDao.insert(tag_five));
     }
 }
