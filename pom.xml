@@ -25,6 +25,7 @@
         <h2.database.version>1.4.200</h2.database.version>
         <apache.lang3.commons.version>3.12.0</apache.lang3.commons.version>
         <apache.dbcp2.commons.version>2.9.0</apache.dbcp2.commons.version>
+        <apache.collections.common.version>4.4</apache.collections.common.version>
         <javax.validation.version>2.0.1.Final</javax.validation.version>
         <javax.servlet.version>4.0.1</javax.servlet.version>
         <fasterxml.jackson.version>2.12.4</fasterxml.jackson.version>

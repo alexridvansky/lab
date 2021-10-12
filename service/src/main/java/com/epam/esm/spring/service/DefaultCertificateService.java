@@ -9,11 +9,13 @@ import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.util.CertificateToMapMapper;
 import com.epam.esm.spring.service.util.CertificateValidator;
 import com.epam.esm.spring.service.util.SearchRequestValidator;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -98,9 +100,9 @@ public class DefaultCertificateService implements CertificateService {
         Certificate c = dtoToCertificateConverter.convert(certificateDto);
 
         if (c.getTags() != null) {
-            if (c.getTags().isEmpty()) {
-                certificateDao.detachTagFromXrefTable(c.getId());
-            } else {
+            certificateDao.detachTagFromXrefTable(c.getId());
+
+            if (CollectionUtils.isNotEmpty(c.getTags())) {
                 certificateDao.insertTagIntoXrefTable(c.getTags(), c.getId());
             }
         }
@@ -108,7 +110,6 @@ public class DefaultCertificateService implements CertificateService {
         if (c.getName() != null || c.getDescription() != null || c.getPrice() != null || c.getDuration() != null) {
             Map<String, Object> data = CertificateToMapMapper.toMap(c);
             certificateDao.update(c.getId(), data);
-
         }
 
         return certificateToDtoConverter.convert(certificateDao.findById(c.getId())

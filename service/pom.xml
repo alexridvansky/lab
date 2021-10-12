@@ -39,6 +39,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>${apache.lang3.commons.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${apache.collections.common.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
