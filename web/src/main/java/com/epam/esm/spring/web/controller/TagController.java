@@ -5,6 +5,7 @@ import com.epam.esm.spring.service.dto.TagDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,10 +58,11 @@ public class TagController {
      *
      * @return TagDto just inserted
      */
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public TagDto insert(@Valid @RequestBody TagDto tagDto) {
+    public TagDto insert(@Valid @RequestBody TagDto tagDto, Errors errors) {
+        if (errors.hasErrors()) System.out.println("gotcha!");
+
         return tagService.insert(tagDto);
     }
 
