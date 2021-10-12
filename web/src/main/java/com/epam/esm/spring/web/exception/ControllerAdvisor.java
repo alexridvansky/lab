@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.sql.SQLSyntaxErrorException;
+import javax.validation.ConstraintViolationException;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -68,7 +68,15 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(NotValidSearchRequest.class)
     public ResponseEntity<Object> handleNotValidSearchRequest(NotValidSearchRequest e, Locale locale) {
-        return new ResponseEntity<>(createResponse(40007, locale), HttpStatus.PRECONDITION_FAILED);
+        return new ResponseEntity<>(createResponse(40007, locale), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public Map<String, Object> handleConstraintViolationException(ConstraintViolationException e, Locale locale) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put(ERROR_MESSAGE, e.getMessage());
+
+        return response;
     }
 
     private Map<String, Object> createResponse(int errorCode, Locale locale) {
