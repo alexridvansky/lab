@@ -55,8 +55,6 @@ public class DefaultTagService implements TagService {
     public TagDto insert(TagDto tagDto) {
         if (tagDao.isExist(tagDto.getName())) {
             throw new EntryAlreadyExistsException();
-        } else if (StringUtils.isEmpty(tagDto.getName())) {
-            throw new EntryNonValidNameException();
         }
 
         return tagToDtoConverter.convert(tagDao.insert(dtoToTagConverter.convert(tagDto)));

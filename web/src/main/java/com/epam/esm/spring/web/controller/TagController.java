@@ -2,9 +2,9 @@ package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.TagService;
 import com.epam.esm.spring.service.dto.TagDto;
+import com.epam.esm.spring.service.exception.EntryNonValidTagNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,7 +39,10 @@ public class TagController {
      * @return TagDto
      */
     @GetMapping("/{id}")
-    public TagDto findById(@PathVariable Long id) {
+    public TagDto findById(@Valid @PathVariable Long id, Errors errors) {
+        if (errors.hasErrors()) {
+            throw new EntryNonValidTagNameException();
+        }
         return tagService.findById(id);
     }
 
@@ -61,8 +64,9 @@ public class TagController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public TagDto insert(@Valid @RequestBody TagDto tagDto, Errors errors) {
-        if (errors.hasErrors()) System.out.println("gotcha!");
-
+        if (errors.hasErrors()) {
+            throw new EntryNonValidTagNameException();
+        }
         return tagService.insert(tagDto);
     }
 
@@ -72,7 +76,10 @@ public class TagController {
      * @param id the id of Tag to remove
      */
     @DeleteMapping("/{id}")
-    public TagDto deleteTag(@PathVariable Long id) {
+    public TagDto deleteTag(@PathVariable Long id, Errors errors) {
+        if (errors.hasErrors()) {
+            throw new EntryNonValidTagNameException();
+        }
         return tagService.deleteById(id);
     }
 }
