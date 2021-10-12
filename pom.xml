@@ -16,11 +16,20 @@
     </modules>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <spring.version>5.3.10</spring.version>
-        <apache.commons.version>3.12.0</apache.commons.version>
-        <hibernate.validator.version>7.0.1.Final</hibernate.validator.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <lombok.version>1.18.22</lombok.version>
+        <mysql.connector.version>8.0.26</mysql.connector.version>
+        <h2.database.version>1.4.200</h2.database.version>
+        <apache.lang3.commons.version>3.12.0</apache.lang3.commons.version>
+        <apache.dbcp2.commons.version>2.9.0</apache.dbcp2.commons.version>
+        <javax.validation.version>2.0.1.Final</javax.validation.version>
+        <javax.servlet.version>4.0.1</javax.servlet.version>
+        <fasterxml.jackson.version>2.12.4</fasterxml.jackson.version>
+        <hibernate.validator.version>6.2.0.Final</hibernate.validator.version>
+        <junit.jupiter.version>5.8.1</junit.jupiter.version>
+        <mockito.junit.version>4.0.0</mockito.junit.version>
     </properties>
 </project>
