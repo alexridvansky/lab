@@ -7,6 +7,7 @@ import com.epam.esm.spring.service.exception.EntryNonValidPriceException;
 import com.epam.esm.spring.service.exception.EntryNonValidRequestException;
 import com.epam.esm.spring.service.exception.EntryNonValidTagNameException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
+import com.epam.esm.spring.service.exception.NotValidSearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
@@ -65,9 +66,9 @@ public class ControllerAdvisor {
         return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(SQLSyntaxErrorException.class)
-    public ResponseEntity<Object> handleSQLSyntaxErrorException(SQLSyntaxErrorException e, Locale locale) {
-        return new ResponseEntity<>(createResponse(40007, locale), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(NotValidSearchRequest.class)
+    public ResponseEntity<Object> handleNotValidSearchRequest(NotValidSearchRequest e, Locale locale) {
+        return new ResponseEntity<>(createResponse(40007, locale), HttpStatus.PRECONDITION_FAILED);
     }
 
     private Map<String, Object> createResponse(int errorCode, Locale locale) {

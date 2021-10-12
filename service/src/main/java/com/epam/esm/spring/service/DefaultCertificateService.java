@@ -8,6 +8,7 @@ import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.util.CertificateToMapMapper;
 import com.epam.esm.spring.service.util.CertificateValidator;
+import com.epam.esm.spring.service.util.SearchRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ public class DefaultCertificateService implements CertificateService {
     private final TagService tagService;
     private final CertificateToDtoConverter certificateToDtoConverter;
     private final DtoToCertificateConverter dtoToCertificateConverter;
+    private final SearchRequestValidator searchRequestValidator;
     private final CertificateValidator certificateValidator;
 
     @Autowired
@@ -30,11 +32,13 @@ public class DefaultCertificateService implements CertificateService {
                                      TagService tagService,
                                      CertificateToDtoConverter certificateToDtoConverter,
                                      DtoToCertificateConverter dtoToCertificateConverter,
+                                     SearchRequestValidator searchRequestValidator,
                                      CertificateValidator certificateValidator) {
         this.certificateDao = certificateDao;
         this.tagService = tagService;
         this.certificateToDtoConverter = certificateToDtoConverter;
         this.dtoToCertificateConverter = dtoToCertificateConverter;
+        this.searchRequestValidator = searchRequestValidator;
         this.certificateValidator = certificateValidator;
     }
 
@@ -48,6 +52,8 @@ public class DefaultCertificateService implements CertificateService {
 
     @Override
     public List<CertificateDto> findByParams(Map<String, String> params) {
+        searchRequestValidator.validateRequest(params);
+
         return certificateDao.findByParams(params)
                 .stream()
                 .map(certificateToDtoConverter::convert)
