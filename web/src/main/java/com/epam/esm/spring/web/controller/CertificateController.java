@@ -62,15 +62,15 @@ public class CertificateController {
     public List<CertificateDto> findAll(
             @RequestParam(required = false, name = "tag", defaultValue = "") String tag,
             @RequestParam(required = false, name = "search", defaultValue = "") String search,
-            @RequestParam(required = false, name = "sort", defaultValue = "") CertificateFieldType sort,
+            @RequestParam(required = false, name = "sort", defaultValue = "") String sort,
             @RequestParam(required = false, name = "order", defaultValue = "") String order) {
-        if (tag.isEmpty() && search.isEmpty() && order.isEmpty()) {
+        if (tag.isEmpty() && search.isEmpty() && sort.isEmpty() && order.isEmpty()) {
             return certificateService.findAll();
         } else {
             Map<String, String> params = new HashMap<>();
             params.put("tag", tag);
             params.put("search", search);
-            params.put("sort", sort.getName());
+            params.put("sort", sort);
             params.put("order", order);
             return certificateService.findByParams(params);
         }

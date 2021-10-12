@@ -27,7 +27,6 @@ public enum CertificateFieldType {
 
         return Stream.of(CertificateFieldType.values())
                 .map(Enum::name)
-                .map(String::toLowerCase)
                 .collect(Collectors.toList());
     }
 }

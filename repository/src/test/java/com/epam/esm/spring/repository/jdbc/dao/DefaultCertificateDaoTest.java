@@ -192,8 +192,8 @@ class DefaultCertificateDaoTest {
 
     @Test
     void deleteById() {
-        boolean actual = certificateDao.deleteById(ONE);
-
+        int sertificateId = 1;
+        boolean actual = certificateDao.deleteById(sertificateId);
         assertTrue(actual);
     }
 
