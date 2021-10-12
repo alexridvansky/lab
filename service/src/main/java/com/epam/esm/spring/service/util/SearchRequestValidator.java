@@ -10,15 +10,16 @@ import java.util.Map;
 @Component
 public class SearchRequestValidator {
     public boolean validateRequest(Map<String, String> params) {
-        Arrays.stream(CertificateFieldType.values())
-                .filter(value -> value.toString().equals(params.get("sort")))
-                .findFirst()
-                .orElseThrow(NotValidSearchRequest::new);
+        String sort = params.get("sort");
+        String order = params.get("order");
 
-        Arrays.asList("ASC", "DESC").stream()
-                .filter(value -> value.toString().equals(params.get("order")))
-                .findFirst()
-                .orElseThrow(NotValidSearchRequest::new);
+        if (!sort.isEmpty() && CertificateFieldType.names().stream().noneMatch(names -> names.equals(sort))) {
+            throw new NotValidSearchRequest();
+        }
+
+        if (!order.isEmpty() && Arrays.asList("ASC", "DESC").stream().noneMatch(value -> value.equals(order))) {
+            throw new NotValidSearchRequest();
+        }
 
         return true;
     }
