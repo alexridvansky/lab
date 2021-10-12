@@ -118,11 +118,13 @@ public class DefaultCertificateService implements CertificateService {
 
     @Override
     public void processTagList(CertificateDto certificateDto) {
-        for (int i = 0; certificateDto.getTags() != null && i < certificateDto.getTags().size(); i++) {
-            if (!tagService.isExist(certificateDto.getTags().get(i).getName())) {
-                certificateDto.getTags().set(i, tagService.insert(certificateDto.getTags().get(i)));
-            } else {
-                certificateDto.getTags().set(i, tagService.findByName(certificateDto.getTags().get(i).getName()));
+        if (certificateDto.getTags() != null) {
+            for (int i = 0; i < certificateDto.getTags().size(); i++) {
+                if (!tagService.isExist(certificateDto.getTags().get(i).getName())) {
+                    certificateDto.getTags().set(i, tagService.insert(certificateDto.getTags().get(i)));
+                } else {
+                    certificateDto.getTags().set(i, tagService.findByName(certificateDto.getTags().get(i).getName()));
+                }
             }
         }
     }
