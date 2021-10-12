@@ -43,8 +43,8 @@ public class QueryBuilder {
                 + QUOTE , params.get(SEARCH), params.get(SEARCH_QUERY));
         StringBuilder sb = new StringBuilder(query);
 
-        if (!StringUtils.isEmpty(params.get(SORT))) {
-            if (!StringUtils.isEmpty(params.get(ORDER))) {
+        if (StringUtils.isNotEmpty(params.get(SORT))) {
+            if (StringUtils.isNotEmpty(params.get(ORDER))) {
                 sb.append(ORDER_BY).append(params.get(SORT)).append(SPACE).append(params.get(ORDER));
             } else {
                 sb.append(ORDER_BY).append(params.get(SORT)).append(SPACE).append(ASC);
