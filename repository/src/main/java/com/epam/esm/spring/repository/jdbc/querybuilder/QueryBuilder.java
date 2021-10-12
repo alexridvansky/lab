@@ -1,5 +1,6 @@
 package com.epam.esm.spring.repository.jdbc.querybuilder;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -30,7 +31,8 @@ public class QueryBuilder {
                 sb.append(entry.getKey()).append(INJECT).append(COMMA);
                 count++;
             } else {
-                sb.append(entry.getKey()).append(INJECT).append(WHERE).append(CertificateFieldType.ID.getName()).append(INJECT);
+                sb.append(entry.getKey()).append(INJECT).append(WHERE)
+                        .append(CertificateFieldType.ID.getName()).append(INJECT);
             }
         }
         return sb.toString();
@@ -41,8 +43,8 @@ public class QueryBuilder {
                 + QUOTE , params.get(SEARCH), params.get(SEARCH_QUERY));
         StringBuilder sb = new StringBuilder(query);
 
-        if (params.get(SORT) != null && !params.get(SORT).isEmpty()) {
-            if (params.get(ORDER) != null && !params.get(ORDER).isEmpty()) {
+        if (StringUtils.isEmpty(params.get(SORT))) {
+            if (StringUtils.isEmpty(params.get(ORDER))) {
                 sb.append(ORDER_BY).append(params.get(SORT)).append(SPACE).append(params.get(ORDER));
             } else {
                 sb.append(ORDER_BY).append(params.get(SORT)).append(SPACE).append(ASC);
