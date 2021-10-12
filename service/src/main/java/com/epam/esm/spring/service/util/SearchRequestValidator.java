@@ -11,8 +11,8 @@ import java.util.stream.Stream;
 @Component
 public class SearchRequestValidator {
     public boolean validateRequest(Map<String, String> params) {
-        String sort = params.get("sort");
-        String order = params.get("order");
+        String sort = params.get("sort").toLowerCase();
+        String order = params.get("order").toLowerCase();
 
         if (!sort.isEmpty() && CertificateFieldType.getNames().stream().noneMatch(names -> names.equals(sort))) {
             throw new NotValidSearchRequest();
