@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,7 +63,8 @@ public class DefaultCertificateService implements CertificateService {
 
     @Override
     public CertificateDto findById(long id) {
-        return certificateToDtoConverter.convert(certificateDao.findById(id).orElseThrow(EntryNotFoundException::new));
+        return certificateToDtoConverter.convert(certificateDao.findById(id)
+                .orElseThrow(EntryNotFoundException::new));
     }
 
     @Transactional
@@ -79,7 +79,7 @@ public class DefaultCertificateService implements CertificateService {
 
         Certificate certificate = certificateDao.insert(dtoToCertificateConverter.convert(certificateDto));
 
-        if (certificate.getTags() != null && !certificate.getTags().isEmpty()) {
+        if (CollectionUtils.isNotEmpty(certificate.getTags())) {
             certificateDao.insertTagIntoXrefTable(certificate.getTags(), certificate.getId());
         }
 
@@ -113,7 +113,7 @@ public class DefaultCertificateService implements CertificateService {
         }
 
         return certificateToDtoConverter.convert(certificateDao.findById(c.getId())
-                    .orElseThrow(EntryNotFoundException::new));
+                .orElseThrow(EntryNotFoundException::new));
     }
 
     @Override
