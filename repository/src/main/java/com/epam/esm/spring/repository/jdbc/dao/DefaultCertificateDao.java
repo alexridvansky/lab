@@ -21,8 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.MORE_THAN_NOTHING;
-import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.EXACT_ONE;
 import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_COUNT_BY_ID;
 import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_DELETE_BY_ID;
 import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_FIND_ALL;
@@ -35,6 +33,7 @@ import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_TA
 @Repository
 public class DefaultCertificateDao implements CertificateDao {
 
+    public static final int EMPTY_RESULT = 0;
     private final CertificateExtractor certificateExtractor;
     private final JdbcTemplate jdbcTemplate;
     private final QueryBuilder queryBuilder;
@@ -99,13 +98,13 @@ public class DefaultCertificateDao implements CertificateDao {
 
     @Override
     public boolean isExist(long id) {
-        return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > MORE_THAN_NOTHING;
+        return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > EMPTY_RESULT;
     }
 
     @Override
     public boolean insertTagIntoXrefTable(List<Tag> tags, long id) {
         List<Object[]> batch = tags.stream()
-                .map(tag -> new Object[] { id, tag.getId() })
+                .map(tag -> new Object[]{id, tag.getId()})
                 .collect(Collectors.toList());
 
         jdbcTemplate.batchUpdate(SQL_TAG_ATTACH, batch);
@@ -115,11 +114,11 @@ public class DefaultCertificateDao implements CertificateDao {
 
     @Override
     public boolean detachTagFromXrefTable(long id) {
-        return jdbcTemplate.update(SQL_TAG_DETACH, id) > MORE_THAN_NOTHING;
+        return jdbcTemplate.update(SQL_TAG_DETACH, id) > EMPTY_RESULT;
     }
 
     @Override
     public boolean deleteById(long id) {
-        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == EXACT_ONE;
+        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) > EMPTY_RESULT;
     }
 }

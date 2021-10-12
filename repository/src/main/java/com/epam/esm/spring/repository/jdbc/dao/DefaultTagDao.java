@@ -16,21 +16,20 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.EXACT_ONE;
-import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_COUNT_BY_ID;
-import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_COUNT_BY_NAME;
-import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_COUNT_IN_CROSS_TABLE;
-import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_DELETE_BY_ID;
-import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_FIND_ALL;
-import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_FIND_BY_ID;
-import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_FIND_BY_NAME;
-import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_INSERT;
-import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.SQL_ORDER_BY_ID;
-import static com.epam.esm.spring.repository.jdbc.dao.TagQuery.MORE_THAN_NOTHING;
+import static com.epam.esm.spring.repository.jdbc.dao.TagSqlQuery.SQL_COUNT_BY_ID;
+import static com.epam.esm.spring.repository.jdbc.dao.TagSqlQuery.SQL_COUNT_BY_NAME;
+import static com.epam.esm.spring.repository.jdbc.dao.TagSqlQuery.SQL_COUNT_IN_CROSS_TABLE;
+import static com.epam.esm.spring.repository.jdbc.dao.TagSqlQuery.SQL_DELETE_BY_ID;
+import static com.epam.esm.spring.repository.jdbc.dao.TagSqlQuery.SQL_FIND_ALL;
+import static com.epam.esm.spring.repository.jdbc.dao.TagSqlQuery.SQL_FIND_BY_ID;
+import static com.epam.esm.spring.repository.jdbc.dao.TagSqlQuery.SQL_FIND_BY_NAME;
+import static com.epam.esm.spring.repository.jdbc.dao.TagSqlQuery.SQL_INSERT;
+import static com.epam.esm.spring.repository.jdbc.dao.TagSqlQuery.SQL_ORDER_BY_ID;
 
 @Repository
 public class DefaultTagDao implements TagDao {
 
+    public static final int EMPTY_RESULT = 0;
     private final JdbcTemplate jdbcTemplate;
     private final TagRowMapper tagRowMapper;
 
@@ -80,21 +79,21 @@ public class DefaultTagDao implements TagDao {
 
     @Override
     public boolean isExist(String name) {
-        return jdbcTemplate.queryForObject(SQL_COUNT_BY_NAME, Integer.class, name) > MORE_THAN_NOTHING;
+        return jdbcTemplate.queryForObject(SQL_COUNT_BY_NAME, Integer.class, name) > EMPTY_RESULT;
     }
 
     @Override
     public boolean isExist(long id) {
-        return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > MORE_THAN_NOTHING;
+        return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > EMPTY_RESULT;
     }
 
     @Override
     public boolean isUsed(long id) {
-        return jdbcTemplate.queryForObject(SQL_COUNT_IN_CROSS_TABLE, Integer.class, id) > MORE_THAN_NOTHING;
+        return jdbcTemplate.queryForObject(SQL_COUNT_IN_CROSS_TABLE, Integer.class, id) > EMPTY_RESULT;
     }
 
     @Override
     public boolean deleteById(long id) {
-        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == EXACT_ONE;
+        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == EMPTY_RESULT;
     }
 }

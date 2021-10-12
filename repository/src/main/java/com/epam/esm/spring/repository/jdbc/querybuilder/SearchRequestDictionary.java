@@ -1,9 +1,12 @@
 package com.epam.esm.spring.repository.jdbc.querybuilder;
 
-public interface SearchRequestDictionary {
-    String QUERY = "query";
-    String TAG = "tag";
-    String SEARCH = "search";
-    String SORT = "sort";
-    String ORDER = "order";
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public class SearchRequestDictionary {
+    public static final String QUERY = "query";
+    public static final String TAG = "tag";
+    public static final String SEARCH = "search";
+    public static final String SORT = "sort";
+    public static final String ORDER = "order";
 }

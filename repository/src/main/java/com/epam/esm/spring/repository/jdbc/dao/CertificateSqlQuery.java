@@ -1,5 +1,8 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class CertificateSqlQuery {
     public static final String SQL_ORDER_BY_ID = "ORDER BY id";
     public static final String SQL_FIND_ALL =
@@ -17,6 +20,4 @@ public class CertificateSqlQuery {
     public static final String SQL_DELETE_BY_ID = "DELETE FROM gift_certificate WHERE id = ?";
     public static final String SQL_COUNT = "SELECT count(*) FROM gift_certificate ";
     public static final String SQL_COUNT_BY_ID = SQL_COUNT + "WHERE id = ?";
-    public static final int EXACT_ONE = 1;
-    public static final int MORE_THAN_NOTHING = 0;
 }
