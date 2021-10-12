@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public enum CertificateFieldType {
-
     ID("id"),
     NAME("name"),
     DESCRIPTION("description"),
@@ -24,4 +23,11 @@ public enum CertificateFieldType {
         return name;
     }
 
+    public static List<String> getNames() {
+
+        return Stream.of(CertificateFieldType.values())
+                .map(Enum::name)
+                .map(String::toLowerCase)
+                .collect(Collectors.toList());
+    }
 }
