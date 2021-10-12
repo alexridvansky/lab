@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 /**
@@ -39,10 +40,7 @@ public class TagController {
      * @return TagDto
      */
     @GetMapping("/{id}")
-    public TagDto findById(@Valid @PathVariable Long id, Errors errors) {
-        if (errors.hasErrors()) {
-            throw new EntryNonValidTagNameException();
-        }
+    public TagDto findById(@PathVariable @Positive Long id) {
         return tagService.findById(id);
     }
 
@@ -76,10 +74,7 @@ public class TagController {
      * @param id the id of Tag to remove
      */
     @DeleteMapping("/{id}")
-    public TagDto deleteTag(@PathVariable Long id, Errors errors) {
-        if (errors.hasErrors()) {
-            throw new EntryNonValidTagNameException();
-        }
+    public TagDto deleteTag(@PathVariable @Positive Long id) {
         return tagService.deleteById(id);
     }
 }
