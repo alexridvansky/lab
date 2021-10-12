@@ -1,10 +1,12 @@
 package com.epam.esm.spring.web.controller;
 
+import com.epam.esm.spring.repository.jdbc.querybuilder.CertificateFieldType;
 import com.epam.esm.spring.service.CertificateService;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +45,7 @@ public class CertificateController {
      * @return CertificateDto
      */
     @GetMapping("/{id}")
-    public CertificateDto findById(@PathVariable Long id) {
+    public CertificateDto findById(@PathVariable @Positive Long id) {
         return certificateService.findById(id);
     }
 
@@ -58,17 +62,17 @@ public class CertificateController {
     public List<CertificateDto> findAll(
             @RequestParam(required = false, name = "tag", defaultValue = "") String tag,
             @RequestParam(required = false, name = "search", defaultValue = "") String search,
-            @RequestParam(required = false, name = "sort", defaultValue = "") String sort,
-            @RequestParam(required = false, name = "order", defaultValue = "ASC") String order) {
-        if (tag == null && search == null && sort == null && order == null) {
+            @RequestParam(required = false, name = "sort", defaultValue = "") CertificateFieldType sort,
+            @RequestParam(required = false, name = "order", defaultValue = "") String order) {
+        if (tag.isEmpty() && search.isEmpty() && order.isEmpty()) {
             return certificateService.findAll();
         } else {
             Map<String, String> params = new HashMap<>();
             params.put("tag", tag);
             params.put("search", search);
-            params.put("sort", sort);
+            params.put("sort", sort.getName());
             params.put("order", order);
-            return certificateService.findAllByParam(params);
+            return certificateService.findByParams(params);
         }
     }
 
@@ -80,7 +84,7 @@ public class CertificateController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public CertificateDto insert(@Validated @RequestBody CertificateDto certificateDto) {
+    public CertificateDto insert(@Valid @RequestBody CertificateDto certificateDto) {
         return certificateService.insert(certificateDto);
     }
 
@@ -96,7 +100,7 @@ public class CertificateController {
      * @param id the id of Certificate to remove
      */
     @DeleteMapping("/{id}")
-    public CertificateDto deleteCertificate(@PathVariable Long id) {
+    public CertificateDto deleteCertificate(@PathVariable @Positive Long id) {
         return certificateService.deleteById(id);
     }
 }
