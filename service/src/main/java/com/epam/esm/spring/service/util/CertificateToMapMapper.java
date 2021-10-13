@@ -19,19 +19,19 @@ public class CertificateToMapMapper {
     public static Map<String, Object> toMap(Certificate c) {
         Map<String, Object> data = new HashMap<>();
         if (c.getName() != null) {
-            data.put(NAME.getName(), c.getName());
+            data.put(NAME.toString(), c.getName());
         }
         if (c.getDescription() != null) {
-            data.put(DESCRIPTION.getName(), c.getDescription());
+            data.put(DESCRIPTION.toString(), c.getDescription());
         }
         if (c.getPrice() != null) {
-            data.put(PRICE.getName(), c.getPrice());
+            data.put(PRICE.toString(), c.getPrice());
         }
         if (c.getDuration() != null) {
-            data.put(DURATION.getName(), c.getDuration());
+            data.put(DURATION.toString(), c.getDuration());
         }
 
-        data.put(LAST_UPDATE_DATE.getName(), LocalDateTime.now());
+        data.put(LAST_UPDATE_DATE.toString(), LocalDateTime.now());
 
         return data;
     }

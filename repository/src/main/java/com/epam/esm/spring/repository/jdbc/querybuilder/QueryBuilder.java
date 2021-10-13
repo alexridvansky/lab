@@ -32,7 +32,7 @@ public class QueryBuilder {
                 count++;
             } else {
                 sb.append(entry.getKey()).append(INJECT).append(WHERE)
-                        .append(CertificateFieldType.ID.getName()).append(INJECT);
+                        .append(CertificateFieldType.ID).append(INJECT);
             }
         }
         return sb.toString();

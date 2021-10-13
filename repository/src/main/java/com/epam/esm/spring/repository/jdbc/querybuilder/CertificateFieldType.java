@@ -5,23 +5,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public enum CertificateFieldType {
-    ID("id"),
-    NAME("name"),
-    DESCRIPTION("description"),
-    PRICE("price"),
-    DURATION("duration"),
-    CREATE_DATE("create_date"),
-    LAST_UPDATE_DATE("last_update_date");
-
-    private String name;
-
-    CertificateFieldType(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
+    ID,
+    NAME,
+    DESCRIPTION,
+    PRICE,
+    DURATION,
+    CREATE_DATE,
+    LAST_UPDATE_DATE;
 
     public static List<String> getNames() {
 
