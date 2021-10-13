@@ -94,6 +94,6 @@ public class DefaultTagDao implements TagDao {
 
     @Override
     public boolean deleteById(long id) {
-        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) == EMPTY_RESULT;
+        return jdbcTemplate.update(SQL_DELETE_BY_ID, id) > EMPTY_RESULT;
     }
 }

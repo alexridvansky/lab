@@ -2,6 +2,7 @@ package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.config.TestConfig;
 import com.epam.esm.spring.repository.model.Tag;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,7 +59,8 @@ class DefaultTagDaoTest {
         this.tagDao = tagDao;
     }
 
-    static {
+    @BeforeEach
+    void setUp() {
         tag_one = Tag.builder()
                 .id(1L)
                 .name("food")
@@ -206,7 +208,7 @@ class DefaultTagDaoTest {
     @Order(3)
     void deleteByNonExistingId() {
         // Trying to delete NOT_existing Tag FALSE is expected
-        boolean actual = tagDao.deleteById(TEN);
+        boolean actual = tagDao.deleteById(15);
         assertFalse(actual);
     }
 

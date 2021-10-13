@@ -101,7 +101,7 @@ class DefaultCertificateDaoTest {
                 .duration(2)
                 .createDate(LocalDateTime.of(2019, 11, 17, 11, 11, 11))
                 .lastUpdateDate(LocalDateTime.of(2021, 10, 18, 11, 11, 11))
-                .tags(Arrays.asList(tag_one, tag_two))
+                .tags(Arrays.asList(tag_three))
                 .build();
 
         cert_two = Certificate.builder()
@@ -128,12 +128,12 @@ class DefaultCertificateDaoTest {
 
         params = new HashMap<>();
         params.put("tag", "beer");
-        params.put("search", "weekend");
+        params.put("search", "week");
         params.put("sort", "price");
         params.put("order", "asc");
 
         findAllExpected = Arrays.asList(cert_one, cert_two, cert_three);
-        findAllByParamsExpected = Arrays.asList(cert_two, cert_one);
+        findAllByParamsExpected = Arrays.asList(cert_one);
     }
 
     @Test
