@@ -145,7 +145,7 @@ class DefaultCertificateDaoTest {
 
     @Test
     void findAllByParam() {
-        List<Certificate> actuals = certificateDao.findByParams(params);
+        List<Certificate> actuals = certificateDao.findBy(params);
 
         assertEquals(findAllByParamsExpected, actuals);
     }

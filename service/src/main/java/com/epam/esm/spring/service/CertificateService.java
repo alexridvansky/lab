@@ -19,7 +19,7 @@ public interface CertificateService {
      * @param params
      * @return
      */
-    List<CertificateDto> findByParams(Map<String, String> params);
+    List<CertificateDto> findBy(Map<String, String> params);
 
     /**
      * Returns Certificate by id given.

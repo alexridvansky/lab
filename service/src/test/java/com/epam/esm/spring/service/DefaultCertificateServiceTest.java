@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -158,9 +156,9 @@ class DefaultCertificateServiceTest {
 
     @Test
     void findAllByParam() {
-        when(certificateDao.findByParams(paramMap)).thenReturn(certificatesByParams);
+        when(certificateDao.findBy(paramMap)).thenReturn(certificatesByParams);
 
-        List<CertificateDto> actual = certificateService.findByParams(paramMap);
+        List<CertificateDto> actual = certificateService.findBy(paramMap);
 
         assertEquals(certificatesDtoByParam, actual);
     }

@@ -52,10 +52,10 @@ public class DefaultCertificateService implements CertificateService {
     }
 
     @Override
-    public List<CertificateDto> findByParams(Map<String, String> params) {
+    public List<CertificateDto> findBy(Map<String, String> params) {
         searchRequestValidator.validateRequest(params);
 
-        return certificateDao.findByParams(params)
+        return certificateDao.findBy(params)
                 .stream()
                 .map(certificateToDtoConverter::convert)
                 .collect(Collectors.toList());

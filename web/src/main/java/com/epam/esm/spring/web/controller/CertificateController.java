@@ -1,12 +1,10 @@
 package com.epam.esm.spring.web.controller;
 
-import com.epam.esm.spring.repository.jdbc.querybuilder.CertificateFieldType;
 import com.epam.esm.spring.service.CertificateService;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,7 +70,7 @@ public class CertificateController {
             params.put("search", search);
             params.put("sort", sort);
             params.put("order", order);
-            return certificateService.findByParams(params);
+            return certificateService.findBy(params);
         }
     }
 

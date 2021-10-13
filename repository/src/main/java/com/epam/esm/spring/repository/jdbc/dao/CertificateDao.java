@@ -21,7 +21,7 @@ public interface CertificateDao extends Dao<Certificate> {
      * @param params list of parameters for search
      * @return List<Certificate>
      */
-    List<Certificate> findByParams(Map<String, String> params);
+    List<Certificate> findBy(Map<String, String> params);
 
     /**
      * Returns Certificate by id given.
