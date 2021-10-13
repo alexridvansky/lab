@@ -80,7 +80,7 @@ public class DefaultCertificateService implements CertificateService {
         Certificate certificate = certificateDao.insert(dtoToCertificateConverter.convert(certificateDto));
 
         if (CollectionUtils.isNotEmpty(certificate.getTags())) {
-            certificateDao.insertTagIntoXrefTable(certificate.getTags(), certificate.getId());
+            certificateDao.addTagToCertificate(certificate.getTags(), certificate.getId());
         }
 
         return certificateToDtoConverter.convert(certificate);
@@ -100,10 +100,10 @@ public class DefaultCertificateService implements CertificateService {
         Certificate c = dtoToCertificateConverter.convert(certificateDto);
 
         if (c.getTags() != null) {
-            certificateDao.detachTagFromXrefTable(c.getId());
+            certificateDao.deleteTagFromCertificate(c.getId());
 
             if (CollectionUtils.isNotEmpty(c.getTags())) {
-                certificateDao.insertTagIntoXrefTable(c.getTags(), c.getId());
+                certificateDao.addTagToCertificate(c.getTags(), c.getId());
             }
         }
 

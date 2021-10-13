@@ -63,7 +63,7 @@ public interface CertificateDao extends Dao<Certificate> {
      * @param id Certificate id to attach tags to
      * @return true if process causes no errors
      */
-    boolean insertTagIntoXrefTable(List<Tag> tags, long id);
+    boolean addTagToCertificate(List<Tag> tags, long id);
 
     /**
      * Removes all tags attached to the specific certificate.
@@ -71,7 +71,7 @@ public interface CertificateDao extends Dao<Certificate> {
      * @param id Certificate id to remove connected tags
      * @return true if process causes no errors
      */
-    boolean detachTagFromXrefTable(long id);
+    boolean deleteTagFromCertificate(long id);
 
     /**
      * Deletes Certificate by its ID.

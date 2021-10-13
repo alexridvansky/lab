@@ -102,7 +102,7 @@ public class DefaultCertificateDao implements CertificateDao {
     }
 
     @Override
-    public boolean insertTagIntoXrefTable(List<Tag> tags, long id) {
+    public boolean addTagToCertificate(List<Tag> tags, long id) {
         List<Object[]> batch = tags.stream()
                 .map(tag -> new Object[]{id, tag.getId()})
                 .collect(Collectors.toList());
@@ -113,7 +113,7 @@ public class DefaultCertificateDao implements CertificateDao {
     }
 
     @Override
-    public boolean detachTagFromXrefTable(long id) {
+    public boolean deleteTagFromCertificate(long id) {
         return jdbcTemplate.update(SQL_TAG_DETACH, id) > EMPTY_RESULT;
     }
 
