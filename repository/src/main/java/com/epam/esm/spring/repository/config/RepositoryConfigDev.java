@@ -15,10 +15,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 @ComponentScan("com.epam.esm.spring")
 @Profile("dev")
 public class RepositoryConfigDev {
-    private static final String SQL_TABLE_GC = "classpath:test_gift_certificate.sql";
-    private static final String SQL_TABLE_T = "classpath:test_tag.sql";
+    private static final String SQL_TABLE_GIFT_CERTIFICATE = "classpath:test_gift_certificate.sql";
+    private static final String SQL_TABLE_TAG = "classpath:test_tag.sql";
     private static final String SQL_TABLE_XREF = "classpath:test_certificate_tag_xref.sql";
-    private static final String SQL_FILL_UP = "classpath:db_fillup.sql";
+    private static final String SQL_DATA_FOR_FILL_UP = "classpath:db_fillup.sql";
 
     @Bean
     public EmbeddedDatabase embeddedDatabase() {
@@ -29,10 +29,10 @@ public class RepositoryConfigDev {
                 .setType(EmbeddedDatabaseType.H2)
                 .setScriptEncoding("UTF-8")
                 .ignoreFailedDrops(true)
-                .addScript(SQL_TABLE_T)
-                .addScript(SQL_TABLE_GC)
+                .addScript(SQL_TABLE_TAG)
+                .addScript(SQL_TABLE_GIFT_CERTIFICATE)
                 .addScript(SQL_TABLE_XREF)
-                .addScript(SQL_FILL_UP)
+                .addScript(SQL_DATA_FOR_FILL_UP)
                 .build();
     }
 
