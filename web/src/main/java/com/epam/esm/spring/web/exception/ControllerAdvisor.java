@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -20,10 +22,15 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import static java.lang.String.format;
+import static java.util.stream.Collectors.joining;
+
 @RestControllerAdvice
 public class ControllerAdvisor {
     private static final String ERROR_MESSAGE = "errorMessage";
     private static final String ERROR_CODE = "errorCode";
+    private static final String ERROR_DESCRIPTION = "errorDescription";
+    private static final int NOT_VALID_EXCEPTION_CODE = 40008;
     private final ResourceBundleMessageSource messages;
 
     @Autowired
@@ -71,12 +78,11 @@ public class ControllerAdvisor {
         return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public Map<String, Object> handleConstraintViolationException(ConstraintViolationException e, Locale locale) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put(ERROR_MESSAGE, e.getMessage());
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, Locale locale) {
+        String message = resolveBindingResultErrors(e.getBindingResult());
 
-        return response;
+        return new ResponseEntity<>(createResponse(NOT_VALID_EXCEPTION_CODE, locale, message), HttpStatus.BAD_REQUEST);
     }
 
     private Map<String, Object> createResponse(int errorCode, Locale locale) {
@@ -87,7 +93,24 @@ public class ControllerAdvisor {
         return response;
     }
 
-    private String getMessageByCode(int errorCode) {
+    private Map<String, Object> createResponse(int errorCode, Locale locale, String errorDescription) {
+        Map<String, Object> response = createResponse(errorCode, locale);
+        response.put(ERROR_DESCRIPTION, errorDescription);
+
+        return response;
+    }
+
+        private String getMessageByCode(int errorCode) {
         return "error_msg." + errorCode;
+    }
+
+    private String resolveBindingResultErrors(BindingResult bindingResult) {
+        return bindingResult.getFieldErrors().stream()
+                .map(fr -> {
+                    String field = fr.getField();
+                    String validationMessage = fr.getDefaultMessage();
+                    return format("'%s': %s", field, validationMessage);
+                })
+                .collect(joining(", "));
     }
 }

@@ -61,10 +61,7 @@ public class TagController {
      */
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public TagDto insert(@Valid @RequestBody TagDto tagDto, Errors errors) {
-        if (errors.hasErrors()) {
-            throw new EntryNonValidTagNameException();
-        }
+    public TagDto insert(@Valid @RequestBody TagDto tagDto) {
         return tagService.insert(tagDto);
     }
 
