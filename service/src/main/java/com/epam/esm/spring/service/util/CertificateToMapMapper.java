@@ -6,6 +6,7 @@ import lombok.experimental.UtilityClass;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.epam.esm.spring.repository.jdbc.querybuilder.CertificateFieldType.DESCRIPTION;
 import static com.epam.esm.spring.repository.jdbc.querybuilder.CertificateFieldType.DURATION;
@@ -18,16 +19,16 @@ public class CertificateToMapMapper {
 
     public static Map<String, Object> toMap(Certificate c) {
         Map<String, Object> data = new HashMap<>();
-        if (c.getName() != null) {
+        if (Objects.nonNull(c.getName())) {
             data.put(NAME.toString(), c.getName());
         }
-        if (c.getDescription() != null) {
+        if (Objects.nonNull(c.getDescription())) {
             data.put(DESCRIPTION.toString(), c.getDescription());
         }
-        if (c.getPrice() != null) {
+        if (Objects.nonNull(c.getPrice())) {
             data.put(PRICE.toString(), c.getPrice());
         }
-        if (c.getDuration() != null) {
+        if (Objects.nonNull(c.getDuration())) {
             data.put(DURATION.toString(), c.getDuration());
         }
 
