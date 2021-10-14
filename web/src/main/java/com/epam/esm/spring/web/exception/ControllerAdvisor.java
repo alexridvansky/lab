@@ -68,7 +68,7 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(NotValidSearchRequest.class)
     public ResponseEntity<Object> handleNotValidSearchRequest(NotValidSearchRequest e, Locale locale) {
-        return new ResponseEntity<>(createResponse(40007, locale), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
