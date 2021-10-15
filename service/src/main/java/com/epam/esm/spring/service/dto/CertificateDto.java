@@ -37,11 +37,11 @@ public class CertificateDto {
     private Long id;
     @NotBlank(groups = {Create.class})
     @Size(min = 3, max = 100)
-    @Pattern(regexp = "[a-zA-Z0-9,.%&$ ]")
+    @Pattern(regexp = "^[a-zA-Z0-9,.%&$ ]")
     private String name;
     @NotBlank(groups = {Create.class})
     @Size(min = 10, max = 200)
-    @Pattern(regexp = "[a-zA-Z0-9,.%&$ ]")
+    @Pattern(regexp = "^[a-zA-Z0-9,.%&$ ]")
     private String description;
     @NotNull(groups = {Create.class})
     @Positive
