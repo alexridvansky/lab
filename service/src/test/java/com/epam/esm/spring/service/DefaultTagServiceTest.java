@@ -112,43 +112,34 @@ class DefaultTagServiceTest {
     @Test
     void findAll() {
         when(tagDao.findAll()).thenReturn(tags);
-
         List<TagDto> actualDtoList = tagService.findAll();
-
         assertEquals(tagsDto, actualDtoList);
     }
 
     @Test
     void findById() {
         when(tagDao.findById(FIRST_TAG_ID)).thenReturn(Optional.of(firstTag));
-
         TagDto actual = tagService.findById(FIRST_TAG_ID);
-
         assertEquals(firstTagDto, actual);
     }
 
     @Test
     void findByIdExceptionExpected() {
         when(tagDao.findById(NON_EXISTING_TAG_ID)).thenReturn(Optional.empty());
-
         assertThrowsExactly(EntryNotFoundException.class, () -> tagService.findById(NON_EXISTING_TAG_ID));
     }
 
     @Test
     void testFindByName() {
         when(tagDao.findByName(FIRST_TAG_NAME)).thenReturn(Optional.of(firstTag));
-
         TagDto actual = tagService.findByName(FIRST_TAG_NAME);
-
         assertEquals(firstTagDto, actual);
     }
 
     @Test
     void insert() {
         when(tagDao.insert(thirdTag)).thenReturn(thirdTag);
-
         TagDto actual = tagService.insert(thirdTagDto);
-
         assertEquals(thirdTagDto, actual);
     }
 
@@ -156,18 +147,14 @@ class DefaultTagServiceTest {
     void deleteById() {
         when(tagDao.findById(SECOND_TAG_ID)).thenReturn(Optional.of(secondTag));
         when(tagDao.deleteById(SECOND_TAG_ID)).thenReturn(true);
-
         TagDto actual = tagService.deleteById(SECOND_TAG_ID);
-
         assertEquals(secondTagDto, actual);
     }
 
     @Test
     void exists() {
         when(tagDao.isExist(SECOND_TAG_NAME)).thenReturn(true);
-
         boolean actual = tagService.isExist(SECOND_TAG_NAME);
-
         assertTrue(actual);
     }
 }

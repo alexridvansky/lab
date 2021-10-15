@@ -11,6 +11,8 @@ import com.epam.esm.spring.service.converter.TagToDtoConverter;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
+import com.epam.esm.spring.service.util.CertificateValidator;
+import com.epam.esm.spring.service.util.SearchRequestValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -134,6 +136,12 @@ class DefaultCertificateServiceTest {
     @Mock
     private DtoToCertificateConverter dtoToCertificateConverter;
 
+    @Mock
+    private CertificateValidator certificateValidator;
+
+    @Mock
+    private SearchRequestValidator searchRequestValidator;
+
     @BeforeEach
     void prepare() {
         lenient().when(tagToDtoConverter.convert(firstTag)).thenReturn(firstTagDto);
@@ -148,52 +156,41 @@ class DefaultCertificateServiceTest {
     @Test
     void findAll() {
         when(certificateDao.findAll()).thenReturn(certificates);
-
         List<CertificateDto> actuals = certificateService.findAll();
-
         assertEquals(certificateDtos, actuals);
     }
 
     @Test
     void findAllByParam() {
         when(certificateDao.findBy(paramMap)).thenReturn(certificatesByParams);
-
         List<CertificateDto> actual = certificateService.findBy(paramMap);
-
         assertEquals(certificatesDtoByParam, actual);
     }
 
     @Test
     void findById() {
         when(certificateDao.findById(FIRST_CERTIFICATE_ID)).thenReturn(Optional.of(firstCertificate));
-
         CertificateDto actual = certificateService.findById(FIRST_CERTIFICATE_ID);
-
         assertEquals(firstCertificateDto, actual);
     }
 
     @Test
     void findByIdExpectedException() {
         when(certificateDao.findById(NON_EXISTING_CERTIFICATE_ID)).thenReturn(Optional.empty());
-
         assertThrowsExactly(EntryNotFoundException.class, () -> certificateService.findById(NON_EXISTING_CERTIFICATE_ID));
     }
 
     @Test
     void insert() {
         when(certificateDao.insert(firstCertificate)).thenReturn(firstCertificate);
-
         CertificateDto actual = certificateService.insert(firstCertificateDto);
-
         assertEquals(firstCertificateDto, actual);
     }
 
     @Test
     void update() {
         when(certificateDao.insert(secondCertificate)).thenReturn(secondCertificate);
-
         CertificateDto actual = certificateService.insert(secondCertificateDto);
-
         assertEquals(secondCertificateDto, actual);
     }
 
@@ -201,16 +198,13 @@ class DefaultCertificateServiceTest {
     void deleteById() {
         when(certificateDao.deleteById(FIRST_CERTIFICATE_ID)).thenReturn(true);
         when(certificateDao.findById(FIRST_CERTIFICATE_ID)).thenReturn(Optional.of(firstCertificate));
-
         CertificateDto actual = certificateService.deleteById(FIRST_CERTIFICATE_ID);
-
         assertEquals(firstCertificateDto, actual);
     }
 
     @Test
     void deleteByIdExceptionExpected() {
         when(certificateDao.findById(NON_EXISTING_CERTIFICATE_ID)).thenReturn(Optional.empty());
-
         assertThrowsExactly(EntryNotFoundException.class, () -> certificateService.deleteById(NON_EXISTING_CERTIFICATE_ID));
     }
 }
