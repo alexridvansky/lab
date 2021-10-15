@@ -4,8 +4,12 @@ import com.epam.esm.spring.repository.config.TestConfig;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.Tag;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,11 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestConfig.class})
@@ -30,9 +36,12 @@ class DefaultCertificateDaoTest {
     private static final int ONE = 1;
     private static final int TWO = 2;
     private static final int TEN = 10;
+    private static Certificate cert_one;
+    private static Certificate cert_two;
+    private static Certificate cert_three;
     private final DefaultCertificateDao certificateDao;
     private List<Certificate> findAllExpected;
-    private List<Certificate> findAllByParamsExpected;
+    private List<Certificate> findByExpected;
     private Map<String, String> params;
     private Tag tag_one;
     private Tag tag_two;
@@ -42,9 +51,6 @@ class DefaultCertificateDaoTest {
     private Tag tag_six;
     private Tag tag_seven;
     private Tag tag_eight;
-    private Certificate cert_one;
-    private Certificate cert_two;
-    private Certificate cert_three;
 
     @Autowired
     DefaultCertificateDaoTest(DefaultCertificateDao certificateDao) {
@@ -101,13 +107,13 @@ class DefaultCertificateDaoTest {
                 .duration(2)
                 .createDate(LocalDateTime.of(2019, 11, 17, 11, 11, 11))
                 .lastUpdateDate(LocalDateTime.of(2021, 10, 18, 11, 11, 11))
-                .tags(Arrays.asList(tag_three))
+                .tags(Arrays.asList(tag_one, tag_two, tag_three))
                 .build();
 
         cert_two = Certificate.builder()
                 .id(2L)
                 .name("Paulaner beer fest")
-                .description("including entry tickets and food for group of 5")
+                .description("including entry tickets and food for group of 5 for weekend")
                 .price(BigDecimal.valueOf(150))
                 .duration(1)
                 .createDate(LocalDateTime.of(2019, 11, 17, 11, 11, 11))
@@ -133,74 +139,85 @@ class DefaultCertificateDaoTest {
         params.put("order", "asc");
 
         findAllExpected = Arrays.asList(cert_one, cert_two, cert_three);
-        findAllByParamsExpected = Arrays.asList(cert_one);
+        findByExpected = Arrays.asList(cert_one);
     }
 
     @Test
+    @Order(1)
     void findAll() {
+        // Expected equality of given and provided lists
         List<Certificate> actuals = certificateDao.findAll();
-
         assertEquals(findAllExpected, actuals);
     }
 
     @Test
-    void findAllByParam() {
+    @Order(1)
+    void findBy() {
+        // Asking the list of certificates by parameters given expected the following list
         List<Certificate> actuals = certificateDao.findBy(params);
-
-        assertEquals(findAllByParamsExpected, actuals);
+        assertEquals(findByExpected, actuals);
     }
 
-    @Test
-    void findByIdOne() {
+    @ParameterizedTest
+    @Order(1)
+    @MethodSource("dataSet")
+    void findById(int certificateId, Certificate certificate) {
+        // Looking for a certificate with existing id this certificate is expected
         Optional<Certificate> actual = certificateDao.findById(ONE);
-
         assertEquals(cert_one, actual.get());
     }
 
-    @Test
-    void findByIdTwo() {
-        Optional<Certificate> actual = certificateDao.findById(TWO);
-
-        assertEquals(cert_two, actual.get());
+    private static Stream<Arguments> dataSet() {
+        return Stream.of(
+                arguments(ONE, cert_one),
+                arguments(TWO, cert_two)
+        );
     }
 
     @Test
-    void findByIdTenOptionalEmptyExpected() {
+    @Order(1)
+    void findByNonExistingIdOptionalEmptyExpected() {
+        // Looking for a non existing ID optional.empty expected
         Optional<Certificate> actual = certificateDao.findById(TEN);
-
         assertEquals(Optional.empty(), actual);
     }
 
     @Test
+    @Order(2)
     void insertDuplicateNameExceptionExpected() {
+        // Trying to insert certificate with already existing key exception is expected
         assertThrowsExactly(DuplicateKeyException.class, () -> certificateDao.insert(cert_one));
     }
 
     @Test
+    @Order(1)
     void isExist() {
-        boolean actual = certificateDao.isExist(ONE);
-
+        // Asking for an existing certificate ID TRUE is expected
+        boolean actual = certificateDao.isExist(TWO);
         assertTrue(actual);
     }
 
     @Test
+    @Order(1)
     void isExistNonExistingEntry() {
+        // Trying to check out whether non existing certificate exists FALSE is expected
         boolean actual = certificateDao.isExist(TEN);
-
         assertFalse(actual);
     }
 
     @Test
+    @Order(2)
     void deleteById() {
-        int sertificateId = 1;
-        boolean actual = certificateDao.deleteById(sertificateId);
+        // Deleting existing certificate TRUE is expected
+        boolean actual = certificateDao.deleteById(ONE);
         assertTrue(actual);
     }
 
     @Test
+    @Order(2)
     void deleteByIdNonExistingEntryExpectedFalse() {
+        // Deleting non existing certificate FALSE is expected
         boolean actual = certificateDao.deleteById(TEN);
-
         assertFalse(actual);
     }
 }
