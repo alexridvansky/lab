@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.HashMap;
 import java.util.List;
@@ -50,10 +49,10 @@ public class CertificateController {
     /**
      * Is used for getting list of Certificates
      *
-     * @param tag tag name
+     * @param tag    tag name
      * @param search part of Certificate's name or description
-     * @param sort field to sort by
-     * @param order ASC or DESC
+     * @param sort   field to sort by
+     * @param order  ASC or DESC
      * @return List<CertificateDto> the list of certificates
      */
     @GetMapping()
@@ -82,13 +81,13 @@ public class CertificateController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public CertificateDto insert(@Valid @RequestBody CertificateDto certificateDto) {
+    public CertificateDto insert(@Validated(CertificateDto.Create.class) @RequestBody CertificateDto certificateDto) {
         return certificateService.insert(certificateDto);
     }
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
-    public CertificateDto update(@RequestBody CertificateDto certificateDto) {
+    public CertificateDto update(@Validated(CertificateDto.Update.class) @RequestBody CertificateDto certificateDto) {
         return certificateService.update(certificateDto);
     }
 
