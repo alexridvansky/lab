@@ -78,7 +78,12 @@ public class ControllerAdvisor {
         return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e, Locale locale) {
+        return new ResponseEntity<>(createResponse(NOT_VALID_EXCEPTION_CODE, locale, e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, Locale locale) {
         String message = resolveBindingResultErrors(e.getBindingResult());
 
