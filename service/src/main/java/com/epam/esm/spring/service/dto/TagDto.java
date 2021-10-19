@@ -15,7 +15,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TagDto implements Serializable {
+
     private Long id;
+
     @NotBlank
     @Size(min = 3, max = 100)
     @Pattern(regexp = "^[a-zA-Z0-9]")
