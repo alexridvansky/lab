@@ -11,7 +11,6 @@ import com.epam.esm.spring.service.converter.TagToDtoConverter;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
-import com.epam.esm.spring.service.util.CertificateValidator;
 import com.epam.esm.spring.service.util.SearchRequestValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +78,7 @@ class DefaultCertificateServiceTest {
             .description("Second certificate description")
             .price(BigDecimal.valueOf(200))
             .duration(20)
-            .tags(Arrays.asList(firstTag))
+            .tags(Collections.singletonList(firstTag))
             .build();
 
     private CertificateDto firstCertificateDto = CertificateDto.builder()
@@ -96,16 +96,16 @@ class DefaultCertificateServiceTest {
             .description("Second certificate description")
             .price(BigDecimal.valueOf(200))
             .duration(20)
-            .tags(Arrays.asList(firstTagDto))
+            .tags(Collections.singletonList(firstTagDto))
             .build();
 
     private final List<Certificate> certificates = Arrays.asList(firstCertificate, secondCertificate);
 
-    private final List<Certificate> certificatesByParams = Arrays.asList(secondCertificate);
+    private final List<Certificate> certificatesByParams = Collections.singletonList(secondCertificate);
 
     private final List<CertificateDto> certificateDtos = Arrays.asList(firstCertificateDto, secondCertificateDto);
 
-    private final List<CertificateDto> certificatesDtoByParam = Arrays.asList(secondCertificateDto);
+    private final List<CertificateDto> certificatesDtoByParam = Collections.singletonList(secondCertificateDto);
 
     public Map<String, String> paramMap = new HashMap() {{
         put("tag", "fitness");
@@ -135,9 +135,6 @@ class DefaultCertificateServiceTest {
 
     @Mock
     private DtoToCertificateConverter dtoToCertificateConverter;
-
-    @Mock
-    private CertificateValidator certificateValidator;
 
     @Mock
     private SearchRequestValidator searchRequestValidator;

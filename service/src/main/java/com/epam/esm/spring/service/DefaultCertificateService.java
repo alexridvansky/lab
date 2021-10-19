@@ -7,7 +7,6 @@ import com.epam.esm.spring.service.converter.DtoToCertificateConverter;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.util.CertificateToMapMapper;
-import com.epam.esm.spring.service.util.CertificateValidator;
 import com.epam.esm.spring.service.util.SearchRequestValidator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,21 +25,18 @@ public class DefaultCertificateService implements CertificateService {
     private final CertificateToDtoConverter certificateToDtoConverter;
     private final DtoToCertificateConverter dtoToCertificateConverter;
     private final SearchRequestValidator searchRequestValidator;
-    private final CertificateValidator certificateValidator;
 
     @Autowired
     public DefaultCertificateService(CertificateDao certificateDao,
                                      TagService tagService,
                                      CertificateToDtoConverter certificateToDtoConverter,
                                      DtoToCertificateConverter dtoToCertificateConverter,
-                                     SearchRequestValidator searchRequestValidator,
-                                     CertificateValidator certificateValidator) {
+                                     SearchRequestValidator searchRequestValidator) {
         this.certificateDao = certificateDao;
         this.tagService = tagService;
         this.certificateToDtoConverter = certificateToDtoConverter;
         this.dtoToCertificateConverter = dtoToCertificateConverter;
         this.searchRequestValidator = searchRequestValidator;
-        this.certificateValidator = certificateValidator;
     }
 
     @Override
@@ -70,8 +66,6 @@ public class DefaultCertificateService implements CertificateService {
     @Transactional
     @Override
     public CertificateDto insert(CertificateDto certificateDto) {
-        certificateValidator.isCertificateValidForInsert(certificateDto);
-
         processTagList(certificateDto);
 
         certificateDto.setCreateDate(LocalDateTime.now());
@@ -89,12 +83,9 @@ public class DefaultCertificateService implements CertificateService {
     @Transactional
     @Override
     public CertificateDto update(CertificateDto certificateDto) {
-        certificateValidator.isCertificateValidForUpdate(certificateDto);
-
         if (!certificateDao.isExist(certificateDto.getId())) {
             throw new EntryNotFoundException();
         }
-        certificateValidator.isCertificateValidForUpdate(certificateDto);
         processTagList(certificateDto);
 
         Certificate c = dtoToCertificateConverter.convert(certificateDto);
