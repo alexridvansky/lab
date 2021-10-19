@@ -32,28 +32,33 @@ public class CertificateDto {
     public interface Update {
     }
 
-    @NotNull(groups = {Update.class})
-    @Null(groups = {Create.class})
     private Long id;
+
     @NotBlank(groups = {Create.class})
     @Size(min = 3, max = 100)
     @Pattern(regexp = "^[a-zA-Z0-9,.%&$ ]")
     private String name;
+
     @NotBlank(groups = {Create.class})
     @Size(min = 10, max = 200)
     @Pattern(regexp = "^[a-zA-Z0-9,.%&$ ]")
     private String description;
+
     @NotNull(groups = {Create.class})
     @Positive
     @Digits(integer = 4, fraction = 2)
     @DecimalMin("0.50")
     private BigDecimal price;
+
     @NotNull(groups = {Create.class})
     @Positive
     @Min(1)
     @Max(365)
     private Integer duration;
+
     private LocalDateTime createDate;
+
     private LocalDateTime lastUpdateDate;
+
     private List<TagDto> tags;
 }
