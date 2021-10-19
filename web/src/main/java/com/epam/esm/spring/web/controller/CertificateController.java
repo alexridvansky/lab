@@ -78,16 +78,19 @@ public class CertificateController {
      *
      * @return CertificateDto just inserted
      */
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public CertificateDto insert(@Validated(CertificateDto.Create.class) @RequestBody CertificateDto certificateDto) {
+        public CertificateDto insert(@Validated(CertificateDto.Create.class)
+                                        @RequestBody CertificateDto certificateDto) {
         return certificateService.insert(certificateDto);
     }
 
-    @PatchMapping
+    @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CertificateDto update(@Validated(CertificateDto.Update.class) @RequestBody CertificateDto certificateDto) {
+    public CertificateDto update(@Validated(CertificateDto.Update.class)
+                                     @RequestBody CertificateDto certificateDto,
+                                 @PathVariable @Positive Long id) {
+        certificateDto.setId(id);
         return certificateService.update(certificateDto);
     }
 
