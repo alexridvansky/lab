@@ -35,25 +35,23 @@ public class CertificateDto {
     private Long id;
 
     @NotBlank(groups = {Create.class})
-    @Size(min = 3, max = 100)
-    @Pattern(regexp = "^[a-zA-Z0-9,.%&$ ]")
+    @Pattern(regexp = "^[^-,.%&$ ][a-zA-Z0-9,.%&$ ]{2,100}+$", groups = {Create.class, Update.class})
     private String name;
 
     @NotBlank(groups = {Create.class})
-    @Size(min = 10, max = 200)
-    @Pattern(regexp = "^[a-zA-Z0-9,.%&$ ]")
+    @Pattern(regexp = "^[^-,.%&$ ][a-zA-Z0-9,.%&$ ]{4,200}+$", groups = {Create.class, Update.class})
     private String description;
 
     @NotNull(groups = {Create.class})
-    @Positive
-    @Digits(integer = 4, fraction = 2)
-    @DecimalMin("0.50")
+    @Positive(groups = {Create.class, Update.class})
+    @Digits(integer = 4, fraction = 2, groups = {Create.class, Update.class})
+    @DecimalMin(value = "0.10", groups = {Create.class, Update.class})
     private BigDecimal price;
 
     @NotNull(groups = {Create.class})
-    @Positive
-    @Min(1)
-    @Max(365)
+    @Positive(groups = {Create.class, Update.class})
+    @Min(value = 1, groups = {Create.class, Update.class})
+    @Max(value = 365, groups = {Create.class, Update.class})
     private Integer duration;
 
     private LocalDateTime createDate;

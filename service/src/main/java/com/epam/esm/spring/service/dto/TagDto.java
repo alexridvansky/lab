@@ -19,7 +19,6 @@ public class TagDto implements Serializable {
     private Long id;
 
     @NotBlank
-    @Size(min = 3, max = 100)
-    @Pattern(regexp = "^[a-zA-Z0-9]")
+    @Pattern(regexp = "^[^-,.%&$ ][a-zA-Z0-9,.%&$ ]{2,100}+$")
     private String name;
 }
