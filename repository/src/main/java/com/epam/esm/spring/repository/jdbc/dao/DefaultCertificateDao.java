@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_COUNT_BY_ID;
+import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_COUNT_BY_NAME;
 import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_DELETE_BY_ID;
 import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_FIND_ALL;
 import static com.epam.esm.spring.repository.jdbc.dao.CertificateSqlQuery.SQL_FIND_BY_ID;
@@ -99,6 +100,11 @@ public class DefaultCertificateDao implements CertificateDao {
     @Override
     public boolean isExist(long id) {
         return jdbcTemplate.queryForObject(SQL_COUNT_BY_ID, Integer.class, id) > EMPTY_RESULT;
+    }
+
+    @Override
+    public boolean isExist(String name) {
+        return jdbcTemplate.queryForObject(SQL_COUNT_BY_NAME, Integer.class, name) > EMPTY_RESULT;
     }
 
     @Override

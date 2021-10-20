@@ -5,6 +5,7 @@ import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.service.converter.CertificateToDtoConverter;
 import com.epam.esm.spring.service.converter.DtoToCertificateConverter;
 import com.epam.esm.spring.service.dto.CertificateDto;
+import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.util.CertificateToMapMapper;
 import com.epam.esm.spring.service.util.SearchRequestValidator;
@@ -66,6 +67,10 @@ public class DefaultCertificateService implements CertificateService {
     @Transactional
     @Override
     public CertificateDto insert(CertificateDto certificateDto) {
+        if (certificateDao.isExist(certificateDto.getName())) {
+            throw new EntryAlreadyExistsException();
+        }
+
         processTagList(certificateDto);
 
         certificateDto.setCreateDate(LocalDateTime.now());
@@ -86,6 +91,7 @@ public class DefaultCertificateService implements CertificateService {
         if (!certificateDao.isExist(certificateDto.getId())) {
             throw new EntryNotFoundException();
         }
+
         processTagList(certificateDto);
 
         Certificate c = dtoToCertificateConverter.convert(certificateDto);

@@ -20,4 +20,5 @@ public class CertificateSqlQuery {
     public static final String SQL_DELETE_BY_ID = "DELETE FROM gift_certificate WHERE id = ?";
     public static final String SQL_COUNT = "SELECT count(*) FROM gift_certificate ";
     public static final String SQL_COUNT_BY_ID = SQL_COUNT + "WHERE id = ?";
+    public static final String SQL_COUNT_BY_NAME = SQL_COUNT + "WHERE name = ?";
 }
