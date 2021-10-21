@@ -1,6 +1,5 @@
 package com.epam.esm.spring.web.controller;
 
-import com.epam.esm.spring.repository.model.User;
 import com.epam.esm.spring.service.UserService;
 import com.epam.esm.spring.service.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
