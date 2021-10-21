@@ -27,11 +27,21 @@ public class UserController {
         this.userService = userService;
     }
 
+    /**
+     * Is used for getting list of Users.
+     *
+     * @return List<UserDto> the list of users
+     */
     @GetMapping()
     public List<UserDto> findAll() {
         return userService.findAll();
     }
 
+    /**
+     * Is used for getting User by ID.
+     *
+     * @return UserDto
+     */
     @GetMapping("/{id}")
     public UserDto findById(@PathVariable @Positive Long id) {
         return userService.findById(id);
