@@ -54,18 +54,9 @@ public interface TagDao extends Dao<Tag> {
     boolean isExist(long id);
 
     /**
-     * Is used to check whether Tag with ID given is used in any Certificates
+     * Is used to delete tag entry.
      *
-     * @param id Tag ID
-     * @return true if it has any relative certificates
+     * @param tag - tag to be deleted
      */
-    boolean isUsed(long id);
-
-    /**
-     * Is used to delete tag by its ID
-     *
-     * @param id - tag ID
-     * @return true if tag was deleted and false if wasn't
-     */
-    boolean deleteById(long id);
+    void delete(Tag tag);
 }

@@ -24,16 +24,16 @@ public interface Dao<T extends AbstractEntity> {
     /**
      * Adds new entry of AbstractEntity to the db
      *
-     * @param AbstractEntity object to be added to
+     * @param t AbstractEntity object to be added to
      * @return AbstractEntity object just added to the db
      */
     T insert(T t);
 
-    /**
-     * Deletes AbstractEntity by its ID.
-     *
-     * @param id - AbstractEntity's ID
-     * @return true if AbstractEntity has been deleted and false if wasn't
-     */
-    boolean deleteById(long id);
+//    /**
+//     * Deletes AbstractEntity by its ID.
+//     *
+//     * @param id - AbstractEntity's ID
+//     * @return true if AbstractEntity has been deleted and false if wasn't
+//     */
+//    boolean deleteById(long id);
 }

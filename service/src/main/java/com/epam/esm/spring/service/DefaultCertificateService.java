@@ -2,19 +2,17 @@ package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.jdbc.dao.CertificateDao;
 import com.epam.esm.spring.repository.model.Certificate;
-import com.epam.esm.spring.service.converter.CertificateToDtoConverter;
-import com.epam.esm.spring.service.converter.DtoToCertificateConverter;
+import com.epam.esm.spring.repository.model.Tag;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
-import com.epam.esm.spring.service.util.CertificateToMapMapper;
 import com.epam.esm.spring.service.util.SearchRequestValidator;
 import org.apache.commons.collections4.CollectionUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,28 +21,25 @@ import java.util.stream.Collectors;
 public class DefaultCertificateService implements CertificateService {
     private final CertificateDao certificateDao;
     private final TagService tagService;
-    private final CertificateToDtoConverter certificateToDtoConverter;
-    private final DtoToCertificateConverter dtoToCertificateConverter;
     private final SearchRequestValidator searchRequestValidator;
+    private final ModelMapper modelMapper;
 
     @Autowired
     public DefaultCertificateService(CertificateDao certificateDao,
                                      TagService tagService,
-                                     CertificateToDtoConverter certificateToDtoConverter,
-                                     DtoToCertificateConverter dtoToCertificateConverter,
-                                     SearchRequestValidator searchRequestValidator) {
+                                     SearchRequestValidator searchRequestValidator,
+                                     ModelMapper modelMapper) {
         this.certificateDao = certificateDao;
         this.tagService = tagService;
-        this.certificateToDtoConverter = certificateToDtoConverter;
-        this.dtoToCertificateConverter = dtoToCertificateConverter;
         this.searchRequestValidator = searchRequestValidator;
+        this.modelMapper = modelMapper;
     }
 
     @Override
     public List<CertificateDto> findAll() {
         return certificateDao.findAll()
                 .stream()
-                .map(certificateToDtoConverter::convert)
+                .map(certificate -> modelMapper.map(certificate, CertificateDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -54,14 +49,14 @@ public class DefaultCertificateService implements CertificateService {
 
         return certificateDao.findBy(params)
                 .stream()
-                .map(certificateToDtoConverter::convert)
+                .map(certificate -> modelMapper.map(certificate, CertificateDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
     public CertificateDto findById(long id) {
-        return certificateToDtoConverter.convert(certificateDao.findById(id)
-                .orElseThrow(EntryNotFoundException::new));
+        return modelMapper.map(certificateDao.findById(id)
+                .orElseThrow(EntryNotFoundException::new), CertificateDto.class);
     }
 
     @Transactional
@@ -71,68 +66,57 @@ public class DefaultCertificateService implements CertificateService {
             throw new EntryAlreadyExistsException();
         }
 
-        processTagList(certificateDto);
-
-        certificateDto.setCreateDate(LocalDateTime.now());
-        certificateDto.setLastUpdateDate(LocalDateTime.now());
-
-        Certificate certificate = certificateDao.insert(dtoToCertificateConverter.convert(certificateDto));
+        Certificate certificate = modelMapper.map(certificateDto, Certificate.class);
 
         if (CollectionUtils.isNotEmpty(certificate.getTags())) {
-            certificateDao.addTagToCertificate(certificate.getTags(), certificate.getId());
+            List<Tag> processedTags = tagService.processTagList(certificate.getTags());
+            certificate.setTags(processedTags);
         }
 
-        return certificateToDtoConverter.convert(certificate);
+        certificate = certificateDao.insert(certificate);
+
+        return modelMapper.map(certificate, CertificateDto.class);
     }
 
     @Transactional
     @Override
     public CertificateDto update(CertificateDto certificateDto) {
-        if (!certificateDao.isExist(certificateDto.getId())) {
-            throw new EntryNotFoundException();
-        }
+        Certificate certificate = certificateDao.findById(certificateDto.getId())
+                .orElseThrow(EntryNotFoundException::new);
 
-        processTagList(certificateDto);
-
-        Certificate c = dtoToCertificateConverter.convert(certificateDto);
-
-        if (c.getTags() != null) {
-            certificateDao.deleteTagFromCertificate(c.getId());
-
-            if (CollectionUtils.isNotEmpty(c.getTags())) {
-                certificateDao.addTagToCertificate(c.getTags(), c.getId());
-            }
-        }
-
-        if (c.getName() != null || c.getDescription() != null || c.getPrice() != null || c.getDuration() != null) {
-            Map<String, Object> data = CertificateToMapMapper.toMap(c);
-            certificateDao.update(c.getId(), data);
-        }
-
-        return certificateToDtoConverter.convert(certificateDao.findById(c.getId())
-                .orElseThrow(EntryNotFoundException::new));
-    }
-
-    @Override
-    public void processTagList(CertificateDto certificateDto) {
         if (certificateDto.getTags() != null) {
-            for (int i = 0; i < certificateDto.getTags().size(); i++) {
-                if (!tagService.isExist(certificateDto.getTags().get(i).getName())) {
-                    certificateDto.getTags().set(i, tagService.insert(certificateDto.getTags().get(i)));
-                } else {
-                    certificateDto.getTags().set(i, tagService.findByName(certificateDto.getTags().get(i).getName()));
-                }
-            }
+            List<Tag> processedTags = tagService.processTagList(certificateDto.getTags().stream()
+                    .map(tagDto -> modelMapper.map(tagDto, Tag.class))
+                    .collect(Collectors.toList()));
+            certificate.setTags(processedTags);
         }
+
+        if (certificateDto.getName() != null) {
+            certificate.setName(certificateDto.getName());
+        }
+
+        if (certificateDto.getDescription() != null) {
+            certificate.setDescription(certificateDto.getDescription());
+        }
+
+        if (certificateDto.getDuration() != null) {
+            certificate.setDuration(certificateDto.getDuration());
+        }
+
+        if (certificateDto.getPrice() != null) {
+            certificate.setPrice(certificateDto.getPrice());
+        }
+
+        return modelMapper.map(certificateDao.update(certificate), CertificateDto.class);
     }
+
 
     @Transactional
     @Override
     public CertificateDto deleteById(long id) {
         Certificate certificate = certificateDao.findById(id).orElseThrow(EntryNotFoundException::new);
+        certificateDao.delete(certificate);
 
-        certificateDao.deleteById(id);
-
-        return certificateToDtoConverter.convert(certificate);
+        return modelMapper.map(certificate, CertificateDto.class);
     }
 }

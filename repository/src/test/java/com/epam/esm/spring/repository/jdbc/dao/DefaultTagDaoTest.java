@@ -1,6 +1,6 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
-import com.epam.esm.spring.repository.config.TestConfig;
+import com.epam.esm.spring.repository.config.TestConfigJpa;
 import com.epam.esm.spring.repository.model.Tag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfig.class})
+@ContextConfiguration(classes = {TestConfigJpa.class})
 class DefaultTagDaoTest {
     private static final int ONE = 1;
     private static final int TWO = 2;
@@ -199,18 +199,17 @@ class DefaultTagDaoTest {
     @Test
     @Order(3)
     void deleteById() {
-        // Trying to delete existing Tag TRUE is expected
-        boolean actual = tagDao.deleteById(ONE);
-        assertTrue(actual);
+        // Trying to delete existing Tag exception aren't expected
+        tagDao.delete(tag_one);
     }
 
-    @Test
-    @Order(3)
-    void deleteByNonExistingId() {
-        // Trying to delete NOT_existing Tag FALSE is expected
-        boolean actual = tagDao.deleteById(15);
-        assertFalse(actual);
-    }
+//    @Test
+//    @Order(3)
+//    void deleteByNonExistingId() {
+//        // Trying to delete NOT_existing Tag FALSE is expected
+//        boolean actual = tagDao.delete(15);
+//        assertFalse(actual);
+//    }
 
     @Test
     @Order(4)

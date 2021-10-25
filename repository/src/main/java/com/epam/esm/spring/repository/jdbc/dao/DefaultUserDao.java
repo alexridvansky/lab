@@ -21,9 +21,10 @@ public class DefaultUserDao implements UserDao {
 
     @Override
     public Optional<User> findByUsername(String username) {
-        return entityManager.createQuery("SELECT u FROM User u WHERE u.username LIKE :username")
+        return entityManager.createQuery("SELECT u FROM User u WHERE u.username LIKE :username", User.class)
                 .setParameter("username", username)
-                .getResultStream().findFirst();
+                .getResultStream()
+                .findFirst();
     }
 
     @Override

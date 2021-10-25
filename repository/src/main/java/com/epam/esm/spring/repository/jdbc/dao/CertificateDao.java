@@ -40,22 +40,12 @@ public interface CertificateDao extends Dao<Certificate> {
     Certificate insert(Certificate certificate);
 
     /**
-     * Updates only fields that not null
+     * Updates certificate entry in the db
      *
-     * @param id id of Certificate to be updated
-     * @param data Map<String, Object> of data for fields to be updated
-     * @return true of there were no errors during updating process
+     * @param certificate is a Certificate to be updated
+     * @return Certificate just updated
      */
-    boolean update(Long id, Map<String, Object> data);
-
-    /**
-     * Checks whether Certificate with ID given exists.
-     *
-     * @param id the id of Certificate to be looked for
-     * @return true in case such Certificate found in the DB
-     */
-    boolean isExist(long id);
-
+    Certificate update(Certificate certificate);
 
     /**
      * Checks whether Certificate with name given exists.
@@ -66,27 +56,9 @@ public interface CertificateDao extends Dao<Certificate> {
     boolean isExist(String name);
 
     /**
-     * Stores tag list, related to the specific certificate.
-     *
-     * @param tags List of Tags, to be stored
-     * @param id Certificate id to attach tags to
-     * @return true if process causes no errors
-     */
-    boolean addTagToCertificate(List<Tag> tags, long id);
-
-    /**
-     * Removes all tags attached to the specific certificate.
-     *
-     * @param id Certificate id to remove connected tags
-     * @return true if process causes no errors
-     */
-    boolean deleteTagFromCertificate(long id);
-
-    /**
      * Deletes Certificate by its ID.
      *
-     * @param id - Certificate's ID
-     * @return true if Certificate has been deleted and false if wasn't
+     * @param certificate - Certificate to be deleted
      */
-    boolean deleteById(long id);
+    void delete(Certificate certificate);
 }

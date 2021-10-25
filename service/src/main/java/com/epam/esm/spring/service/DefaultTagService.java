@@ -2,52 +2,48 @@ package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.jdbc.dao.TagDao;
 import com.epam.esm.spring.repository.model.Tag;
-import com.epam.esm.spring.service.converter.DtoToTagConverter;
-import com.epam.esm.spring.service.converter.TagToDtoConverter;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
-import com.epam.esm.spring.service.exception.EntryNonValidNameException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
-import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class DefaultTagService implements TagService {
+
     private final TagDao tagDao;
-    private final TagToDtoConverter tagToDtoConverter;
-    private final DtoToTagConverter dtoToTagConverter;
+    private final ModelMapper modelMapper;
 
     @Autowired
     public DefaultTagService(TagDao tagDao,
-                             TagToDtoConverter tagToDtoConverter,
-                             DtoToTagConverter dtoToTagConverter) {
+                             ModelMapper modelMapper) {
         this.tagDao = tagDao;
-        this.tagToDtoConverter = tagToDtoConverter;
-        this.dtoToTagConverter = dtoToTagConverter;
+        this.modelMapper = modelMapper;
     }
 
     @Override
     public List<TagDto> findAll() {
         return tagDao.findAll().stream()
-                .map(tagToDtoConverter::convert)
+                .map(tag -> modelMapper.map(tag, TagDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
     public TagDto findById(long id) {
         return tagDao.findById(id)
-                .map(tagToDtoConverter::convert)
+                .map(tag -> modelMapper.map(tag, TagDto.class))
                 .orElseThrow(EntryNotFoundException::new);
     }
 
     @Override
     public TagDto findByName(String name) {
         return tagDao.findByName(name)
-                .map(tagToDtoConverter::convert)
+                .map(tag -> modelMapper.map(tag, TagDto.class))
                 .orElseThrow(EntryNotFoundException::new);
     }
 
@@ -57,17 +53,25 @@ public class DefaultTagService implements TagService {
             throw new EntryAlreadyExistsException();
         }
 
-        return tagToDtoConverter.convert(tagDao.insert(dtoToTagConverter.convert(tagDto)));
+        return modelMapper.map(tagDao.insert(modelMapper.map(tagDto, Tag.class)), TagDto.class);
     }
 
+    @Override
+    public List<Tag> processTagList(List<Tag> tags) {
+        return tags.stream()
+                .map(tag -> tagDao.findByName(tag.getName()).orElseGet(() -> tagDao.insert(tag)))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     @Override
     public TagDto deleteById(long id) {
         Tag tagToBeDeleted = tagDao.findById(id)
                 .orElseThrow(EntryNotFoundException::new);
 
-        tagDao.deleteById(id);
+        tagDao.delete(tagToBeDeleted);
 
-        return tagToDtoConverter.convert(tagToBeDeleted);
+        return modelMapper.map(tagToBeDeleted, TagDto.class);
     }
 
     @Override

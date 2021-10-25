@@ -4,10 +4,6 @@ import com.epam.esm.spring.repository.jdbc.dao.CertificateDao;
 import com.epam.esm.spring.repository.jdbc.dao.TagDao;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.Tag;
-import com.epam.esm.spring.service.converter.CertificateToDtoConverter;
-import com.epam.esm.spring.service.converter.DtoToCertificateConverter;
-import com.epam.esm.spring.service.converter.DtoToTagConverter;
-import com.epam.esm.spring.service.converter.TagToDtoConverter;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
@@ -18,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -107,7 +104,7 @@ class DefaultCertificateServiceTest {
 
     private final List<CertificateDto> certificatesDtoByParam = Collections.singletonList(secondCertificateDto);
 
-    public Map<String, String> paramMap = new HashMap() {{
+    public Map<String, String> paramMap = new HashMap<String, String>() {{
         put("tag", "fitness");
         put("search", "Second");
     }};
@@ -125,29 +122,20 @@ class DefaultCertificateServiceTest {
     private CertificateDao certificateDao;
 
     @Mock
-    private TagToDtoConverter tagToDtoConverter;
-
-    @Mock
-    private DtoToTagConverter dtoToTagConverter;
-
-    @Mock
-    private CertificateToDtoConverter certificateToDtoConverter;
-
-    @Mock
-    private DtoToCertificateConverter dtoToCertificateConverter;
+    private ModelMapper modelMapper;
 
     @Mock
     private SearchRequestValidator searchRequestValidator;
 
     @BeforeEach
     void prepare() {
-        lenient().when(tagToDtoConverter.convert(firstTag)).thenReturn(firstTagDto);
-        lenient().when(tagToDtoConverter.convert(secondTag)).thenReturn(secondTagDto);
-        lenient().when(dtoToTagConverter.convert(secondTagDto)).thenReturn(secondTag);
-        lenient().when(certificateToDtoConverter.convert(firstCertificate)).thenReturn(firstCertificateDto);
-        lenient().when(dtoToCertificateConverter.convert(firstCertificateDto)).thenReturn(firstCertificate);
-        lenient().when(certificateToDtoConverter.convert(secondCertificate)).thenReturn(secondCertificateDto);
-        lenient().when(dtoToCertificateConverter.convert(secondCertificateDto)).thenReturn(secondCertificate);
+        lenient().when(modelMapper.map(firstTag, TagDto.class)).thenReturn(firstTagDto);
+        lenient().when(modelMapper.map(secondTag, TagDto.class)).thenReturn(secondTagDto);
+        lenient().when(modelMapper.map(secondTagDto, Tag.class)).thenReturn(secondTag);
+        lenient().when(modelMapper.map(firstCertificate, CertificateDto.class)).thenReturn(firstCertificateDto);
+        lenient().when(modelMapper.map(firstCertificateDto, Certificate.class)).thenReturn(firstCertificate);
+        lenient().when(modelMapper.map(secondCertificate, CertificateDto.class)).thenReturn(secondCertificateDto);
+        lenient().when(modelMapper.map(secondCertificateDto, Certificate.class)).thenReturn(secondCertificate);
     }
 
     @Test
@@ -193,7 +181,6 @@ class DefaultCertificateServiceTest {
 
     @Test
     void deleteById() {
-        when(certificateDao.deleteById(FIRST_CERTIFICATE_ID)).thenReturn(true);
         when(certificateDao.findById(FIRST_CERTIFICATE_ID)).thenReturn(Optional.of(firstCertificate));
         CertificateDto actual = certificateService.deleteById(FIRST_CERTIFICATE_ID);
         assertEquals(firstCertificateDto, actual);

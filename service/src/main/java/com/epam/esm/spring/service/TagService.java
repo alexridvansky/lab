@@ -1,5 +1,7 @@
 package com.epam.esm.spring.service;
 
+import com.epam.esm.spring.repository.model.Tag;
+import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.TagDto;
 
 import java.util.List;
@@ -35,6 +37,16 @@ public interface TagService {
      * @return Tag.class object just added to the db
      */
     TagDto insert(TagDto tag);
+
+
+    /**
+     * Checks whether Tags from the list are
+     * present in the db, if so - reads and stores ist id ,
+     * if not - creates and stores id of just created one
+     *
+     * @param tags list of Tags
+     */
+    List<Tag> processTagList(List<Tag> tags);
 
     /**
      * Is used to delete tag by its ID

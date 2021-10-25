@@ -16,8 +16,8 @@ public interface CertificateService {
     /**
      * Returns the list of certificates accordingly to search parameters.
      *
-     * @param params
-     * @return
+     * @param params list of search params with values
+     * @return list of Certificates accordingly to search conditions
      */
     List<CertificateDto> findBy(Map<String, String> params);
 
@@ -44,15 +44,6 @@ public interface CertificateService {
      * @return CertificateDto updated object
      */
     CertificateDto update(CertificateDto certificateDto);
-
-    /**
-     * Checks whether every Tag stored to the list
-     * is present in the db, if so - read and store id for it,
-     * if not - creates and stores id of just created one
-     *
-     * @param certificateDto CertificateDto entity
-     */
-    void processTagList(CertificateDto certificateDto);
 
     /**
      * Deletes Certificate by its ID

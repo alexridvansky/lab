@@ -42,7 +42,7 @@ public class CertificateDto {
 
     @NotNull(groups = {Create.class})
     @Positive(groups = {Create.class, Update.class})
-    @Digits(integer = 4, fraction = 2, groups = {Create.class, Update.class})
+    @Digits(integer = 6, fraction = 2, groups = {Create.class, Update.class})
     @DecimalMin(value = "0.10", groups = {Create.class, Update.class})
     private BigDecimal price;
 

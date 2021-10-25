@@ -2,8 +2,6 @@ package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.jdbc.dao.TagDao;
 import com.epam.esm.spring.repository.model.Tag;
-import com.epam.esm.spring.service.converter.DtoToTagConverter;
-import com.epam.esm.spring.service.converter.TagToDtoConverter;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +50,7 @@ class DefaultTagServiceTest {
     private TagDao tagDao;
 
     @Mock
-    private TagToDtoConverter tagToDtoConverter;
-
-    @Mock
-    private DtoToTagConverter dtoToTagConverter;
+    private ModelMapper modelMapper;
 
     @BeforeEach
     void prepare() {
@@ -102,11 +98,11 @@ class DefaultTagServiceTest {
         tagsAfterDelete = new ArrayList<>();
         tagsAfterDelete.add(firstTag);
 
-        lenient().when(tagToDtoConverter.convert(firstTag)).thenReturn(firstTagDto);
-        lenient().when(tagToDtoConverter.convert(secondTag)).thenReturn(secondTagDto);
-        lenient().when(tagToDtoConverter.convert(thirdTag)).thenReturn(thirdTagDto);
-        lenient().when(dtoToTagConverter.convert(thirdTagDto)).thenReturn(thirdTag);
-        lenient().when(dtoToTagConverter.convert(secondTagDto)).thenReturn(secondTag);
+        lenient().when(modelMapper.map(firstTag, TagDto.class)).thenReturn(firstTagDto);
+        lenient().when(modelMapper.map(secondTag, TagDto.class)).thenReturn(secondTagDto);
+        lenient().when(modelMapper.map(thirdTag, TagDto.class)).thenReturn(thirdTagDto);
+        lenient().when(modelMapper.map(thirdTagDto, Tag.class)).thenReturn(thirdTag);
+        lenient().when(modelMapper.map(secondTagDto, Tag.class)).thenReturn(secondTag);
     }
 
     @Test
@@ -146,7 +142,6 @@ class DefaultTagServiceTest {
     @Test
     void deleteById() {
         when(tagDao.findById(SECOND_TAG_ID)).thenReturn(Optional.of(secondTag));
-        when(tagDao.deleteById(SECOND_TAG_ID)).thenReturn(true);
         TagDto actual = tagService.deleteById(SECOND_TAG_ID);
         assertEquals(secondTagDto, actual);
     }
