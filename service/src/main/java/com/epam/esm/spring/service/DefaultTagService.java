@@ -50,7 +50,7 @@ public class DefaultTagService implements TagService {
     @Override
     public TagDto insert(TagDto tagDto) {
         if (tagDao.isExist(tagDto.getName())) {
-            throw new EntryAlreadyExistsException();
+            throw new EntryAlreadyExistsException(tagDto.getName());
         }
 
         return modelMapper.map(tagDao.insert(modelMapper.map(tagDto, Tag.class)), TagDto.class);

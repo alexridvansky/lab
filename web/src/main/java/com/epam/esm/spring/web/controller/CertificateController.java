@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -80,8 +81,7 @@ public class CertificateController {
      */
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-        public CertificateDto insert(@Validated(CertificateDto.Create.class)
-                                        @RequestBody CertificateDto certificateDto) {
+        public CertificateDto insert(@Validated @RequestBody CertificateDto certificateDto) {
         return certificateService.insert(certificateDto);
     }
 
@@ -91,6 +91,14 @@ public class CertificateController {
                                  @PathVariable @Positive Long id) {
         certificateUpdateDto.setId(id);
         return certificateService.update(certificateUpdateDto);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public CertificateDto update(@Validated @RequestBody CertificateDto certificateDto,
+                                 @PathVariable @Positive Long id) {
+        certificateDto.setId(id);
+        return certificateService.update(certificateDto);
     }
 
     /**

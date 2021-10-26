@@ -1,7 +1,6 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.model.Certificate;
-import com.epam.esm.spring.repository.model.Tag;
 
 import java.util.List;
 import java.util.Map;

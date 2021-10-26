@@ -24,32 +24,26 @@ import java.util.List;
 @AllArgsConstructor
 public class CertificateDto {
 
-    public interface Create {
-    }
-
-    public interface Update {
-    }
-
     private Long id;
 
-    @NotBlank(groups = {Create.class})
-    @Pattern(regexp = "^[^-,.%&$ ][a-zA-Z0-9,.%&$ ]{2,100}+$", groups = {Create.class, Update.class})
+    @NotBlank
+    @Pattern(regexp = "^[^-,.%&$ ][a-zA-Z0-9,.%&$ ]{2,100}+$")
     private String name;
 
-    @NotBlank(groups = {Create.class})
-    @Pattern(regexp = "^[^-,.%&$ ][a-zA-Z0-9,.%&$ ]{4,200}+$", groups = {Create.class, Update.class})
+    @NotBlank
+    @Pattern(regexp = "^[^-,.%&$ ][a-zA-Z0-9,.%&$ ]{4,200}+$")
     private String description;
 
-    @NotNull(groups = {Create.class})
-    @Positive(groups = {Create.class, Update.class})
-    @Digits(integer = 6, fraction = 2, groups = {Create.class, Update.class})
-    @DecimalMin(value = "0.10", groups = {Create.class, Update.class})
+    @NotNull
+    @Positive
+    @Digits(integer = 6, fraction = 2)
+    @DecimalMin(value = "0.10")
     private BigDecimal price;
 
-    @NotNull(groups = {Create.class})
-    @Positive(groups = {Create.class, Update.class})
-    @Min(value = 1, groups = {Create.class, Update.class})
-    @Max(value = 365, groups = {Create.class, Update.class})
+    @NotNull
+    @Positive
+    @Min(value = 1)
+    @Max(value = 365)
     private Integer duration;
 
     private LocalDateTime createDate;

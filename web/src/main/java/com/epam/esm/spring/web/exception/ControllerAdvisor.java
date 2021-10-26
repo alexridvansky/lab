@@ -1,7 +1,6 @@
 package com.epam.esm.spring.web.exception;
 
 import com.epam.esm.spring.service.exception.EntityIntersectionException;
-import com.epam.esm.spring.service.exception.SubEntryAlreadyAttachedException;
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
 import com.epam.esm.spring.service.exception.EntryNonValidDurationException;
 import com.epam.esm.spring.service.exception.EntryNonValidNameException;
@@ -10,6 +9,7 @@ import com.epam.esm.spring.service.exception.EntryNonValidRequestException;
 import com.epam.esm.spring.service.exception.EntryNonValidTagNameException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.exception.NotValidSearchRequest;
+import com.epam.esm.spring.service.exception.SubEntryAlreadyAttachedException;
 import com.epam.esm.spring.service.exception.SubEntryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
@@ -53,7 +53,8 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(EntryAlreadyExistsException.class)
     public ResponseEntity<Object> handleEntryAlreadyExistsException(EntryAlreadyExistsException e, Locale locale) {
-        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale,
+                ERROR_ITEMS_IN_CONFLICT + e.getDetails()), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(EntryNonValidNameException.class)

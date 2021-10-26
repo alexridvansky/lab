@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,7 +16,6 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -51,7 +49,7 @@ public class Certificate extends AbstractEntity {
                     @JoinColumn(name = "certificate_id")},
             inverseJoinColumns = {
                     @JoinColumn(name = "tag_id")})
-    private List<Tag> tags = new ArrayList<>();
+    private List<Tag> tags;
 
     @PrePersist
     private void prePersistBatch() {

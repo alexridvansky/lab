@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class DefaultCertificateService implements CertificateService {
+
     private final CertificateDao certificateDao;
     private final TagService tagService;
     private final SearchRequestValidator searchRequestValidator;
@@ -70,7 +71,7 @@ public class DefaultCertificateService implements CertificateService {
     @Override
     public CertificateDto insert(CertificateDto certificateDto) {
         if (certificateDao.isExist(certificateDto.getName())) {
-            throw new EntryAlreadyExistsException();
+            throw new EntryAlreadyExistsException(certificateDto.getName());
         }
 
         Certificate certificate = modelMapper.map(certificateDto, Certificate.class);
@@ -85,9 +86,33 @@ public class DefaultCertificateService implements CertificateService {
         return modelMapper.map(certificate, CertificateDto.class);
     }
 
+    @Transactional
     @Override
     public CertificateDto update(CertificateDto certificateDto) {
-        return null; //todo .....
+        Certificate originalCertificate = certificateDao.findById(certificateDto.getId())
+                .orElseThrow(EntryNotFoundException::new);
+
+        if (certificateDao.isExist(certificateDto.getName()) &&
+                !certificateDto.getName().equals(originalCertificate.getName())) {
+            throw new EntryAlreadyExistsException(certificateDto.getName());
+        }
+
+        originalCertificate.setName(certificateDto.getName());
+        originalCertificate.setDescription(certificateDto.getDescription());
+        originalCertificate.setDuration(certificateDto.getDuration());
+        originalCertificate.setPrice(certificateDto.getPrice());
+
+        if (CollectionUtils.isNotEmpty(certificateDto.getTags())) {
+            List<Tag> tagsToUpdate = certificateDto.getTags().stream()
+                    .map(tagDto -> modelMapper.map(tagDto, Tag.class))
+                    .collect(Collectors.toList());
+
+            tagsToUpdate = tagService.processTagList(tagsToUpdate);
+
+            originalCertificate.setTags(tagsToUpdate);
+        }
+
+        return modelMapper.map(certificateDao.update(originalCertificate), CertificateDto.class);
     }
 
     @Transactional
