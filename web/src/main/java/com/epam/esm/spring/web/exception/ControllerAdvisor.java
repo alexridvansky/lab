@@ -1,5 +1,7 @@
 package com.epam.esm.spring.web.exception;
 
+import com.epam.esm.spring.service.exception.EntityIntersectionException;
+import com.epam.esm.spring.service.exception.SubEntryAlreadyAttachedException;
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
 import com.epam.esm.spring.service.exception.EntryNonValidDurationException;
 import com.epam.esm.spring.service.exception.EntryNonValidNameException;
@@ -8,6 +10,7 @@ import com.epam.esm.spring.service.exception.EntryNonValidRequestException;
 import com.epam.esm.spring.service.exception.EntryNonValidTagNameException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.exception.NotValidSearchRequest;
+import com.epam.esm.spring.service.exception.SubEntryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
@@ -32,6 +35,8 @@ public class ControllerAdvisor {
     private static final String ERROR_MESSAGE = "errorMessage";
     private static final String ERROR_CODE = "errorCode";
     private static final String ERROR_DESCRIPTION = "errorDescription";
+    private static final String ERROR_ITEMS_IN_CONFLICT = "Items in conflict: ";
+    private static final String ERROR_ITEMS_NOT_FOUND = "Items not found: ";
     private static final int NOT_VALID_REQUEST_CODE = 40000;
     private static final int NOT_VALID_EXCEPTION_CODE = 40008;
     private final ResourceBundleMessageSource messages;
@@ -79,6 +84,24 @@ public class ControllerAdvisor {
     @ExceptionHandler(NotValidSearchRequest.class)
     public ResponseEntity<Object> handleNotValidSearchRequest(NotValidSearchRequest e, Locale locale) {
         return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EntityIntersectionException.class)
+    public ResponseEntity<Object> handleEntityIntersectionException(EntityIntersectionException e, Locale locale) {
+        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale,
+                ERROR_ITEMS_IN_CONFLICT + e.getItems()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(SubEntryAlreadyAttachedException.class)
+    public ResponseEntity<Object> handleEntryAlreadyAttachedException(SubEntryAlreadyAttachedException e, Locale locale) {
+        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale,
+                ERROR_ITEMS_IN_CONFLICT + e.getDetails()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(SubEntryNotFoundException.class)
+    public ResponseEntity<Object> handleSubEntryNotFoundException(SubEntryNotFoundException e, Locale locale) {
+        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale,
+                ERROR_ITEMS_NOT_FOUND + e.getDetails()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
