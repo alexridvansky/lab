@@ -145,12 +145,12 @@ public class DefaultCertificateService implements CertificateService {
         // adding tags if toAdd collection is present
         if (CollectionUtils.isNotEmpty(tagsToAdd)) {
             List<Tag> tagsToProcess = tagsToAdd.stream()
-                    .map(tagName -> modelMapper.map(tagService.findByName(tagName), Tag.class))
+                    .map(name -> Tag.builder().name(name).build())
                     .collect(Collectors.toList());
 
-            List<Tag> processedTags = tagService.processTagList(tagsToProcess);
+            List<Tag> tagsProcessed = tagService.processTagList(tagsToProcess);
 
-            originalCertificate.getTags().addAll(processedTags);
+            originalCertificate.getTags().addAll(tagsProcessed);
         }
 
         if (dataToUpdate.getName() != null) {
