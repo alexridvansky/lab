@@ -1,6 +1,7 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.service.dto.CertificateDto;
+import com.epam.esm.spring.service.dto.CertificateUpdateDto;
 
 import java.util.List;
 import java.util.Map;
@@ -38,12 +39,20 @@ public interface CertificateService {
     CertificateDto insert(CertificateDto certificateDto);
 
     /**
-     * Updates existing Certificate
+     * Updates existing Certificate entirely
      *
-     * @param certificateDto with only fields to be updated
+     * @param certificateDto new entity to replace existent
      * @return CertificateDto updated object
      */
     CertificateDto update(CertificateDto certificateDto);
+
+    /**
+     * Updates existing Certificate only by fields provided
+     *
+     * @param certificateUpdateDto with only fields to be updated
+     * @return CertificateDto updated object
+     */
+    CertificateDto update(CertificateUpdateDto certificateUpdateDto);
 
     /**
      * Deletes Certificate by its ID

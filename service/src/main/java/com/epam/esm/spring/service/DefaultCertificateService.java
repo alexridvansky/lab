@@ -4,8 +4,13 @@ import com.epam.esm.spring.repository.jdbc.dao.CertificateDao;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.Tag;
 import com.epam.esm.spring.service.dto.CertificateDto;
+import com.epam.esm.spring.service.dto.CertificateUpdateDto;
+import com.epam.esm.spring.service.dto.TagDto;
+import com.epam.esm.spring.service.exception.EntityIntersectionException;
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
+import com.epam.esm.spring.service.exception.SubEntryAlreadyAttachedException;
+import com.epam.esm.spring.service.exception.SubEntryNotFoundException;
 import com.epam.esm.spring.service.util.SearchRequestValidator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
@@ -13,8 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,36 +85,91 @@ public class DefaultCertificateService implements CertificateService {
         return modelMapper.map(certificate, CertificateDto.class);
     }
 
-    @Transactional
     @Override
     public CertificateDto update(CertificateDto certificateDto) {
-        Certificate certificate = certificateDao.findById(certificateDto.getId())
+        return null; //todo .....
+    }
+
+    @Transactional
+    @Override
+    public CertificateDto update(CertificateUpdateDto dataToUpdate) {
+        Certificate originalCertificate = certificateDao.findById(dataToUpdate.getId())
                 .orElseThrow(EntryNotFoundException::new);
 
-        if (certificateDto.getTags() != null) {
-            List<Tag> processedTags = tagService.processTagList(certificateDto.getTags().stream()
-                    .map(tagDto -> modelMapper.map(tagDto, Tag.class))
+        // Intersections check section
+        Set<String> tagsToAdd = null;
+        if (dataToUpdate.getTagsToAdd() != null) {
+            tagsToAdd = dataToUpdate.getTagsToAdd().stream()
+                    .map(TagDto::getName)
+                    .collect(Collectors.toSet());
+        }
+
+        Set<String> tagsToRemove = null;
+        if (dataToUpdate.getTagsToRemove() != null) {
+            tagsToRemove = dataToUpdate.getTagsToRemove().stream()
+                    .map(TagDto::getName)
+                    .collect(Collectors.toSet());
+        }
+
+        // intersections within toAdd and toRemove tag's names before accessing db
+        if (CollectionUtils.isNotEmpty(tagsToAdd) && CollectionUtils.isNotEmpty(tagsToRemove) &&
+                CollectionUtils.intersection(tagsToAdd, tagsToRemove).size() > 0) {
+            Set<String> tagsIntersected = new HashSet<>(CollectionUtils.intersection(tagsToAdd, tagsToRemove));
+            throw new EntityIntersectionException(tagsIntersected);
+        }
+
+        Set<String> tagsPresent = originalCertificate.getTags().stream()
+                .map(Tag::getName)
+                .collect(Collectors.toSet());
+
+        // intersections within toAdd and alreadyPresent tag's names before accessing db
+        if (CollectionUtils.isNotEmpty(tagsToAdd) && CollectionUtils.isNotEmpty(tagsPresent) &&
+                CollectionUtils.intersection(tagsToAdd, tagsPresent).size() > 0) {
+            Set<String> tagsAlreadyAttached = new HashSet<>(CollectionUtils.intersection(tagsToAdd, tagsPresent));
+            throw new SubEntryAlreadyAttachedException(tagsAlreadyAttached.toString());
+        }
+
+        // existence toRemove tags check before accessing db
+        if (CollectionUtils.isNotEmpty(tagsToRemove) && !tagsPresent.containsAll(tagsToRemove)) {
+            tagsToRemove.removeAll(tagsPresent);
+            throw new SubEntryNotFoundException(tagsToRemove.toString());
+        }
+
+        // removing tags if toRemove collection is present
+        if (CollectionUtils.isNotEmpty(tagsToRemove)) {
+            originalCertificate.getTags().removeAll(tagsToRemove.stream()
+                    .map(tagName -> modelMapper.map(tagService.findByName(tagName), Tag.class))
                     .collect(Collectors.toList()));
-            certificate.setTags(processedTags);
         }
 
-        if (certificateDto.getName() != null) {
-            certificate.setName(certificateDto.getName());
+        // adding tags if toAdd collection is present
+        if (CollectionUtils.isNotEmpty(tagsToAdd)) {
+            List<Tag> tagsToProcess = tagsToAdd.stream()
+                    .map(tagName -> modelMapper.map(tagService.findByName(tagName), Tag.class))
+                    .collect(Collectors.toList());
+
+            List<Tag> processedTags = tagService.processTagList(tagsToProcess);
+
+            originalCertificate.getTags().addAll(processedTags);
         }
 
-        if (certificateDto.getDescription() != null) {
-            certificate.setDescription(certificateDto.getDescription());
+        if (dataToUpdate.getName() != null) {
+            originalCertificate.setName(dataToUpdate.getName());
         }
 
-        if (certificateDto.getDuration() != null) {
-            certificate.setDuration(certificateDto.getDuration());
+        if (dataToUpdate.getDescription() != null) {
+            originalCertificate.setDescription(dataToUpdate.getDescription());
         }
 
-        if (certificateDto.getPrice() != null) {
-            certificate.setPrice(certificateDto.getPrice());
+        if (dataToUpdate.getDuration() != null) {
+            originalCertificate.setDuration(dataToUpdate.getDuration());
         }
 
-        return modelMapper.map(certificateDao.update(certificate), CertificateDto.class);
+        if (dataToUpdate.getPrice() != null) {
+            originalCertificate.setPrice(dataToUpdate.getPrice());
+        }
+
+        return modelMapper.map(certificateDao.update(originalCertificate), CertificateDto.class);
     }
 
 

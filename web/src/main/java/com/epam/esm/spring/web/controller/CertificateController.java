@@ -2,9 +2,9 @@ package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.CertificateService;
 import com.epam.esm.spring.service.dto.CertificateDto;
+import com.epam.esm.spring.service.dto.CertificateUpdateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -87,11 +87,10 @@ public class CertificateController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CertificateDto update(@Validated(CertificateDto.Update.class)
-                                     @RequestBody CertificateDto certificateDto,
+    public CertificateDto update(@Validated @RequestBody CertificateUpdateDto certificateUpdateDto,
                                  @PathVariable @Positive Long id) {
-        certificateDto.setId(id);
-        return certificateService.update(certificateDto);
+        certificateUpdateDto.setId(id);
+        return certificateService.update(certificateUpdateDto);
     }
 
     /**
