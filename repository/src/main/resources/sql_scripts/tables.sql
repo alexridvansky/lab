@@ -1,4 +1,4 @@
-CREATE TABLE gift_certificate
+CREATE TABLE IF NOT EXISTS gift_certificate
 (
     id                      BIGINT AUTO_INCREMENT,
     name                    varchar(100) NOT NULL UNIQUE,
@@ -10,14 +10,14 @@ CREATE TABLE gift_certificate
     PRIMARY KEY (id)
 );
 
-CREATE TABLE tag
+CREATE TABLE IF NOT EXISTS tag
 (
     id                  BIGINT AUTO_INCREMENT,
     name                VARCHAR(100) NOT NULL UNIQUE,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE certificate_tag_xref
+CREATE TABLE IF NOT EXISTS certificate_tag_xref
 (
     certificate_id          BIGINT,
     tag_id                  BIGINT,
@@ -30,9 +30,33 @@ CREATE TABLE certificate_tag_xref
         ON DELETE CASCADE
 );
 
-CREATE TABLE user
+CREATE TABLE IF NOT EXISTS user
 (
     id                  BIGINT AUTO_INCREMENT,
     username            VARCHAR(45) NOT NULL UNIQUE,
     PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS orders
+(
+    id                  BIGINT AUTO_INCREMENT,
+    total               DECIMAL NOT NULL,
+    purchase_date       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    user_id             BIGINT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id)
+        REFERENCES user(id)
+);
+
+CREATE TABLE IF NOT EXISTS order_certificate_xref
+(
+    order_id            BIGINT,
+    certificate_id      BIGINT,
+    PRIMARY KEY (order_id, certificate_id),
+    FOREIGN KEY (order_id)
+        REFERENCES orders(id)
+        ON DELETE CASCADE,
+    FOREIGN KEY (certificate_id)
+        REFERENCES gift_certificate(id)
+        ON DELETE CASCADE
 );
