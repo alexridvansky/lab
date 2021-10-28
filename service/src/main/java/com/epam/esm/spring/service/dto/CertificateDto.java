@@ -2,8 +2,10 @@ package com.epam.esm.spring.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
@@ -18,13 +20,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
-@Builder
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class CertificateDto {
-
-    private Long id;
+public class CertificateDto extends AbstractDto {
 
     @NotBlank
     @Pattern(regexp = "^[^-,.%&$ ][a-zA-Z0-9,.%&$ ]{2,100}+$")
@@ -52,4 +53,14 @@ public class CertificateDto {
 
     @Valid
     private List<TagDto> tags;
+
+    @Builder
+    public CertificateDto(Long id, String name, String description, BigDecimal price, Integer duration, List<TagDto> tags) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.duration = duration;
+        this.tags = tags;
+    }
 }
