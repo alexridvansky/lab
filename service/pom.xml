@@ -24,6 +24,12 @@
             <version>${spring.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.hateoas</groupId>
+            <artifactId>spring-hateoas</artifactId>
+            <version>${spring.hateoas.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.modelmapper.extensions</groupId>
             <artifactId>modelmapper-spring</artifactId>
             <version>${modelmapper.version}</version>
