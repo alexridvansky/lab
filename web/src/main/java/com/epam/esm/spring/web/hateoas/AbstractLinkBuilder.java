@@ -15,13 +15,6 @@ public abstract class AbstractLinkBuilder<T extends AbstractDto> implements Link
 
     protected static final String DELETE = "delete";
 
-    protected T addIdLink(T entity) {
-        Link removeLink = linkTo(methodOn(TagController.class).remove(entity.getId())).withRel("delete");
-        entity.add(removeLink);
-
-        return entity;
-    }
-
     protected <K extends Controller<AbstractDto>> T addRemoveLinks(T entity, Class<K> controllerClass) {
         Link removeLink = linkTo(methodOn(controllerClass).remove(entity.getId())).withRel(DELETE);
         entity.add(removeLink);
