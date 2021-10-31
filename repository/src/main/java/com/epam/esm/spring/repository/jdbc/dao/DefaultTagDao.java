@@ -2,7 +2,6 @@ package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.model.Tag;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,7 +18,6 @@ public class DefaultTagDao implements TagDao {
 
 
     @Override
-    @Transactional
     public Tag insert(Tag tag) {
         entityManager.persist(tag);
         return tag;
@@ -32,7 +30,7 @@ public class DefaultTagDao implements TagDao {
     }
 
     @Override
-    public Optional<Tag> findById(long id) {
+    public Optional<Tag> findById(Long id) {
         return Optional.ofNullable(entityManager.find(Tag.class, id));
     }
 
@@ -54,7 +52,7 @@ public class DefaultTagDao implements TagDao {
     }
 
     @Override
-    public boolean isExist(long id) {
+    public boolean isExist(Long id) {
         return (long) entityManager.createQuery("SELECT COUNT(t) FROM Tag t WHERE t.id = :id")
                 .setParameter("id", id)
                 .getSingleResult() > EMPTY_RESULT;

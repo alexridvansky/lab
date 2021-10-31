@@ -23,7 +23,7 @@ public class DefaultOrderDao implements OrderDao {
     }
 
     @Override
-    public Optional<Order> findById(long id) {
+    public Optional<Order> findById(Long id) {
         return Optional.ofNullable(entityManager.find(Order.class, id));
     }
 
@@ -31,5 +31,10 @@ public class DefaultOrderDao implements OrderDao {
     public Order insert(Order order) {
         entityManager.persist(order);
         return order;
+    }
+
+    @Override
+    public void delete(Order order) {
+        entityManager.remove(order);
     }
 }

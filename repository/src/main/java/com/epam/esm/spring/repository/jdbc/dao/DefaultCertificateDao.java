@@ -39,7 +39,7 @@ public class DefaultCertificateDao implements CertificateDao {
     }
 
     @Override
-    public Optional<Certificate> findById(long id) {
+    public Optional<Certificate> findById(Long id) {
         return Optional.ofNullable(entityManager.find(Certificate.class, id));
     }
 

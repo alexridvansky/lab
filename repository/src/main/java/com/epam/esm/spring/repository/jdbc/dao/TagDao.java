@@ -5,21 +5,7 @@ import com.epam.esm.spring.repository.model.Tag;
 import java.util.List;
 import java.util.Optional;
 
-public interface TagDao extends Dao<Tag> {
-    /**
-     * Is used to get the list of all certificates' tags
-     *
-     * @return List<Tag>
-     */
-    List<Tag> findAll();
-
-    /**
-     * Is used to get Tag by id given
-     *
-     * @param id is id of the Tag
-     * @return Tag
-     */
-    Optional<Tag> findById(long id);
+public interface TagDao extends CreateDeleteDao<Tag> {
 
     /**
      * Is used to get Tag by name given
@@ -28,14 +14,6 @@ public interface TagDao extends Dao<Tag> {
      * @return Tag
      */
     Optional<Tag> findByName(String name);
-
-    /**
-     * Adds new entry to the db
-     *
-     * @param tag Tag.class object to be added to
-     * @return Tag.class object just added to the db
-     */
-    Tag insert(Tag tag);
 
     /**
      * Is used to check it out whether Tag with NAME given exists
@@ -51,12 +29,5 @@ public interface TagDao extends Dao<Tag> {
      * @param id the Tag ID
      * @return true in case such Tag found in the DB
      */
-    boolean isExist(long id);
-
-    /**
-     * Is used to delete tag entry.
-     *
-     * @param tag - tag to be deleted
-     */
-    void delete(Tag tag);
+    boolean isExist(Long id);
 }

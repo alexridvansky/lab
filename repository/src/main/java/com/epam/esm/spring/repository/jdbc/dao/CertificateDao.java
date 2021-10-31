@@ -4,15 +4,8 @@ import com.epam.esm.spring.repository.model.Certificate;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-public interface CertificateDao extends Dao<Certificate> {
-    /**
-     * Returns the list of certificates.
-     *
-     * @return List<Certificate>
-     */
-    List<Certificate> findAll();
+public interface CertificateDao extends CreateDeleteDao<Certificate> {
 
     /**
      * Returns the list of certificates accordingly to search parameters.
@@ -21,22 +14,6 @@ public interface CertificateDao extends Dao<Certificate> {
      * @return List<Certificate>
      */
     List<Certificate> findBy(Map<String, String> params);
-
-    /**
-     * Returns Certificate by id given.
-     *
-     * @param id is id of the Certificate
-     * @return Certificate if found or Optional.empty if not
-     */
-    Optional<Certificate> findById(long id);
-
-    /**
-     * Adds new entry of Certificate to the db
-     *
-     * @param certificate Certificate.class object to be added to
-     * @return Certificate.class object just added to the db
-     */
-    Certificate insert(Certificate certificate);
 
     /**
      * Updates certificate entry in the db
