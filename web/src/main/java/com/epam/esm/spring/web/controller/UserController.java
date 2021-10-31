@@ -2,47 +2,72 @@ package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.UserService;
 import com.epam.esm.spring.service.dto.UserDto;
+import com.epam.esm.spring.web.hateoas.LinkBuilder;
+import com.epam.esm.spring.web.hateoas.UserLinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * Controller provides service within User.class entities.
- */
+
 @RestController
 @Validated
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping(value = "/api/users")
+public class UserController implements Controller<UserDto> {
+
     private final UserService userService;
+    private final LinkBuilder<UserDto> linkBuilder;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService,
+                          UserLinkBuilder linkBuilder) {
         this.userService = userService;
+        this.linkBuilder = linkBuilder;
     }
 
-    /**
-     * Is used for getting list of Users.
-     *
-     * @return List<UserDto> the list of users
-     */
     @GetMapping()
     public List<UserDto> findAll() {
-        return userService.findAll();
+        return userService.findAll().stream()
+                .map(linkBuilder::addFindByIdLink)
+                .map(linkBuilder::addRemoveLink)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Is used for getting User by ID.
-     *
-     * @return UserDto
-     */
     @GetMapping("/{id}")
     public UserDto findById(@PathVariable @Positive Long id) {
-        return userService.findById(id);
+        UserDto user = userService.findById(id);
+        linkBuilder.addFindAllLink(user);
+        linkBuilder.addRemoveLink(user);
+
+        return user;
+    }
+
+    @Override
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto insert(@RequestBody UserDto userDto) {
+        UserDto user = userService.insert(userDto);
+        linkBuilder.addFindAllLink(user);
+        linkBuilder.addRemoveLink(user);
+
+        return user;
+    }
+
+    @Override
+    public ResponseEntity<Void> remove(Long id) {
+        userService.deleteById(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

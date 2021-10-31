@@ -5,6 +5,7 @@ import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.CertificateUpdateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +30,7 @@ import java.util.Map;
 @RestController
 @Validated
 @RequestMapping("/api/certificates")
-public class CertificateController {
+public class CertificateController implements Controller<CertificateDto> {
     private final CertificateService certificateService;
 
     @Autowired
@@ -37,14 +38,14 @@ public class CertificateController {
         this.certificateService = certificateService;
     }
 
-    /**
-     * Is used for getting Certificate by ID
-     *
-     * @return CertificateDto
-     */
     @GetMapping("/{id}")
     public CertificateDto findById(@PathVariable @Positive Long id) {
         return certificateService.findById(id);
+    }
+
+    @Override
+    public List<CertificateDto> findAll() {
+        return certificateService.findAll();
     }
 
     /**
@@ -63,7 +64,7 @@ public class CertificateController {
             @RequestParam(required = false, name = "sort", defaultValue = "") String sort,
             @RequestParam(required = false, name = "order", defaultValue = "") String order) {
         if (tag.isEmpty() && search.isEmpty() && sort.isEmpty() && order.isEmpty()) {
-            return certificateService.findAll();
+            return findAll();
         } else {
             Map<String, String> params = new HashMap<>();
             params.put("tag", tag);
@@ -74,14 +75,9 @@ public class CertificateController {
         }
     }
 
-    /**
-     * Is used for inserting new Certificate
-     *
-     * @return CertificateDto just inserted
-     */
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-        public CertificateDto insert(@Validated @RequestBody CertificateDto certificateDto) {
+    public CertificateDto insert(@RequestBody CertificateDto certificateDto) {
         return certificateService.insert(certificateDto);
     }
 
@@ -101,13 +97,10 @@ public class CertificateController {
         return certificateService.update(certificateDto);
     }
 
-    /**
-     * Is used for Removing Certificate by ID given
-     *
-     * @param id the id of Certificate to remove
-     */
     @DeleteMapping("/{id}")
-    public CertificateDto deleteCertificate(@PathVariable @Positive Long id) {
-        return certificateService.deleteById(id);
+    public ResponseEntity<Void> remove(@PathVariable Long id) {
+        certificateService.deleteById(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
