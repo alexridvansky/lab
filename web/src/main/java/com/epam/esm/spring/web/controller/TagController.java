@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,10 +66,14 @@ public class TagController implements Controller<TagDto> {
                 .collect(Collectors.toList());
     }
 
-    @Override
+    /**
+     * Inserts new Tag
+     *
+     * @return TagDto just inserted
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TagDto insert(@RequestBody TagDto tagDto) {
+    public TagDto insert(@Valid @RequestBody TagDto tagDto) {
         return tagService.insert(tagDto);
     }
 

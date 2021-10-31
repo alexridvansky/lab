@@ -10,10 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Positive;
@@ -47,17 +44,6 @@ public class UserController implements Controller<UserDto> {
     @GetMapping("/{id}")
     public UserDto findById(@PathVariable @Positive Long id) {
         UserDto user = userService.findById(id);
-        linkBuilder.addFindAllLink(user);
-        linkBuilder.addRemoveLink(user);
-
-        return user;
-    }
-
-    @Override
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserDto insert(@RequestBody UserDto userDto) {
-        UserDto user = userService.insert(userDto);
         linkBuilder.addFindAllLink(user);
         linkBuilder.addRemoveLink(user);
 

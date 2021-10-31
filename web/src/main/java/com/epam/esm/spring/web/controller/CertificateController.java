@@ -38,8 +38,9 @@ public class CertificateController implements Controller<CertificateDto> {
         this.certificateService = certificateService;
     }
 
+    @Override
     @GetMapping("/{id}")
-    public CertificateDto findById(@PathVariable @Positive Long id) {
+    public CertificateDto findById(@PathVariable Long id) {
         return certificateService.findById(id);
     }
 
@@ -75,12 +76,22 @@ public class CertificateController implements Controller<CertificateDto> {
         }
     }
 
+    /**
+     * Inserts new Certificate
+     *
+     * @return CertificateDto just inserted
+     */
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public CertificateDto insert(@RequestBody CertificateDto certificateDto) {
         return certificateService.insert(certificateDto);
     }
 
+    /**
+     * Updates Certificate partially
+     *
+     * @return CertificateDto just updated
+     */
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CertificateDto update(@Validated @RequestBody CertificateUpdateDto certificateUpdateDto,
@@ -89,6 +100,11 @@ public class CertificateController implements Controller<CertificateDto> {
         return certificateService.update(certificateUpdateDto);
     }
 
+    /**
+     * Updates Certificate entirely
+     *
+     * @return CertificateDto just updated
+     */
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CertificateDto update(@Validated @RequestBody CertificateDto certificateDto,
