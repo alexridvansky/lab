@@ -36,7 +36,6 @@ public class ControllerAdvisor {
     private static final String ERROR_CODE = "errorCode";
     private static final String ERROR_DESCRIPTION = "errorDescription";
     private static final String ERROR_ITEMS_IN_CONFLICT = "Items in conflict: ";
-    private static final String ERROR_ITEMS_NOT_FOUND = "Items not found: ";
     private static final int NOT_VALID_REQUEST_CODE = 40000;
     private static final int NOT_VALID_EXCEPTION_CODE = 40008;
     private final ResourceBundleMessageSource messages;
@@ -48,7 +47,8 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(EntryNotFoundException.class)
     public ResponseEntity<Object> handleEntryNotFoundException(EntryNotFoundException e, Locale locale) {
-        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(createResponse(e.getDescription(), e.getErrorCode(), e.getItems(), locale),
+                HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EntryAlreadyExistsException.class)
@@ -101,23 +101,26 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(SubEntryNotFoundException.class)
     public ResponseEntity<Object> handleSubEntryNotFoundException(SubEntryNotFoundException e, Locale locale) {
-        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale,
-                ERROR_ITEMS_NOT_FOUND + e.getDetails()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(createResponse(e.getDescription(), e.getErrorCode(), e.getItems(), locale)
+                , HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e, Locale locale) {
-        return new ResponseEntity<>(createResponse(NOT_VALID_REQUEST_CODE, locale, e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(createResponse(NOT_VALID_REQUEST_CODE, locale, e.getLocalizedMessage()),
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, Locale locale) {
-        return new ResponseEntity<>(createResponse(NOT_VALID_REQUEST_CODE, locale, e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(createResponse(NOT_VALID_REQUEST_CODE, locale, e.getLocalizedMessage()),
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Object> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, Locale locale) {
-        return new ResponseEntity<>(createResponse(NOT_VALID_REQUEST_CODE, locale, e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(createResponse(NOT_VALID_REQUEST_CODE, locale, e.getLocalizedMessage()),
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -125,6 +128,15 @@ public class ControllerAdvisor {
         String message = resolveBindingResultErrors(e.getBindingResult());
 
         return new ResponseEntity<>(createResponse(NOT_VALID_EXCEPTION_CODE, locale, message), HttpStatus.BAD_REQUEST);
+    }
+
+    private Map<String, Object> createResponse(String errorMsg, int errorCode, String errorDescription, Locale locale) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put(ERROR_MESSAGE, messages.getMessage(errorMsg, null, locale));
+        response.put(ERROR_CODE, errorCode);
+        response.put(ERROR_DESCRIPTION, errorDescription);
+
+        return response;
     }
 
     private Map<String, Object> createResponse(int errorCode, Locale locale) {
