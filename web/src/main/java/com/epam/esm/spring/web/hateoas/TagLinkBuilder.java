@@ -11,4 +11,14 @@ public class TagLinkBuilder extends AbstractLinkBuilder<TagDto> {
     public TagDto addRemoveLink(TagDto tagDto) {
         return addRemoveLinks(tagDto, TagController.class);
     }
+
+    @Override
+    public TagDto addFindAllLink(TagDto tagDto) {
+        return addAllFindAllLink(tagDto, TagController.class);
+    }
+
+    @Override
+    public TagDto addFindByIdLink(TagDto tagDto) {
+        return addAllFindByIdLink(tagDto, TagController.class);
+    }
 }
