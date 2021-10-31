@@ -35,7 +35,6 @@ public class RepositoryConfig {
     private int poolSize;
 
 
-
     @Bean
     public LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean() {
         LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
@@ -46,11 +45,10 @@ public class RepositoryConfig {
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager(){
-        JpaTransactionManager transactionManager
-                = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(
-                localContainerEntityManagerFactoryBean().getObject() );
+    public PlatformTransactionManager transactionManager() {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(localContainerEntityManagerFactoryBean().getObject());
+
         return transactionManager;
     }
 
