@@ -4,6 +4,7 @@ import com.epam.esm.spring.service.dto.OrderDto;
 import com.epam.esm.spring.service.dto.OrderInsertDto;
 
 public interface OrderService extends CrudService<OrderDto> {
+
     /**
      * Adds new entry to the db
      *

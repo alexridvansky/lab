@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.epam.esm.spring.service.exception.ErrorMessage.ERROR_USER_NOT_FOUND;
+
 @Service
 public class DefaultUserService implements UserService {
 
@@ -34,11 +36,23 @@ public class DefaultUserService implements UserService {
 
     @Override
     public UserDto findById(Long id) {
-        return userDao.findById(id).map(user -> modelMapper.map(user, UserDto.class)).orElseThrow(EntryNotFoundException::new);
+        return userDao.findById(id).map(user -> modelMapper.map(user, UserDto.class))
+                .orElseThrow(() -> new EntryNotFoundException(ERROR_USER_NOT_FOUND, id.toString()));
     }
 
     @Override
     public User findByUsername(String username) {
-        return userDao.findByUsername(username).orElseThrow(EntryNotFoundException::new);
+        return userDao.findByUsername(username)
+                .orElseThrow(() -> new EntryNotFoundException(ERROR_USER_NOT_FOUND, username));
+    }
+
+    @Override
+    public UserDto insert(UserDto userDto) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public UserDto deleteById(Long id) {
+        throw new UnsupportedOperationException();
     }
 }

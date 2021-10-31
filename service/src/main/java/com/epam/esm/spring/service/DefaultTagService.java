@@ -13,6 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.epam.esm.spring.service.exception.ErrorMessage.ERROR_TAG_NOT_FOUND;
+import static com.epam.esm.spring.service.exception.ErrorMessage.ID;
+import static com.epam.esm.spring.service.exception.ErrorMessage.NAME;
+
 @Service
 public class DefaultTagService implements TagService {
 
@@ -34,19 +38,20 @@ public class DefaultTagService implements TagService {
     }
 
     @Override
-    public TagDto findById(long id) {
+    public TagDto findById(Long id) {
         return tagDao.findById(id)
                 .map(tag -> modelMapper.map(tag, TagDto.class))
-                .orElseThrow(EntryNotFoundException::new);
+                .orElseThrow(() -> new EntryNotFoundException(ERROR_TAG_NOT_FOUND, ID + id.toString()));
     }
 
     @Override
     public TagDto findByName(String name) {
         return tagDao.findByName(name)
                 .map(tag -> modelMapper.map(tag, TagDto.class))
-                .orElseThrow(EntryNotFoundException::new);
+                .orElseThrow(() -> new EntryNotFoundException(ERROR_TAG_NOT_FOUND, NAME + name));
     }
 
+    @Transactional
     @Override
     public TagDto insert(TagDto tagDto) {
         if (tagDao.isExist(tagDto.getName())) {
@@ -65,9 +70,9 @@ public class DefaultTagService implements TagService {
 
     @Transactional
     @Override
-    public TagDto deleteById(long id) {
+    public TagDto deleteById(Long id) {
         Tag tagToBeDeleted = tagDao.findById(id)
-                .orElseThrow(EntryNotFoundException::new);
+                .orElseThrow(() -> new EntryNotFoundException(ERROR_TAG_NOT_FOUND, ID + id.toString()));
 
         tagDao.delete(tagToBeDeleted);
 

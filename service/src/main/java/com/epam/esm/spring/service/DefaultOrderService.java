@@ -88,8 +88,14 @@ public class DefaultOrderService implements OrderService {
         return null;
     }
 
+    @Transactional
     @Override
     public OrderDto deleteById(Long id) {
-        return null;
+        Order order = orderDao.findById(id)
+                .orElseThrow(() -> new EntryNotFoundException(ERROR_ORDER_NOT_FOUND, ID + id));
+
+        orderDao.delete(order);
+
+        return modelMapper.map(order, OrderDto.class);
     }
 }

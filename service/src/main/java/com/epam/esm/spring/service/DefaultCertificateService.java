@@ -25,6 +25,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.epam.esm.spring.service.exception.ErrorMessage.ERROR_CERTIFICATE_NOT_FOUND;
+import static com.epam.esm.spring.service.exception.ErrorMessage.ERROR_TAG_NOT_FOUND;
+
 @Service
 public class DefaultCertificateService implements CertificateService {
 
@@ -63,9 +66,10 @@ public class DefaultCertificateService implements CertificateService {
     }
 
     @Override
-    public CertificateDto findById(long id) {
+    public CertificateDto findById(Long id) {
         return modelMapper.map(certificateDao.findById(id)
-                .orElseThrow(EntryNotFoundException::new), CertificateDto.class);
+                .orElseThrow(() -> new EntryNotFoundException(ERROR_CERTIFICATE_NOT_FOUND, id.toString())),
+                CertificateDto.class);
     }
 
     @Transactional
@@ -91,7 +95,8 @@ public class DefaultCertificateService implements CertificateService {
     @Override
     public CertificateDto update(CertificateDto certificateDto) {
         Certificate originalCertificate = certificateDao.findById(certificateDto.getId())
-                .orElseThrow(EntryNotFoundException::new);
+                .orElseThrow(() -> new EntryNotFoundException(ERROR_CERTIFICATE_NOT_FOUND,
+                        certificateDto.getId().toString()));
 
         if (certificateDao.isExist(certificateDto.getName()) &&
                 !certificateDto.getName().equals(originalCertificate.getName())) {
@@ -122,7 +127,8 @@ public class DefaultCertificateService implements CertificateService {
     @Override
     public CertificateDto update(CertificateUpdateDto dataToUpdate) {
         Certificate originalCertificate = certificateDao.findById(dataToUpdate.getId())
-                .orElseThrow(EntryNotFoundException::new);
+                .orElseThrow(() -> new EntryNotFoundException(ERROR_CERTIFICATE_NOT_FOUND,
+                        dataToUpdate.getId().toString()));
 
         // Intersections check section
         Set<String> tagsToAdd = null;
@@ -160,25 +166,17 @@ public class DefaultCertificateService implements CertificateService {
         // existence toRemove tags check before accessing db
         if (CollectionUtils.isNotEmpty(tagsToRemove) && !tagsPresent.containsAll(tagsToRemove)) {
             tagsToRemove.removeAll(tagsPresent);
-            throw new SubEntryNotFoundException(tagsToRemove.toString());
+            throw new SubEntryNotFoundException(ERROR_TAG_NOT_FOUND, tagsToRemove.toString());
         }
 
         // removing tags if toRemove collection is present
         if (CollectionUtils.isNotEmpty(tagsToRemove)) {
-            originalCertificate.getTags().removeAll(tagsToRemove.stream()
-                    .map(tagName -> modelMapper.map(tagService.findByName(tagName), Tag.class))
-                    .collect(Collectors.toList()));
+            detachTags(originalCertificate, tagsToRemove);
         }
 
-        // adding tags if toAdd collection is present
+        // adding tags if tagsToAdd collection is present and contains any items
         if (CollectionUtils.isNotEmpty(tagsToAdd)) {
-            List<Tag> tagsToProcess = tagsToAdd.stream()
-                    .map(name -> Tag.builder().name(name).build())
-                    .collect(Collectors.toList());
-
-            List<Tag> tagsProcessed = tagService.processTagList(tagsToProcess);
-
-            originalCertificate.getTags().addAll(tagsProcessed);
+            attachTags(originalCertificate, tagsToAdd);
         }
 
         if (dataToUpdate.getName() != null) {
@@ -200,11 +198,30 @@ public class DefaultCertificateService implements CertificateService {
         return modelMapper.map(certificateDao.update(originalCertificate), CertificateDto.class);
     }
 
+    private void detachTags(Certificate originalCertificate, Set<String> tagsToRemove) {
+        originalCertificate.getTags().removeAll(tagsToRemove.stream()
+                .map(tagName -> modelMapper.map(tagService.findByName(tagName), Tag.class))
+                .collect(Collectors.toList()));
+    }
+
+    private void attachTags(Certificate originalCertificate, Set<String> tagsToAdd) {
+        List<Tag> tagsToProcess = tagsToAdd.stream()
+                .map(name -> Tag.builder()
+                        .name(name)
+                        .build())
+                .collect(Collectors.toList());
+
+        List<Tag> tagsProcessed = tagService.processTagList(tagsToProcess);
+
+        originalCertificate.getTags().addAll(tagsProcessed);
+    }
+
 
     @Transactional
     @Override
-    public CertificateDto deleteById(long id) {
-        Certificate certificate = certificateDao.findById(id).orElseThrow(EntryNotFoundException::new);
+    public CertificateDto deleteById(Long id) {
+        Certificate certificate = certificateDao.findById(id)
+                .orElseThrow(() -> new EntryNotFoundException(ERROR_CERTIFICATE_NOT_FOUND, id.toString()));
         certificateDao.delete(certificate);
 
         return modelMapper.map(certificate, CertificateDto.class);
