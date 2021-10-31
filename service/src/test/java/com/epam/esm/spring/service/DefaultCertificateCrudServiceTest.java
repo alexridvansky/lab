@@ -30,7 +30,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class DefaultCertificateServiceTest {
+class DefaultCertificateCrudServiceTest {
     private static final long FIRST_TAG_ID = 1;
     private static final long SECOND_TAG_ID = 2;
 
