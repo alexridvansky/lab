@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,16 +30,16 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestConfigJpa.class})
 class DefaultTagDaoTest {
-    private static final int ONE = 1;
-    private static final int TWO = 2;
-    private static final int THREE = 3;
-    private static final int FOUR = 4;
-    private static final int FIVE = 5;
-    private static final int SIX = 6;
-    private static final int SEVEN = 7;
-    private static final int EIGHT = 8;
-    private static final int NINE = 9;
-    private static final int TEN = 10;
+    private static final long ONE = 1L;
+    private static final long TWO = 2L;
+    private static final long THREE = 3L;
+    private static final long FOUR = 4L;
+    private static final long FIVE = 5L;
+    private static final long SIX = 6L;
+    private static final long SEVEN = 7L;
+    private static final long EIGHT = 8L;
+    private static final long NINE = 9L;
+    private static final long TEN = 10L;
     private static final String TAG_ONE_NAME = "food";
     private static final String TAG_TWO_NAME = "bbq";
     private static final String TAG_TEN_NAME = "non_existing";
@@ -121,7 +122,7 @@ class DefaultTagDaoTest {
     @ParameterizedTest
     @Order(1)
     @MethodSource("dataSet")
-    void findById(int tagId, Tag tag) {
+    void findById(long tagId, Tag tag) {
         // Providing existing Tags' IDs EQUALS are expected
         Optional<Tag> actual = tagDao.findById(tagId);
         assertEquals(tag, actual.get());
@@ -140,7 +141,7 @@ class DefaultTagDaoTest {
     @ParameterizedTest
     @ValueSource(ints = {11, 13, 15, 30, 150, Integer.MAX_VALUE})
     @Order(1)
-    void findByNonExistingId(int tagId) {
+    void findByNonExistingId(long tagId) {
         // Providing not existing Id Optional.empty is expected
         Optional<Tag> actual = tagDao.findById(tagId);
         assertEquals(Optional.empty(), actual);
@@ -171,9 +172,9 @@ class DefaultTagDaoTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT})
+    @ValueSource(longs = {ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT})
     @Order(1)
-    void isExistWithExistingId(int tagId) {
+    void isExistWithExistingId(Long tagId) {
         // Providing existing Tags' IDs TRUE is expected
         boolean actual = tagDao.isExist(tagId);
         assertTrue(actual);
@@ -188,9 +189,9 @@ class DefaultTagDaoTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT})
+    @ValueSource(longs = {ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT})
     @Order(1)
-    void isUsed(int tagId) {
+    void isUsed(Long tagId) {
         // Providing Tags' IDs which are associated with any certificates expected TRUE
         boolean actual = tagDao.isExist(tagId);
         assertTrue(actual);
@@ -198,6 +199,7 @@ class DefaultTagDaoTest {
 
     @Test
     @Order(3)
+    @Transactional
     void deleteById() {
         // Trying to delete existing Tag exception aren't expected
         tagDao.delete(tag_one);
@@ -213,6 +215,7 @@ class DefaultTagDaoTest {
 
     @Test
     @Order(4)
+    @Transactional
     void insert() {
         // Trying to add new Tag we are expecting to get the same tag back
         Tag newTag = Tag.builder().id(11L).name("somename").build();
@@ -222,6 +225,7 @@ class DefaultTagDaoTest {
 
     @Test
     @Order(4)
+    @Transactional
     void insertAlreadyExistingEntryExceptionExpected() {
         // Inserting Tag which is already in the DB we exception is expected
         assertThrowsExactly(DuplicateKeyException.class, () -> tagDao.insert(tag_five));
