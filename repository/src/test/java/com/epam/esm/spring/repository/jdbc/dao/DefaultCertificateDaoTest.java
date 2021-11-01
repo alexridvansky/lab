@@ -2,6 +2,7 @@ package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.config.TestConfigJpa;
 import com.epam.esm.spring.repository.model.Certificate;
+import com.epam.esm.spring.repository.model.CertificateParam;
 import com.epam.esm.spring.repository.model.Tag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -11,7 +12,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,7 +43,9 @@ class DefaultCertificateDaoTest {
     private static Certificate cert_one;
     private static Certificate cert_two;
     private static Certificate cert_three;
-    private final DefaultCertificateDao certificateDao;
+    private static CertificateParam param;
+    private CertificateDao certificateDao;
+    private List<String> tagNames;
     private List<Certificate> findAllExpected;
     private List<Certificate> findByExpected;
     private Map<String, String> params;
@@ -137,11 +138,12 @@ class DefaultCertificateDaoTest {
                 .tags(Arrays.asList(tag_four, tag_five, tag_six, tag_seven, tag_eight))
                 .build();
 
-        params = new HashMap<>();
-        params.put("tag", "beer");
-        params.put("search", "week");
-        params.put("sort", "price");
-        params.put("order", "asc");
+        tagNames = Collections.singletonList("fitness");
+
+        param = CertificateParam.builder()
+                .tags(tagNames)
+                .search("Second")
+                .build();
 
         findAllExpected = Arrays.asList(cert_one, cert_two, cert_three);
         findByExpected = Collections.singletonList(cert_one);
@@ -159,7 +161,7 @@ class DefaultCertificateDaoTest {
     @Order(1)
     void findBy() {
         // Asking the list of certificates by parameters given expected the following list
-        List<Certificate> actuals = certificateDao.findBy(params);
+        List<Certificate> actuals = certificateDao.findBy(param);
         assertEquals(findByExpected, actuals);
     }
 

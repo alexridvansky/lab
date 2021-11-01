@@ -3,8 +3,10 @@ package com.epam.esm.spring.service;
 import com.epam.esm.spring.repository.jdbc.dao.CertificateDao;
 import com.epam.esm.spring.repository.jdbc.dao.TagDao;
 import com.epam.esm.spring.repository.model.Certificate;
+import com.epam.esm.spring.repository.model.CertificateParam;
 import com.epam.esm.spring.repository.model.Tag;
 import com.epam.esm.spring.service.dto.CertificateDto;
+import com.epam.esm.spring.service.dto.CertificateParamDto;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.util.SearchRequestValidator;
@@ -19,9 +21,7 @@ import org.modelmapper.ModelMapper;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -104,10 +104,17 @@ class DefaultCertificateCrudServiceTest {
 
     private final List<CertificateDto> certificatesDtoByParam = Collections.singletonList(secondCertificateDto);
 
-    public Map<String, String> paramMap = new HashMap<String, String>() {{
-        put("tag", "fitness");
-        put("search", "Second");
-    }};
+    private final List<String> tagNames = Collections.singletonList("fitness");
+
+    private final CertificateParam param = CertificateParam.builder()
+            .tags(tagNames)
+            .search("Second")
+            .build();
+
+    private final CertificateParamDto paramDto = CertificateParamDto.builder()
+            .tags(tagNames)
+            .search("Second")
+            .build();
 
     @InjectMocks
     private DefaultCertificateService certificateService;
@@ -146,9 +153,9 @@ class DefaultCertificateCrudServiceTest {
     }
 
     @Test
-    void findAllByParam() {
-        when(certificateDao.findBy(paramMap)).thenReturn(certificatesByParams);
-        List<CertificateDto> actual = certificateService.findBy(paramMap);
+    void findBy() {
+        when(certificateDao.findBy(param)).thenReturn(certificatesByParams);
+        List<CertificateDto> actual = certificateService.findBy(paramDto);
         assertEquals(certificatesDtoByParam, actual);
     }
 
