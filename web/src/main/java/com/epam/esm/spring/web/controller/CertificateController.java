@@ -3,6 +3,7 @@ package com.epam.esm.spring.web.controller;
 import com.epam.esm.spring.service.CertificateService;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.CertificateUpdateDto;
+import com.epam.esm.spring.web.config.ConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,11 +32,15 @@ import java.util.Map;
 @Validated
 @RequestMapping("/api/certificates")
 public class CertificateController implements Controller<CertificateDto> {
+
     private final CertificateService certificateService;
+    private final ConfigProperties properties;
 
     @Autowired
-    public CertificateController(CertificateService certificateService) {
+    public CertificateController(CertificateService certificateService,
+                                 ConfigProperties properties) {
         this.certificateService = certificateService;
+        this.properties = properties;
     }
 
     @Override
@@ -45,7 +50,12 @@ public class CertificateController implements Controller<CertificateDto> {
     }
 
     @Override
-    public List<CertificateDto> findAll() {
+    @RequestMapping(params = { "page", "size" })
+    public List<CertificateDto> findAll(@RequestParam(name = "page", required = false) Integer page,
+                                        @RequestParam(name = "size", required = false) Integer size) {
+        if (page == null) { page = properties.getOffsetDefault(); }
+        if (size == null) { size = properties.getLimitDefault(); }
+
         return certificateService.findAll();
     }
 
@@ -58,14 +68,14 @@ public class CertificateController implements Controller<CertificateDto> {
      * @param order  ASC or DESC
      * @return List<CertificateDto> the list of certificates
      */
-    @GetMapping()
+    @GetMapping
     public List<CertificateDto> findAll(
             @RequestParam(required = false, name = "tag", defaultValue = "") String tag,
             @RequestParam(required = false, name = "search", defaultValue = "") String search,
             @RequestParam(required = false, name = "sort", defaultValue = "") String sort,
             @RequestParam(required = false, name = "order", defaultValue = "") String order) {
         if (tag.isEmpty() && search.isEmpty() && sort.isEmpty() && order.isEmpty()) {
-            return findAll();
+            return findAll(properties.getOffsetDefault(), properties.getLimitDefault());
         } else {
             Map<String, String> params = new HashMap<>();
             params.put("tag", tag);

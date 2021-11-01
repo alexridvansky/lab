@@ -4,7 +4,11 @@ import com.epam.esm.spring.service.dto.AbstractDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
@@ -26,7 +30,9 @@ public interface Controller<K extends AbstractDto> {
      *
      * @return List<EntityDto> the list of entities
      */
-    List<K> findAll();
+//    @RequestMapping(params = { "page", "size" })
+    List<K> findAll(@Positive @RequestParam(name = "page", required = false) Integer page,
+                    @Positive @RequestParam(name = "size", required = false) Integer size);
 
     /**
      * Removes Entity by its ID

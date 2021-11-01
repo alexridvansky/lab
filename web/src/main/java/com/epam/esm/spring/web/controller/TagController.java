@@ -2,6 +2,7 @@ package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.TagService;
 import com.epam.esm.spring.service.dto.TagDto;
+import com.epam.esm.spring.web.config.ConfigProperties;
 import com.epam.esm.spring.web.hateoas.LinkBuilder;
 import com.epam.esm.spring.web.hateoas.TagLinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,27 +26,20 @@ import java.util.stream.Collectors;
 
 
 @RestController
-@PropertySource("classpath:pagination.properties")
 @RequestMapping(value = "/api/tags")
 public class TagController implements Controller<TagDto> {
 
     private final TagService tagService;
     private final LinkBuilder<TagDto> linkBuilder;
-
-    @Value("${offset-default}")
-    private String offsetDefault;
-    @Value("${limit-default}")
-    private String limitDefault;
-    @Value("${limit-min}")
-    private String limitMin;
-    @Value("${limit-max}")
-    private String limitMax;
+    private final ConfigProperties properties;
 
     @Autowired
     public TagController(TagService tagService,
-                         TagLinkBuilder linkBuilder) {
+                         TagLinkBuilder linkBuilder,
+                         ConfigProperties properties) {
         this.tagService = tagService;
         this.linkBuilder = linkBuilder;
+        this.properties = properties;
     }
 
     @Override
@@ -59,7 +54,11 @@ public class TagController implements Controller<TagDto> {
 
     @Override
     @GetMapping()
-    public List<TagDto> findAll() {
+    public List<TagDto> findAll(@RequestParam(name = "page", required = false) Integer page,
+                                @RequestParam(name = "size", required = false) Integer size) {
+        if (page == null) { page = properties.getOffsetDefault(); }
+        if (size == null) { size = properties.getLimitDefault(); }
+
         return tagService.findAll().stream()
                 .map(linkBuilder::addFindByIdLink)
                 .map(linkBuilder::addRemoveLink)
