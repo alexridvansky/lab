@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CertificateParamDto {
 
-    private List<String> tags;
+    private Set<String> tags;
 
     private String search;
 

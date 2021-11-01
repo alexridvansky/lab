@@ -13,12 +13,6 @@ import java.util.stream.Stream;
 @Component
 public class SearchRequestValidator {
 
-    private final TagService tagService;
-
-    public SearchRequestValidator(TagService tagService) {
-        this.tagService = tagService;
-    }
-
     public CertificateParam validateRequest(CertificateParamDto paramDto) {
 
         if (StringUtils.isNotEmpty(paramDto.getSort()) && CertificateFieldType.getNames()
@@ -27,7 +21,7 @@ public class SearchRequestValidator {
         }
 
         if (StringUtils.isNotEmpty(paramDto.getOrder()) && Stream.of("ASC", "DESC").noneMatch(value ->
-                value.equals(paramDto.getOrder()))) {
+                value.equals(paramDto.getOrder().toUpperCase()))) {
             throw new NotValidSearchRequest(paramDto.getOrder());
         }
 

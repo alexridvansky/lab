@@ -25,6 +25,7 @@ import javax.validation.constraints.Positive;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Controller provides service within GiftCertificate.class entities.
@@ -71,7 +72,7 @@ public class CertificateController implements Controller<CertificateDto> {
      */
     @GetMapping
     public List<CertificateDto> findAll(
-            @RequestParam(required = false, name = "tags", defaultValue = "") List<String> tags,
+            @RequestParam(required = false, name = "tags", defaultValue = "") Set<String> tags,
             @RequestParam(required = false, name = "search", defaultValue = "") String search,
             @RequestParam(required = false, name = "sort", defaultValue = "") String sort,
             @RequestParam(required = false, name = "order", defaultValue = "") String order) {

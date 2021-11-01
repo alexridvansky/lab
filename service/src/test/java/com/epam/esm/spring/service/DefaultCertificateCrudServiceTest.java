@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -104,7 +105,7 @@ class DefaultCertificateCrudServiceTest {
 
     private final List<CertificateDto> certificatesDtoByParam = Collections.singletonList(secondCertificateDto);
 
-    private final List<String> tagNames = Collections.singletonList("fitness");
+    private final Set<String> tagNames = Collections.singleton("fitness");
 
     private final CertificateParam param = CertificateParam.builder()
             .tags(tagNames)

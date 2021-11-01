@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,7 +46,7 @@ class DefaultCertificateDaoTest {
     private static Certificate cert_three;
     private static CertificateParam param;
     private CertificateDao certificateDao;
-    private List<String> tagNames;
+    private Set<String> tagNames;
     private List<Certificate> findAllExpected;
     private List<Certificate> findByExpected;
     private Map<String, String> params;
@@ -138,7 +139,7 @@ class DefaultCertificateDaoTest {
                 .tags(Arrays.asList(tag_four, tag_five, tag_six, tag_seven, tag_eight))
                 .build();
 
-        tagNames = Collections.singletonList("fitness");
+        tagNames = Collections.singleton("fitness");
 
         param = CertificateParam.builder()
                 .tags(tagNames)
