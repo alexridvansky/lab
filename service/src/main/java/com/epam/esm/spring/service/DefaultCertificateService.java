@@ -162,7 +162,7 @@ public class DefaultCertificateService implements CertificateService {
 
     // intersections check within toAdd and alreadyPresent tag's names before accessing db
     private void checkAddPresentTagsIntersection(Set<String> tagsToAdd, Set<String> tagsPresent) {
-        Set<String> intersected = hasIntersections(tagsToAdd, tagsPresent);
+        Set<String> intersected = getIntersections(tagsToAdd, tagsPresent);
         if (!intersected.isEmpty()) {
             throw new SubEntryAlreadyAttachedException(intersected.toString());
         }
@@ -170,13 +170,13 @@ public class DefaultCertificateService implements CertificateService {
 
     // intersections check within toAdd and toRemove tag's names before accessing db
     private void checkAddRemoveTagsIntersection(Set<String> tagsToAdd, Set<String> tagsToRemove) {
-        Set<String> intersected = hasIntersections(tagsToAdd, tagsToRemove);
+        Set<String> intersected = getIntersections(tagsToAdd, tagsToRemove);
         if (!intersected.isEmpty()) {
             throw new EntityIntersectionException(intersected);
         }
     }
 
-    private Set<String> hasIntersections(Set<String> setOne, Set<String> setTwo) {
+    private Set<String> getIntersections(Set<String> setOne, Set<String> setTwo) {
         if (CollectionUtils.isNotEmpty(setOne) && CollectionUtils.isNotEmpty(setTwo)) {
             return new HashSet<>(CollectionUtils.intersection(setOne, setTwo));
         } else {
