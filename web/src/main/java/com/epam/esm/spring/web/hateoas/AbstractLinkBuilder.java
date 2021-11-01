@@ -3,7 +3,6 @@ package com.epam.esm.spring.web.hateoas;
 import com.epam.esm.spring.service.dto.AbstractDto;
 import com.epam.esm.spring.web.config.ConfigProperties;
 import com.epam.esm.spring.web.controller.Controller;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.hateoas.Link;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
