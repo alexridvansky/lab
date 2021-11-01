@@ -2,6 +2,7 @@ package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.CertificateService;
 import com.epam.esm.spring.service.dto.CertificateDto;
+import com.epam.esm.spring.service.dto.CertificateParamDto;
 import com.epam.esm.spring.service.dto.CertificateUpdateDto;
 import com.epam.esm.spring.web.config.ConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class CertificateController implements Controller<CertificateDto> {
     /**
      * Is used for getting list of Certificates
      *
-     * @param tag    tag name
+     * @param tags   tag names
      * @param search part of Certificate's name or description
      * @param sort   field to sort by
      * @param order  ASC or DESC
@@ -70,19 +71,22 @@ public class CertificateController implements Controller<CertificateDto> {
      */
     @GetMapping
     public List<CertificateDto> findAll(
-            @RequestParam(required = false, name = "tag", defaultValue = "") String tag,
+            @RequestParam(required = false, name = "tags", defaultValue = "") List<String> tags,
             @RequestParam(required = false, name = "search", defaultValue = "") String search,
             @RequestParam(required = false, name = "sort", defaultValue = "") String sort,
             @RequestParam(required = false, name = "order", defaultValue = "") String order) {
-        if (tag.isEmpty() && search.isEmpty() && sort.isEmpty() && order.isEmpty()) {
+
+        if (tags.isEmpty() && search.isEmpty() && sort.isEmpty() && order.isEmpty()) {
             return findAll(properties.getOffsetDefault(), properties.getLimitDefault());
         } else {
-            Map<String, String> params = new HashMap<>();
-            params.put("tag", tag);
-            params.put("search", search);
-            params.put("sort", sort);
-            params.put("order", order);
-            return certificateService.findBy(params);
+            CertificateParamDto paramDto = CertificateParamDto.builder()
+                    .tags(tags)
+                    .search(search)
+                    .sort(sort)
+                    .order(order)
+                    .build();
+
+            return certificateService.findBy(paramDto);
         }
     }
 
