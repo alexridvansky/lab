@@ -14,12 +14,13 @@ public class SearchRequestValidator {
         String sort = params.get("sort").toUpperCase();
         String order = params.get("order").toUpperCase();
 
-        if (StringUtils.isNotEmpty(sort) && CertificateFieldType.getNames().stream().noneMatch(names -> names.equals(sort))) {
-            throw new NotValidSearchRequest();
+        if (StringUtils.isNotEmpty(sort) && CertificateFieldType.getNames()
+                .stream().noneMatch(names -> names.equals(sort))) {
+            throw new NotValidSearchRequest(sort);
         }
 
         if (StringUtils.isNotEmpty(order) && Stream.of("ASC", "DESC").noneMatch(value -> value.equals(order))) {
-            throw new NotValidSearchRequest();
+            throw new NotValidSearchRequest(order);
         }
 
         return true;
