@@ -2,8 +2,10 @@ package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.jdbc.dao.CertificateDao;
 import com.epam.esm.spring.repository.model.Certificate;
+import com.epam.esm.spring.repository.model.CertificateParam;
 import com.epam.esm.spring.repository.model.Tag;
 import com.epam.esm.spring.service.dto.CertificateDto;
+import com.epam.esm.spring.service.dto.CertificateParamDto;
 import com.epam.esm.spring.service.dto.CertificateUpdateDto;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntityIntersectionException;
@@ -58,10 +60,10 @@ public class DefaultCertificateService implements CertificateService {
     }
 
     @Override
-    public List<CertificateDto> findBy(Map<String, String> params) {
-        searchRequestValidator.validateRequest(params);
+    public List<CertificateDto> findBy(CertificateParamDto paramDto) {
+        CertificateParam param = searchRequestValidator.validateRequest(paramDto);
 
-        return certificateDao.findBy(params)
+        return certificateDao.findBy(param)
                 .stream()
                 .map(certificate -> modelMapper.map(certificate, CertificateDto.class))
                 .collect(Collectors.toList());

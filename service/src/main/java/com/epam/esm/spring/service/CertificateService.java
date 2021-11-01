@@ -1,6 +1,7 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.service.dto.CertificateDto;
+import com.epam.esm.spring.service.dto.CertificateParamDto;
 import com.epam.esm.spring.service.dto.CertificateUpdateDto;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface CertificateService extends CrudService<CertificateDto> {
      * @param params list of search params with values
      * @return list of Certificates accordingly to search conditions
      */
-    List<CertificateDto> findBy(Map<String, String> params);
+    List<CertificateDto> findBy(CertificateParamDto params);
 
     /**
      * Updates existing Certificate entirely
