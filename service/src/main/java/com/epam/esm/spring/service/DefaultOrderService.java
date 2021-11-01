@@ -57,6 +57,13 @@ public class DefaultOrderService implements OrderService {
                 .orElseThrow(() -> new SubEntryNotFoundException(ERROR_ORDER_NOT_FOUND, ID + id));
     }
 
+    @Override
+    public List<OrderDto> findByUserId(Long userId) {
+        return orderDao.findByUserId(userId).stream()
+                .map(order -> modelMapper.map(order, OrderDto.class))
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     @Override
     public OrderDto insert(OrderInsertDto orderDto) {
