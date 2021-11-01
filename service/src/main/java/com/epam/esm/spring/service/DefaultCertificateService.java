@@ -19,9 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -68,7 +70,7 @@ public class DefaultCertificateService implements CertificateService {
     @Override
     public CertificateDto findById(Long id) {
         return modelMapper.map(certificateDao.findById(id)
-                .orElseThrow(() -> new EntryNotFoundException(ERROR_CERTIFICATE_NOT_FOUND, id.toString())),
+                        .orElseThrow(() -> new EntryNotFoundException(ERROR_CERTIFICATE_NOT_FOUND, id.toString())),
                 CertificateDto.class);
     }
 
@@ -130,55 +132,68 @@ public class DefaultCertificateService implements CertificateService {
                 .orElseThrow(() -> new EntryNotFoundException(ERROR_CERTIFICATE_NOT_FOUND,
                         dataToUpdate.getId().toString()));
 
-        // Intersections check section
-        Set<String> tagsToAdd = null;
-        if (dataToUpdate.getTagsToAdd() != null) {
-            tagsToAdd = dataToUpdate.getTagsToAdd().stream()
-                    .map(TagDto::getName)
-                    .collect(Collectors.toSet());
-        }
+        Set<String> tagsToAdd = extractTagNames(dataToUpdate.getTagsToAdd());
+        Set<String> tagsToRemove = extractTagNames(dataToUpdate.getTagsToRemove());
 
-        Set<String> tagsToRemove = null;
-        if (dataToUpdate.getTagsToRemove() != null) {
-            tagsToRemove = dataToUpdate.getTagsToRemove().stream()
-                    .map(TagDto::getName)
-                    .collect(Collectors.toSet());
-        }
-
-        // intersections within toAdd and toRemove tag's names before accessing db
-        if (CollectionUtils.isNotEmpty(tagsToAdd) && CollectionUtils.isNotEmpty(tagsToRemove) &&
-                CollectionUtils.intersection(tagsToAdd, tagsToRemove).size() > 0) {
-            Set<String> tagsIntersected = new HashSet<>(CollectionUtils.intersection(tagsToAdd, tagsToRemove));
-            throw new EntityIntersectionException(tagsIntersected);
-        }
+        checkAddRemoveTagsIntersection(tagsToAdd, tagsToRemove);
 
         Set<String> tagsPresent = originalCertificate.getTags().stream()
                 .map(Tag::getName)
                 .collect(Collectors.toSet());
 
-        // intersections within toAdd and alreadyPresent tag's names before accessing db
+        checkAddPresentTagsIntersection(tagsToAdd, tagsPresent);
+
+        checkRemovePresentTags(tagsToRemove, tagsPresent);
+
+        removeTags(originalCertificate, tagsToRemove);
+        addTags(originalCertificate, tagsToAdd);
+        setNewFields(originalCertificate, dataToUpdate);
+
+        return modelMapper.map(certificateDao.update(originalCertificate), CertificateDto.class);
+    }
+
+    // existence tags toRemove check before accessing db
+    private void checkRemovePresentTags(Set<String> tagsToRemove, Set<String> tagsPresent) {
+        if (CollectionUtils.isNotEmpty(tagsToRemove) && !tagsPresent.containsAll(tagsToRemove)) {
+            tagsToRemove.removeAll(tagsPresent);
+            throw new SubEntryNotFoundException(ERROR_TAG_NOT_FOUND, tagsToRemove.toString());
+        }
+    }
+
+    // intersections check within toAdd and alreadyPresent tag's names before accessing db
+    private void checkAddPresentTagsIntersection(Set<String> tagsToAdd, Set<String> tagsPresent) {
         if (CollectionUtils.isNotEmpty(tagsToAdd) && CollectionUtils.isNotEmpty(tagsPresent) &&
                 CollectionUtils.intersection(tagsToAdd, tagsPresent).size() > 0) {
             Set<String> tagsAlreadyAttached = new HashSet<>(CollectionUtils.intersection(tagsToAdd, tagsPresent));
             throw new SubEntryAlreadyAttachedException(tagsAlreadyAttached.toString());
         }
+    }
 
-        // existence toRemove tags check before accessing db
-        if (CollectionUtils.isNotEmpty(tagsToRemove) && !tagsPresent.containsAll(tagsToRemove)) {
-            tagsToRemove.removeAll(tagsPresent);
-            throw new SubEntryNotFoundException(ERROR_TAG_NOT_FOUND, tagsToRemove.toString());
+    // intersections check within toAdd and toRemove tag's names before accessing db
+    private void checkAddRemoveTagsIntersection(Set<String> tagsToAdd, Set<String> tagsToRemove) {
+        if (CollectionUtils.isNotEmpty(tagsToAdd) && CollectionUtils.isNotEmpty(tagsToRemove) &&
+                CollectionUtils.intersection(tagsToAdd, tagsToRemove).size() > 0) {
+            Set<String> tagsIntersected = new HashSet<>(CollectionUtils.intersection(tagsToAdd, tagsToRemove));
+            throw new EntityIntersectionException(tagsIntersected);
         }
+    }
 
-        // removing tags if toRemove collection is present
+    // removing tags if toRemove collection is present
+    private void removeTags(Certificate originalCertificate, Set<String> tagsToRemove) {
         if (CollectionUtils.isNotEmpty(tagsToRemove)) {
             detachTags(originalCertificate, tagsToRemove);
         }
+    }
 
-        // adding tags if tagsToAdd collection is present and contains any items
+    // add tags if tagsToAdd collection is present and contains any items
+    private void addTags(Certificate originalCertificate, Set<String> tagsToAdd) {
         if (CollectionUtils.isNotEmpty(tagsToAdd)) {
             attachTags(originalCertificate, tagsToAdd);
         }
+    }
 
+    // Set new values of present fields
+    private void setNewFields(Certificate originalCertificate, CertificateUpdateDto dataToUpdate) {
         if (dataToUpdate.getName() != null) {
             originalCertificate.setName(dataToUpdate.getName());
         }
@@ -194,16 +209,16 @@ public class DefaultCertificateService implements CertificateService {
         if (dataToUpdate.getPrice() != null) {
             originalCertificate.setPrice(dataToUpdate.getPrice());
         }
-
-        return modelMapper.map(certificateDao.update(originalCertificate), CertificateDto.class);
     }
 
+    // detach Tags to be removed from certificate
     private void detachTags(Certificate originalCertificate, Set<String> tagsToRemove) {
         originalCertificate.getTags().removeAll(tagsToRemove.stream()
                 .map(tagName -> modelMapper.map(tagService.findByName(tagName), Tag.class))
                 .collect(Collectors.toList()));
     }
 
+    // attach Tags to be added to certificate
     private void attachTags(Certificate originalCertificate, Set<String> tagsToAdd) {
         List<Tag> tagsToProcess = tagsToAdd.stream()
                 .map(name -> Tag.builder()
@@ -216,6 +231,14 @@ public class DefaultCertificateService implements CertificateService {
         originalCertificate.getTags().addAll(tagsProcessed);
     }
 
+    // Put names of TagDto into Set<String>
+    private Set<String> extractTagNames(List<TagDto> tagsDto) {
+        return Optional.ofNullable(tagsDto)
+                .map(tags -> tags.stream()
+                        .map(TagDto::getName)
+                        .collect(Collectors.toSet())
+                ).orElse(Collections.emptySet());
+    }
 
     @Transactional
     @Override
