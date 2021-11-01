@@ -2,6 +2,7 @@ package com.epam.esm.spring.repository.config;
 
 import com.epam.esm.spring.repository.jdbc.dao.DefaultCertificateDao;
 import com.epam.esm.spring.repository.jdbc.dao.DefaultTagDao;
+import com.epam.esm.spring.repository.jdbc.querybuilder.QueryBuilder;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -54,7 +55,7 @@ public class TestConfigJpa {
 
     @Bean
     public DefaultCertificateDao defaultCertificateDao() {
-        return new DefaultCertificateDao(criteriaBuilder());
+        return new DefaultCertificateDao(new QueryBuilder(criteriaBuilder()));
     }
 
     @Bean
