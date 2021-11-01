@@ -1,29 +1,30 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
+import com.epam.esm.spring.repository.jdbc.querybuilder.QueryBuilder;
 import com.epam.esm.spring.repository.model.Certificate;
+import com.epam.esm.spring.repository.model.CertificateParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Repository
 public class DefaultCertificateDao implements CertificateDao {
 
     public static final int EMPTY_RESULT = 0;
-    private final CriteriaBuilder criteriaBuilder;
+    public final QueryBuilder queryBuilder;
+
+    public DefaultCertificateDao(QueryBuilder queryBuilder) {
+        this.queryBuilder = queryBuilder;
+    }
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Autowired
-    public DefaultCertificateDao(CriteriaBuilder criteriaBuilder) {
-        this.criteriaBuilder = criteriaBuilder;
-    }
 
     @Override
     public List<Certificate> findAll() {
@@ -31,11 +32,9 @@ public class DefaultCertificateDao implements CertificateDao {
     }
 
     @Override
-    public List<Certificate> findBy(Map<String, String> params) {
-
-        // parametrized search is under construction
-
-        return null; //todo: not to forget to replace return value !!!!
+    public List<Certificate> findBy(CertificateParam param) {
+        TypedQuery<Certificate> typedQuery = entityManager.createQuery(queryBuilder.buildQueryForSearch(param));
+        return typedQuery.getResultList();
     }
 
     @Override

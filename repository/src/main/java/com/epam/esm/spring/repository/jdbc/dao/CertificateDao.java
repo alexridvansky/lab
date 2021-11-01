@@ -1,6 +1,7 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.model.Certificate;
+import com.epam.esm.spring.repository.model.CertificateParam;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ public interface CertificateDao extends CreateDeleteDao<Certificate> {
      * @param params list of parameters for search
      * @return List<Certificate>
      */
-    List<Certificate> findBy(Map<String, String> params);
+    List<Certificate> findBy(CertificateParam params);
 
     /**
      * Updates certificate entry in the db
