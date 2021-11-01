@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,6 +62,11 @@ public class OrderController implements Controller<OrderDto> {
                 .map(linkBuilder::addFindByIdLink)
                 .map(linkBuilder::addRemoveLink)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/user/{id}")
+    public List<OrderDto> findByUserId(@PathVariable @Positive Long id) {
+        return orderService.findByUserId(id);
     }
 
     /**
