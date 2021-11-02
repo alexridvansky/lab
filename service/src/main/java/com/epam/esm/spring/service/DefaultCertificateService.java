@@ -179,6 +179,7 @@ public class DefaultCertificateService implements CertificateService {
         }
     }
 
+    // Checks for intersections if both collections neither null nor empty.
     private Set<String> getIntersections(Set<String> setOne, Set<String> setTwo) {
         if (CollectionUtils.isNotEmpty(setOne) && CollectionUtils.isNotEmpty(setTwo)) {
             return new HashSet<>(CollectionUtils.intersection(setOne, setTwo));
