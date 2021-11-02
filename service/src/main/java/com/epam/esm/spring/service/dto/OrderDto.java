@@ -25,16 +25,16 @@ public class OrderDto extends AbstractDto {
     private LocalDateTime purchaseDate;
 
     @Valid
-    private User user;
+    private UserDto userDto;
 
     @Valid
     private List<CertificateDto> certificates;
 
     @Builder
-    public OrderDto(Long id, BigDecimal total, User user, List<CertificateDto> certificates) {
+    public OrderDto(Long id, BigDecimal total, UserDto userDto, List<CertificateDto> certificates) {
         super(id);
         this.total = total;
-        this.user = user;
+        this.userDto = userDto;
         this.certificates = certificates;
     }
 }
