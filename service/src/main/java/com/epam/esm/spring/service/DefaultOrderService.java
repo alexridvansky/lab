@@ -92,7 +92,7 @@ public class DefaultOrderService implements OrderService {
 
     @Override
     public OrderDto insert(OrderDto orderDto) {
-        return null;
+        return modelMapper.map(orderDao.insert(modelMapper.map(orderDto, Order.class)), OrderDto.class);
     }
 
     @Transactional
