@@ -11,8 +11,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public abstract class AbstractLinkBuilder<T extends AbstractDto> implements LinkBuilder<T> {
 
     private final ConfigProperties properties;
-    private final static int DEFAULT_PAGE = 1;
-    private final static int DEFAULT_PAGE_SIZE = 10;
     protected static final String LINK_TITLE_DELETE = "delete";
     protected static final String LINK_TITLE_FIND_ALL = "findAll";
     protected static final String LINK_TITLE_FIND_BY_ID = "findById";
@@ -28,7 +26,7 @@ public abstract class AbstractLinkBuilder<T extends AbstractDto> implements Link
         return entity;
     }
 
-    protected <K extends Controller<T>> T addAllFindAllLink(T entity, Class<K> controllerClass) {
+    protected <K extends Controller<T>> T addFindAllLink(T entity, Class<K> controllerClass) {
         Link findAllLink = linkTo(methodOn(controllerClass)
                 .findAll(properties.getOffsetDefault(), properties.getLimitDefault())).withRel(LINK_TITLE_FIND_ALL);
         entity.add(findAllLink);
@@ -36,7 +34,7 @@ public abstract class AbstractLinkBuilder<T extends AbstractDto> implements Link
         return entity;
     }
 
-    protected <K extends Controller<T>> T addAllFindByIdLink(T entity, Class<K> controllerClass) {
+    protected <K extends Controller<T>> T addFindByIdLink(T entity, Class<K> controllerClass) {
         Link findByIdLink = linkTo(methodOn(controllerClass).findById(entity.getId())).withRel(LINK_TITLE_FIND_BY_ID);
         entity.add(findByIdLink);
 

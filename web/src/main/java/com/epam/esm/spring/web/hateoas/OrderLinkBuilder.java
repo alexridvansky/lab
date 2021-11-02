@@ -19,11 +19,11 @@ public class OrderLinkBuilder extends AbstractLinkBuilder<OrderDto> {
 
     @Override
     public OrderDto addFindAllLink(OrderDto orderDto) {
-        return addAllFindAllLink(orderDto, OrderController.class);
+        return addFindAllLink(orderDto, OrderController.class);
     }
 
     @Override
     public OrderDto addFindByIdLink(OrderDto orderDto) {
-        return addAllFindByIdLink(orderDto, OrderController.class);
+        return addFindByIdLink(orderDto, OrderController.class);
     }
 }

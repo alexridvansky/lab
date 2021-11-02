@@ -19,11 +19,11 @@ public class CertificateLinkBuilder extends AbstractLinkBuilder<CertificateDto> 
 
     @Override
     public CertificateDto addFindAllLink(CertificateDto certificateDto) {
-        return addAllFindAllLink(certificateDto, CertificateController.class);
+        return addFindAllLink(certificateDto, CertificateController.class);
     }
 
     @Override
     public CertificateDto addFindByIdLink(CertificateDto certificateDto) {
-        return addAllFindByIdLink(certificateDto, CertificateController.class);
+        return addFindByIdLink(certificateDto, CertificateController.class);
     }
 }

@@ -19,11 +19,11 @@ public class UserLinkBuilder extends AbstractLinkBuilder<UserDto> {
 
     @Override
     public UserDto addFindAllLink(UserDto userDto) {
-        return addAllFindAllLink(userDto, UserController.class);
+        return addFindAllLink(userDto, UserController.class);
     }
 
     @Override
     public UserDto addFindByIdLink(UserDto userDto) {
-        return addAllFindByIdLink(userDto, UserController.class);
+        return addFindByIdLink(userDto, UserController.class);
     }
 }
