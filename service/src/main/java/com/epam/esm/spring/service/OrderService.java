@@ -10,10 +10,10 @@ public interface OrderService extends CrudService<OrderDto> {
     /**
      * Adds new entry to the db.
      *
-     * @param t entity object to be added to
+     * @param orderInsertDto entity object to be added to
      * @return T.class object just added to the db
      */
-    OrderDto insert(OrderInsertDto t);
+    OrderDto insert(OrderInsertDto orderInsertDto);
 
     /**
      * Gets all purchases of user by id.
