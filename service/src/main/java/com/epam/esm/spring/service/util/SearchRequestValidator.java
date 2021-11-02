@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 @Component
 public class SearchRequestValidator {
 
-    public CertificateParam validateRequest(CertificateParamDto paramDto) {
+    public void validateRequest(CertificateParamDto paramDto) {
 
         if (StringUtils.isNotEmpty(paramDto.getSort()) && CertificateFieldType.getNames()
                 .stream().noneMatch(names -> names.equalsIgnoreCase(paramDto.getSort()))) {
@@ -24,12 +24,5 @@ public class SearchRequestValidator {
                 value.equals(paramDto.getOrder().toUpperCase()))) {
             throw new NotValidSearchRequest(paramDto.getOrder());
         }
-
-        return CertificateParam.builder()
-                .tags(paramDto.getTags())
-                .search(paramDto.getSearch())
-                .sort(paramDto.getSort())
-                .order(paramDto.getOrder())
-                .build();
     }
 }

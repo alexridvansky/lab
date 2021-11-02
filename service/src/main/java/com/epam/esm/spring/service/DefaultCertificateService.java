@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,7 +60,9 @@ public class DefaultCertificateService implements CertificateService {
 
     @Override
     public List<CertificateDto> findBy(CertificateParamDto paramDto) {
-        CertificateParam param = searchRequestValidator.validateRequest(paramDto);
+        searchRequestValidator.validateRequest(paramDto);
+
+        CertificateParam param = modelMapper.map(paramDto, CertificateParam.class);
 
         return certificateDao.findBy(param)
                 .stream()
