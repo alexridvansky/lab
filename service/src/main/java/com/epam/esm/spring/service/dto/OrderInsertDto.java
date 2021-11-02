@@ -20,8 +20,6 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderInsertDto extends AbstractDto {
 
-    private BigDecimal total;
-
     private LocalDateTime purchaseDate;
 
     @Valid
@@ -31,9 +29,8 @@ public class OrderInsertDto extends AbstractDto {
     private List<CertificateUpdateDto> certificates;
 
     @Builder
-    public OrderInsertDto(Long id, BigDecimal total, User user, List<CertificateUpdateDto> certificates) {
+    public OrderInsertDto(Long id, User user, List<CertificateUpdateDto> certificates) {
         super(id);
-        this.total = total;
         this.user = user;
         this.certificates = certificates;
     }
