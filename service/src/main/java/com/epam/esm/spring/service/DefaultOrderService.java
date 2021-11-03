@@ -67,9 +67,9 @@ public class DefaultOrderService implements OrderService {
     @Transactional
     @Override
     public OrderDto insert(OrderInsertDto orderDto) {
-        User user = userDao.findById(orderDto.getUser().getId())
+        User user = userDao.findById(orderDto.getUserDto().getId())
                 .orElseThrow(() -> new SubEntryNotFoundException(ERROR_USER_NOT_FOUND,
-                        ID + orderDto.getUser().getId().toString()));
+                        ID + orderDto.getUserDto().getId().toString()));
 
         List<Certificate> certificates = orderDto.getCertificates().stream()
                 .map(certificateDto -> certificateDao.findById(certificateDto.getId())
