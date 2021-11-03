@@ -8,6 +8,9 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.ID;
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.NAME;
+
 @Repository
 public class DefaultTagDao implements TagDao {
 
@@ -37,7 +40,7 @@ public class DefaultTagDao implements TagDao {
     @Override
     public Optional<Tag> findByName(String name) {
         return entityManager.createQuery("SELECT t FROM Tag t WHERE t.name = :name", Tag.class)
-                .setParameter("name", name)
+                .setParameter(NAME, name)
                 .setMaxResults(1)
                 .getResultList()
                 .stream()
@@ -47,19 +50,24 @@ public class DefaultTagDao implements TagDao {
     @Override
     public boolean isExist(String name) {
         return (long) entityManager.createQuery("SELECT COUNT(t) FROM Tag t WHERE t.name = :name")
-                .setParameter("name", name)
+                .setParameter(NAME, name)
                 .getSingleResult() > EMPTY_RESULT;
     }
 
     @Override
     public boolean isExist(Long id) {
         return (long) entityManager.createQuery("SELECT COUNT(t) FROM Tag t WHERE t.id = :id")
-                .setParameter("id", id)
+                .setParameter(ID, id)
                 .getSingleResult() > EMPTY_RESULT;
     }
 
     @Override
     public void delete(Tag tag) {
         entityManager.remove(tag);
+    }
+
+    @Override
+    public Tag findMostUsed() {
+        return null;
     }
 }

@@ -30,4 +30,11 @@ public interface TagDao extends CreateDeleteDao<Tag> {
      * @return true in case such Tag found in the DB
      */
     boolean isExist(Long id);
+
+    /**
+     * Gets the most widely used tag of a user with the highest cost of all orders.
+     *
+     * @return Tag tag
+     */
+    Tag findMostUsed();
 }

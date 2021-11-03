@@ -8,6 +8,8 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.USERNAME;
+
 @Repository
 public class DefaultUserDao implements UserDao {
 
@@ -22,7 +24,7 @@ public class DefaultUserDao implements UserDao {
     @Override
     public Optional<User> findByUsername(String username) {
         return entityManager.createQuery("SELECT u FROM User u WHERE u.username LIKE :username", User.class)
-                .setParameter("username", username)
+                .setParameter(USERNAME, username)
                 .getResultStream()
                 .findFirst();
     }

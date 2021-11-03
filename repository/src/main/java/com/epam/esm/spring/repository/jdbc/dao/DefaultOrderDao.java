@@ -8,10 +8,10 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.ID;
+
 @Repository
 public class DefaultOrderDao implements OrderDao {
-
-    public static final int EMPTY_RESULT = 0;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -30,7 +30,7 @@ public class DefaultOrderDao implements OrderDao {
     @Override
     public List<Order> findByUserId(Long userId) {
         return entityManager.createQuery("SELECT o FROM Order o WHERE o.user.id = :id", Order.class)
-                .setParameter("id", userId)
+                .setParameter(ID, userId)
                 .getResultList();
     }
 
