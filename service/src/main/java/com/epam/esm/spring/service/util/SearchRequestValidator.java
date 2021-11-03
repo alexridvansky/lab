@@ -1,8 +1,6 @@
 package com.epam.esm.spring.service.util;
 
 import com.epam.esm.spring.repository.jdbc.querybuilder.CertificateFieldType;
-import com.epam.esm.spring.repository.model.CertificateParam;
-import com.epam.esm.spring.service.TagService;
 import com.epam.esm.spring.service.dto.CertificateParamDto;
 import com.epam.esm.spring.service.exception.NotValidSearchRequest;
 import org.apache.commons.lang3.StringUtils;
