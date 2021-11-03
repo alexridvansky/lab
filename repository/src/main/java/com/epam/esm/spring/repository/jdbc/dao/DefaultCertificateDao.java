@@ -3,13 +3,11 @@ package com.epam.esm.spring.repository.jdbc.dao;
 import com.epam.esm.spring.repository.jdbc.querybuilder.QueryBuilder;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.CertificateParam;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +16,8 @@ import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.N
 @Repository
 public class DefaultCertificateDao implements CertificateDao {
 
-    public static final int EMPTY_RESULT = 0;
-    public final QueryBuilder queryBuilder;
+    private static final int EMPTY_RESULT = 0;
+    private final QueryBuilder queryBuilder;
 
     public DefaultCertificateDao(QueryBuilder queryBuilder) {
         this.queryBuilder = queryBuilder;
