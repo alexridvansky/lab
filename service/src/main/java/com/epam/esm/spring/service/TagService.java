@@ -9,7 +9,7 @@ import java.util.List;
 public interface TagService extends CrudService<TagDto> {
 
     /**
-     * Is used to get Tag by NAME given
+     * Gets Tag by NAME given
      *
      * @param name is the NAME of the Tag
      * @return TagDto object instance if Tag with NAME given found
@@ -26,10 +26,17 @@ public interface TagService extends CrudService<TagDto> {
     List<Tag> processTagList(List<Tag> tags);
 
     /**
-     * Is used to check it out whether Tag with NAME given exists
+     * Checks out whether Tag with NAME given exists
      *
      * @param name the name of Tag
      * @return true in case such Tag found in the DB
      */
     boolean isExist(String name);
+
+    /**
+     * Gets the most widely used tag of a user with the highest cost of all orders.
+     *
+     * @return TagDto tag
+     */
+    TagDto findMostUsed();
 }
