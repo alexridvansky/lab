@@ -1,6 +1,5 @@
 package com.epam.esm.spring.service.dto;
 
-import com.epam.esm.spring.repository.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

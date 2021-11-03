@@ -1,6 +1,5 @@
 package com.epam.esm.spring.service.dto;
 
-import com.epam.esm.spring.repository.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,16 +20,15 @@ public class OrderInsertDto extends AbstractDto {
 
     private LocalDateTime purchaseDate;
 
-    @Valid
-    private UserDto userDto;
+    private Long userId;
 
     @Valid
     private List<CertificateUpdateDto> certificates;
 
     @Builder
-    public OrderInsertDto(Long id, UserDto userDto, List<CertificateUpdateDto> certificates) {
+    public OrderInsertDto(Long id, Long userId, List<CertificateUpdateDto> certificates) {
         super(id);
-        this.userDto = userDto;
+        this.userId = userId;
         this.certificates = certificates;
     }
 }
