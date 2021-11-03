@@ -16,7 +16,7 @@ public class SearchRequestValidator {
     public void validateRequest(CertificateParamDto paramDto) {
 
         if (StringUtils.isNotEmpty(paramDto.getSort()) && CertificateFieldType.getNames()
-                .stream().noneMatch(names -> names.equalsIgnoreCase(paramDto.getSort()))) {
+                .stream().noneMatch(names -> names.equals(paramDto.getSort()))) {
             throw new NotValidSearchRequest(paramDto.getSort());
         }
 
