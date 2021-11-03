@@ -29,15 +29,12 @@ public class TagController implements Controller<TagDto> {
 
     private final TagService tagService;
     private final LinkBuilder<TagDto> linkBuilder;
-    private final ConfigProperties properties;
 
     @Autowired
     public TagController(TagService tagService,
-                         TagLinkBuilder linkBuilder,
-                         ConfigProperties properties) {
+                         TagLinkBuilder linkBuilder) {
         this.tagService = tagService;
         this.linkBuilder = linkBuilder;
-        this.properties = properties;
     }
 
     @Override
@@ -54,8 +51,6 @@ public class TagController implements Controller<TagDto> {
     @GetMapping()
     public List<TagDto> findAll(@RequestParam(name = "page", required = false) Integer page,
                                 @RequestParam(name = "size", required = false) Integer size) {
-        if (page == null) { page = properties.getOffsetDefault(); }
-        if (size == null) { size = properties.getLimitDefault(); }
 
         return tagService.findAll().stream()
                 .map(linkBuilder::addFindByIdLink)
@@ -80,5 +75,10 @@ public class TagController implements Controller<TagDto> {
         tagService.deleteById(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/popular")
+    public TagDto findMostUsed() {
+        return tagService.findMostUsed();
     }
 }
