@@ -23,15 +23,15 @@ public class OrderInsertDto extends AbstractDto {
     private LocalDateTime purchaseDate;
 
     @Valid
-    private User user;
+    private UserDto userDto;
 
     @Valid
     private List<CertificateUpdateDto> certificates;
 
     @Builder
-    public OrderInsertDto(Long id, User user, List<CertificateUpdateDto> certificates) {
+    public OrderInsertDto(Long id, UserDto userDto, List<CertificateUpdateDto> certificates) {
         super(id);
-        this.user = user;
+        this.userDto = userDto;
         this.certificates = certificates;
     }
 }
