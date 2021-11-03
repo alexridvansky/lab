@@ -34,8 +34,8 @@ public class QueryBuilder {
     public CriteriaQuery<Certificate> buildQueryForSearch(CertificateParam param) {
         Set<String> tagSet = param.getTags();
         String search = StringUtils.isNotBlank(param.getSearch()) ? PERCENT + param.getSearch() + PERCENT : EMPTY;
-        String sortBy = StringUtils.isNotBlank(param.getSort()) ? param.getSort() : ASC;
-        String order = StringUtils.isNotBlank(param.getOrder()) ? param.getOrder() : ID;
+        String sortBy = StringUtils.isNotBlank(param.getSort()) ? param.getSort() : ID;
+        String order = StringUtils.isNotBlank(param.getOrder()) ? param.getOrder() : ASC;
 
         CriteriaQuery<Certificate> query = criteriaBuilder.createQuery(Certificate.class);
         Root<Certificate> root = query.from(Certificate.class);
