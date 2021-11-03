@@ -27,7 +27,6 @@ public interface Controller<K extends AbstractDto> {
      *
      * @return List<EntityDto> the list of entities
      */
-//    @RequestMapping(params = { "page", "size" })
     List<K> findAll(@Positive @RequestParam(name = "page", required = false) Integer page,
                     @Positive @RequestParam(name = "size", required = false) Integer size);
 
