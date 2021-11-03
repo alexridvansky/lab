@@ -13,6 +13,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 import java.util.Optional;
 
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.NAME;
+
 @Repository
 public class DefaultCertificateDao implements CertificateDao {
 
@@ -56,7 +58,7 @@ public class DefaultCertificateDao implements CertificateDao {
     @Override
     public boolean isExist(String name) {
         return (long) entityManager.createQuery("SELECT COUNT(c) FROM Certificate c WHERE c.name = :name")
-                .setParameter("name", name)
+                .setParameter(NAME, name)
                 .getSingleResult() > EMPTY_RESULT;
     }
 

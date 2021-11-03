@@ -83,4 +83,9 @@ public class DefaultTagService implements TagService {
     public boolean isExist(String name) {
         return tagDao.isExist(name);
     }
+
+    @Override
+    public TagDto findMostUsed() {
+        return modelMapper.map(tagDao.findMostUsed(), TagDto.class);
+    }
 }
