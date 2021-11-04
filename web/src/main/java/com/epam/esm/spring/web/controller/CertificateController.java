@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Controller provides service within GiftCertificate.class entities.
@@ -66,29 +65,14 @@ public class CertificateController implements Controller<CertificateDto> {
     /**
      * Is used for getting list of Certificates
      *
-     * @param tags   tag names
-     * @param search part of Certificate's name or description
-     * @param sort   field to sort by
-     * @param order  ASC or DESC
+     * @param paramDto Search parameters
      * @return List<CertificateDto> the list of certificates
      */
     @GetMapping
-    public List<CertificateDto> findAll(
-            @RequestParam(required = false, name = "tags", defaultValue = "") Set<String> tags,
-            @RequestParam(required = false, name = "search", defaultValue = "") String search,
-            @RequestParam(required = false, name = "sort", defaultValue = "") String sort,
-            @RequestParam(required = false, name = "order", defaultValue = "") String order) {
-
-        if (tags.isEmpty() && search.isEmpty() && sort.isEmpty() && order.isEmpty()) {
-            return findAll(properties.getOffsetDefault(), properties.getLimitDefault());
+    public List<CertificateDto> findAll(CertificateParamDto paramDto) {
+        if (paramDto.isRequestMeaningless()) {
+            return certificateService.findAll();
         } else {
-            CertificateParamDto paramDto = CertificateParamDto.builder()
-                    .tags(tags)
-                    .search(search)
-                    .sort(sort)
-                    .order(order)
-                    .build();
-
             return certificateService.findBy(paramDto);
         }
     }

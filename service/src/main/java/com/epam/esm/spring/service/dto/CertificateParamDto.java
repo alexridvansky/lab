@@ -6,20 +6,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
+@Builder(toBuilder = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class CertificateParamDto {
 
-    private Set<String> tags;
+    private static final String DEFAULT_SEARCH = "";
+    private static final String DEFAULT_SORT_FIELD = "id";
+    private static final String DEFAULT_SORT_ORDER = "asc";
 
-    private String search;
+    private Set<String> tags = new HashSet<>();
 
-    private String sort;
+    private String search = DEFAULT_SEARCH;
 
-    private String order;
+    private String sort = DEFAULT_SORT_FIELD;
+
+    private String order = DEFAULT_SORT_ORDER;
+
+    public boolean isRequestMeaningless() {
+        return tags.isEmpty() && search.equals(DEFAULT_SEARCH) && sort.equals(DEFAULT_SORT_FIELD)
+                && order.equals(DEFAULT_SORT_ORDER);
+    }
 }
