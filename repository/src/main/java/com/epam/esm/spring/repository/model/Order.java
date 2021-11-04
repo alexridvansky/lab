@@ -36,7 +36,7 @@ public class Order extends AbstractEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "order_certificate_xref",
         joinColumns = {
             @JoinColumn(name = "order_id")},

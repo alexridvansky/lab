@@ -43,7 +43,7 @@ public class Certificate extends AbstractEntity {
     @Column(name = "last_update_date")
     private LocalDateTime lastUpdateDate;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "certificate_tag_xref",
             joinColumns = {
                     @JoinColumn(name = "certificate_id")},
