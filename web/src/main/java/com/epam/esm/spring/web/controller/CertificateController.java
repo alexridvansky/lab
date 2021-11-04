@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Positive;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -52,11 +50,15 @@ public class CertificateController implements Controller<CertificateDto> {
     }
 
     @Override
-    @RequestMapping(params = { "page", "size" })
+    @RequestMapping(params = {"page", "size"})
     public List<CertificateDto> findAll(@RequestParam(name = "page", required = false) Integer page,
                                         @RequestParam(name = "size", required = false) Integer size) {
-        if (page == null) { page = properties.getOffsetDefault(); }
-        if (size == null) { size = properties.getLimitDefault(); }
+        if (page == null) {
+            page = properties.getOffsetDefault();
+        }
+        if (size == null) {
+            size = properties.getLimitDefault();
+        }
 
         return certificateService.findAll();
     }

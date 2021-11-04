@@ -2,7 +2,6 @@ package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.TagService;
 import com.epam.esm.spring.service.dto.TagDto;
-import com.epam.esm.spring.web.config.ConfigProperties;
 import com.epam.esm.spring.web.hateoas.LinkBuilder;
 import com.epam.esm.spring.web.hateoas.TagLinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
