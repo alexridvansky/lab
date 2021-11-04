@@ -68,10 +68,11 @@ public class QueryBuilder {
         if (tagSet.isEmpty()) {
             return criteriaBuilder.conjunction();
         } else {
-            Join<Certificate, Tag> tagJoin = root.join(TAGS);
-
             return tagSet.stream()
-                    .map(tagName -> criteriaBuilder.equal(tagJoin.get(NAME), tagName))
+                    .map(tagName -> {
+                        Join<Certificate, Tag> tagJoin = root.join(TAGS);
+                        return criteriaBuilder.equal(tagJoin.get(NAME), tagName);
+                    })
                     .reduce(criteriaBuilder.conjunction(), criteriaBuilder::and);
         }
     }
