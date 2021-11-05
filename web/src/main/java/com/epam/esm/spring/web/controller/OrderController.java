@@ -50,8 +50,8 @@ public class OrderController implements Controller<OrderDto> {
 
     @Override
     @GetMapping
-    public ResponseEntity<Page<OrderDto>> findAll(@Valid Pageable pageRequest) {
-        return new ResponseEntity<>(orderService.findAll(pageRequest), HttpStatus.OK);
+    public Page<OrderDto> findAll(@Valid Pageable pageRequest) {
+        return orderService.findAll(pageRequest);
     }
 
     @GetMapping("/user/{id}")

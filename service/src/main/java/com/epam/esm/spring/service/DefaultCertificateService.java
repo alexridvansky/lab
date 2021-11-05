@@ -64,9 +64,9 @@ public class DefaultCertificateService implements CertificateService {
                 .map(certificate -> modelMapper.map(certificate, CertificateDto.class))
                 .collect(Collectors.toList());
 
-        Long totalPages = certificateDao.countEntry();
+        Long totalEntries = certificateDao.countEntry();
 
-        return new Page<>(result, pageRequest, totalPages);
+        return new Page<>(result, pageRequest, totalEntries);
     }
 
     @Override

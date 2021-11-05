@@ -47,8 +47,8 @@ public class CertificateController implements Controller<CertificateDto> {
     }
 
     @Override
-    public ResponseEntity<Page<CertificateDto>> findAll(@Valid Pageable pageRequest) {
-        return new ResponseEntity<>(certificateService.findAll(pageRequest), HttpStatus.OK);
+    public Page<CertificateDto> findAll(@Valid Pageable pageRequest) {
+        return certificateService.findAll(pageRequest);
     }
 
     /**

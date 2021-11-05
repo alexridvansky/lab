@@ -47,8 +47,8 @@ public class TagController implements Controller<TagDto> {
 
     @Override
     @GetMapping()
-    public ResponseEntity<Page<TagDto>> findAll(@Valid Pageable pageRequest) {
-        return new ResponseEntity<>(tagService.findAll(pageRequest), HttpStatus.OK);
+    public Page<TagDto> findAll(@Valid Pageable pageRequest) {
+        return tagService.findAll(pageRequest);
     }
 
     /**

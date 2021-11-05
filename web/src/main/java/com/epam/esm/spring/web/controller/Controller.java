@@ -28,7 +28,7 @@ public interface Controller<K extends AbstractDto> {
      *
      * @return List<EntityDto> the list of entities
      */
-    ResponseEntity<Page<K>> findAll(@Valid Pageable pageRequest);
+    Page<K> findAll(@Valid Pageable pageRequest);
 
     /**
      * Removes Entity by its ID

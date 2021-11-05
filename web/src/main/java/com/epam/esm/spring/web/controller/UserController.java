@@ -37,8 +37,8 @@ public class UserController implements Controller<UserDto> {
 
     @Override
     @GetMapping()
-    public ResponseEntity<Page<UserDto>> findAll(@Valid Pageable pageRequest) {
-        return new ResponseEntity<>(userService.findAll(pageRequest), HttpStatus.OK);
+    public Page<UserDto> findAll(@Valid Pageable pageRequest) {
+        return userService.findAll(pageRequest);
     }
 
     @GetMapping("/{id}")
