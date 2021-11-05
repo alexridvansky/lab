@@ -3,10 +3,13 @@ package com.epam.esm.spring.service;
 import com.epam.esm.spring.repository.jdbc.dao.CertificateDao;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.CertificateParam;
+import com.epam.esm.spring.repository.model.PageParam;
 import com.epam.esm.spring.repository.model.Tag;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.CertificateParamDto;
 import com.epam.esm.spring.service.dto.CertificateUpdateDto;
+import com.epam.esm.spring.service.dto.Page;
+import com.epam.esm.spring.service.dto.Pageable;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntityIntersectionException;
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
@@ -51,23 +54,28 @@ public class DefaultCertificateService implements CertificateService {
     }
 
     @Override
-    public List<CertificateDto> findAll() {
-        return certificateDao.findAll()
+    public Page<CertificateDto> findAll(Pageable pageRequest) {
+        return getCertificateDtoPage(pageRequest);
+    }
+
+    private Page<CertificateDto> getCertificateDtoPage(Pageable pageRequest) {
+        List<CertificateDto> result = certificateDao.findAll(modelMapper.map(pageRequest, PageParam.class))
                 .stream()
                 .map(certificate -> modelMapper.map(certificate, CertificateDto.class))
                 .collect(Collectors.toList());
+
+        Long totalPages = certificateDao.countEntry();
+
+        return new Page<>(result, pageRequest, totalPages);
     }
 
     @Override
-    public List<CertificateDto> findBy(CertificateParamDto paramDto) {
+    public Page<CertificateDto> findBy(CertificateParamDto paramDto, Pageable pageRequest) {
         searchRequestValidator.validateRequest(paramDto);
 
         CertificateParam param = modelMapper.map(paramDto, CertificateParam.class);
 
-        return certificateDao.findBy(param)
-                .stream()
-                .map(certificate -> modelMapper.map(certificate, CertificateDto.class))
-                .collect(Collectors.toList());
+        return getCertificateDtoPage(pageRequest);
     }
 
     @Override

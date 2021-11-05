@@ -4,7 +4,8 @@ import com.epam.esm.spring.service.CertificateService;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.CertificateParamDto;
 import com.epam.esm.spring.service.dto.CertificateUpdateDto;
-import com.epam.esm.spring.web.config.ConfigProperties;
+import com.epam.esm.spring.service.dto.Page;
+import com.epam.esm.spring.service.dto.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
@@ -33,13 +34,10 @@ import java.util.List;
 public class CertificateController implements Controller<CertificateDto> {
 
     private final CertificateService certificateService;
-    private final ConfigProperties properties;
 
     @Autowired
-    public CertificateController(CertificateService certificateService,
-                                 ConfigProperties properties) {
+    public CertificateController(CertificateService certificateService) {
         this.certificateService = certificateService;
-        this.properties = properties;
     }
 
     @Override
@@ -49,31 +47,22 @@ public class CertificateController implements Controller<CertificateDto> {
     }
 
     @Override
-    @RequestMapping(params = {"page", "size"})
-    public List<CertificateDto> findAll(@RequestParam(name = "page", required = false) Integer page,
-                                        @RequestParam(name = "size", required = false) Integer size) {
-        if (page == null) {
-            page = properties.getOffsetDefault();
-        }
-        if (size == null) {
-            size = properties.getLimitDefault();
-        }
-
-        return certificateService.findAll();
+    public ResponseEntity<Page<CertificateDto>> findAll(@Valid Pageable pageRequest) {
+        return new ResponseEntity<>(certificateService.findAll(pageRequest), HttpStatus.OK);
     }
 
     /**
      * Is used for getting list of Certificates
      *
-     * @param paramDto Search parameters
+     * @param searchParamDto Search parameters
      * @return List<CertificateDto> the list of certificates
      */
     @GetMapping
-    public List<CertificateDto> findAll(CertificateParamDto paramDto) {
-        if (paramDto.isRequestMeaningless()) {
-            return certificateService.findAll();
+    public Page<CertificateDto> findBy(@Valid Pageable pageable, CertificateParamDto searchParamDto) {
+        if (searchParamDto.isRequestMeaningless()) {
+            return certificateService.findAll(pageable);
         } else {
-            return certificateService.findBy(paramDto);
+            return certificateService.findBy(searchParamDto, pageable);
         }
     }
 
@@ -84,7 +73,7 @@ public class CertificateController implements Controller<CertificateDto> {
      */
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public CertificateDto insert(@RequestBody CertificateDto certificateDto) {
+    public CertificateDto insert(@Valid @RequestBody CertificateDto certificateDto) {
         return certificateService.insert(certificateDto);
     }
 

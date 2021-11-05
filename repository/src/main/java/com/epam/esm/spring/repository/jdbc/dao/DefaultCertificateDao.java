@@ -3,6 +3,7 @@ package com.epam.esm.spring.repository.jdbc.dao;
 import com.epam.esm.spring.repository.jdbc.querybuilder.QueryBuilder;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.CertificateParam;
+import com.epam.esm.spring.repository.model.PageParam;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -27,8 +28,17 @@ public class DefaultCertificateDao implements CertificateDao {
     private EntityManager entityManager;
 
     @Override
-    public List<Certificate> findAll() {
-        return entityManager.createQuery("SELECT c FROM Certificate c", Certificate.class).getResultList();
+    public List<Certificate> findAll(PageParam pageParam) {
+        return entityManager.createQuery("SELECT c FROM Certificate c", Certificate.class)
+                .setFirstResult(pageParam.getPage() * pageParam.getSize())
+                .setMaxResults(pageParam.getSize())
+                .getResultList();
+    }
+
+    @Override
+    public Long countEntry() {
+        return entityManager.createQuery("SELECT COUNT(c) FROM Certificate c", Long.class)
+                .getSingleResult();
     }
 
     @Override
@@ -55,7 +65,7 @@ public class DefaultCertificateDao implements CertificateDao {
 
     @Override
     public boolean isExist(String name) {
-        return (long) entityManager.createQuery("SELECT COUNT(c) FROM Certificate c WHERE c.name = :name")
+        return entityManager.createQuery("SELECT COUNT(c) FROM Certificate c WHERE c.name = :name", Long.class)
                 .setParameter(NAME, name)
                 .getSingleResult() > EMPTY_RESULT;
     }

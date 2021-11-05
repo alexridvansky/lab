@@ -1,4 +1,4 @@
-package com.epam.esm.spring.web.config;
+package com.epam.esm.spring.service.config;
 
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

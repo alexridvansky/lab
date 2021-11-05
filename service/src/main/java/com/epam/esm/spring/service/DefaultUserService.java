@@ -1,7 +1,10 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.jdbc.dao.UserDao;
+import com.epam.esm.spring.repository.model.PageParam;
 import com.epam.esm.spring.repository.model.User;
+import com.epam.esm.spring.service.dto.Page;
+import com.epam.esm.spring.service.dto.Pageable;
 import com.epam.esm.spring.service.dto.UserDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import org.modelmapper.ModelMapper;
@@ -27,11 +30,15 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public List<UserDto> findAll() {
-        return userDao.findAll()
+    public Page<UserDto> findAll(Pageable pageRequest) {
+        List<UserDto> result =  userDao.findAll(modelMapper.map(pageRequest, PageParam.class))
                 .stream()
                 .map(user -> modelMapper.map(user, UserDto.class))
                 .collect(Collectors.toList());
+
+        Long totalPages = userDao.countEntry();
+
+        return new Page<>(result, pageRequest, totalPages);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.config.TestConfigJpa;
+import com.epam.esm.spring.repository.model.PageParam;
 import com.epam.esm.spring.repository.model.Tag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -43,6 +44,7 @@ class DefaultTagDaoTest {
     private static final String TAG_ONE_NAME = "food";
     private static final String TAG_TWO_NAME = "bbq";
     private static final String TAG_TEN_NAME = "non_existing";
+    private static PageParam defaultPageParam;
     private static List<Tag> findAllExpected;
     private static Tag tag_one;
     private static Tag tag_two;
@@ -109,13 +111,18 @@ class DefaultTagDaoTest {
 
         findAllExpected = Arrays.asList(tag_one, tag_two, tag_three, tag_four, tag_five, tag_six, tag_seven, tag_eight,
                 tag_nine);
+
+        defaultPageParam = PageParam.builder()
+                .page(0)
+                .size(10)
+                .build();
     }
 
     @Test
     @Order(1)
     void findAll() {
         // Expected equality of given and provided lists
-        List<Tag> actuals = tagDao.findAll();
+        List<Tag> actuals = tagDao.findAll(defaultPageParam);
         assertEquals(findAllExpected, actuals);
     }
 

@@ -1,7 +1,10 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.jdbc.dao.TagDao;
+import com.epam.esm.spring.repository.model.PageParam;
 import com.epam.esm.spring.repository.model.Tag;
+import com.epam.esm.spring.service.dto.Page;
+import com.epam.esm.spring.service.dto.Pageable;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +26,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class DefaultTagCrudServiceTest {
+class DefaultTagServiceTest {
 
     private static final long FIRST_TAG_ID = 1;
     private static final long SECOND_TAG_ID = 2;
@@ -32,6 +35,7 @@ class DefaultTagCrudServiceTest {
     private static final String FIRST_TAG_NAME = "fitness";
     private static final String SECOND_TAG_NAME = "food";
     private static final String THIRD_TAG_NAME = "quest";
+    private PageParam defaultPageParam;
     private TagDto firstTagDto;
     private TagDto secondTagDto;
     private TagDto thirdTagDto;
@@ -98,6 +102,11 @@ class DefaultTagCrudServiceTest {
         tagsAfterDelete = new ArrayList<>();
         tagsAfterDelete.add(firstTag);
 
+        defaultPageParam = PageParam.builder()
+                .page(0)
+                .size(10)
+                .build();
+
         lenient().when(modelMapper.map(firstTag, TagDto.class)).thenReturn(firstTagDto);
         lenient().when(modelMapper.map(secondTag, TagDto.class)).thenReturn(secondTagDto);
         lenient().when(modelMapper.map(thirdTag, TagDto.class)).thenReturn(thirdTagDto);
@@ -107,8 +116,8 @@ class DefaultTagCrudServiceTest {
 
     @Test
     void findAll() {
-        when(tagDao.findAll()).thenReturn(tags);
-        List<TagDto> actualDtoList = tagService.findAll();
+        when(tagDao.findAll(defaultPageParam)).thenReturn(tags);
+        Page<TagDto> actualDtoList = tagService.findAll(new Pageable());
         assertEquals(tagsDto, actualDtoList);
     }
 

@@ -3,9 +3,10 @@ package com.epam.esm.spring.service;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.CertificateParamDto;
 import com.epam.esm.spring.service.dto.CertificateUpdateDto;
+import com.epam.esm.spring.service.dto.Page;
+import com.epam.esm.spring.service.dto.Pageable;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CertificateService extends CrudService<CertificateDto> {
 
@@ -15,7 +16,7 @@ public interface CertificateService extends CrudService<CertificateDto> {
      * @param params list of search params with values
      * @return list of Certificates accordingly to search conditions
      */
-    List<CertificateDto> findBy(CertificateParamDto params);
+    Page<CertificateDto> findBy(CertificateParamDto params, Pageable pageRequest);
 
     /**
      * Updates existing Certificate entirely

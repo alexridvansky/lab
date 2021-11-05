@@ -1,5 +1,6 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
+import com.epam.esm.spring.repository.model.PageParam;
 import com.epam.esm.spring.repository.model.User;
 import org.springframework.stereotype.Repository;
 
@@ -17,8 +18,17 @@ public class DefaultUserDao implements UserDao {
     private EntityManager entityManager;
 
     @Override
-    public List<User> findAll() {
-        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+    public List<User> findAll(PageParam pageParam) {
+        return entityManager.createQuery("SELECT u FROM User u", User.class)
+                .setFirstResult(pageParam.getPage() * pageParam.getSize())
+                .setMaxResults(pageParam.getSize())
+                .getResultList();
+    }
+
+    @Override
+    public Long countEntry() {
+        return entityManager.createQuery("SELECT COUNT(u) FROM User u", Long.class)
+                .getSingleResult();
     }
 
     @Override

@@ -1,7 +1,10 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.jdbc.dao.TagDao;
+import com.epam.esm.spring.repository.model.PageParam;
 import com.epam.esm.spring.repository.model.Tag;
+import com.epam.esm.spring.service.dto.Page;
+import com.epam.esm.spring.service.dto.Pageable;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
@@ -31,10 +34,14 @@ public class DefaultTagService implements TagService {
     }
 
     @Override
-    public List<TagDto> findAll() {
-        return tagDao.findAll().stream()
+    public Page<TagDto> findAll(Pageable pageRequest) {
+        List<TagDto> result = tagDao.findAll(modelMapper.map(pageRequest, PageParam.class)).stream()
                 .map(tag -> modelMapper.map(tag, TagDto.class))
                 .collect(Collectors.toList());
+
+        Long totalPages = tagDao.countEntry();
+
+        return new Page<>(result, pageRequest, totalPages);
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.service.dto.AbstractDto;
+import com.epam.esm.spring.service.dto.CertificateDto;
+import com.epam.esm.spring.service.dto.Page;
+import com.epam.esm.spring.service.dto.Pageable;
 
 import java.util.List;
 
@@ -10,7 +13,7 @@ public interface CrudService<T extends AbstractDto> {
      *
      * @return List<T>
      */
-    List<T> findAll();
+    Page<T> findAll(Pageable pageRequest);
 
     /**
      * Gets Entity by id given

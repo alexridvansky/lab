@@ -5,9 +5,12 @@ import com.epam.esm.spring.repository.jdbc.dao.OrderDao;
 import com.epam.esm.spring.repository.jdbc.dao.UserDao;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.Order;
+import com.epam.esm.spring.repository.model.PageParam;
 import com.epam.esm.spring.repository.model.User;
 import com.epam.esm.spring.service.dto.OrderDto;
 import com.epam.esm.spring.service.dto.OrderInsertDto;
+import com.epam.esm.spring.service.dto.Page;
+import com.epam.esm.spring.service.dto.Pageable;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.exception.SubEntryNotFoundException;
 import org.modelmapper.ModelMapper;
@@ -44,10 +47,14 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
-    public List<OrderDto> findAll() {
-        return orderDao.findAll().stream()
+    public Page<OrderDto> findAll(Pageable pageRequest) {
+        List<OrderDto> result =  orderDao.findAll(modelMapper.map(pageRequest, PageParam.class)).stream()
                 .map(order -> modelMapper.map(order, OrderDto.class))
                 .collect(Collectors.toList());
+
+        Long totalPages = orderDao.countEntry();
+
+        return new Page<>(result, pageRequest, totalPages);
     }
 
     @Override

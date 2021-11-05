@@ -4,9 +4,12 @@ import com.epam.esm.spring.repository.jdbc.dao.CertificateDao;
 import com.epam.esm.spring.repository.jdbc.dao.TagDao;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.CertificateParam;
+import com.epam.esm.spring.repository.model.PageParam;
 import com.epam.esm.spring.repository.model.Tag;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.CertificateParamDto;
+import com.epam.esm.spring.service.dto.Page;
+import com.epam.esm.spring.service.dto.Pageable;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.util.SearchRequestValidator;
@@ -31,7 +34,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class DefaultCertificateCrudServiceTest {
+class DefaultCertificateServiceTest {
     private static final long FIRST_TAG_ID = 1;
     private static final long SECOND_TAG_ID = 2;
 
@@ -117,6 +120,11 @@ class DefaultCertificateCrudServiceTest {
             .search("Second")
             .build();
 
+    private final PageParam defaultPageParam = PageParam.builder()
+            .page(0)
+            .size(10)
+            .build();
+
     @InjectMocks
     private DefaultCertificateService certificateService;
 
@@ -148,15 +156,15 @@ class DefaultCertificateCrudServiceTest {
 
     @Test
     void findAll() {
-        when(certificateDao.findAll()).thenReturn(certificates);
-        List<CertificateDto> actuals = certificateService.findAll();
+        when(certificateDao.findAll(defaultPageParam)).thenReturn(certificates);
+        Page<CertificateDto> actuals = certificateService.findAll(new Pageable());
         assertEquals(certificateDtos, actuals);
     }
 
     @Test
     void findBy() {
         when(certificateDao.findBy(param)).thenReturn(certificatesByParams);
-        List<CertificateDto> actual = certificateService.findBy(paramDto);
+        Page<CertificateDto> actual = certificateService.findBy(paramDto, new Pageable());
         assertEquals(certificatesDtoByParam, actual);
     }
 

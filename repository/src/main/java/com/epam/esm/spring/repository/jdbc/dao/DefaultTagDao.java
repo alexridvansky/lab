@@ -1,5 +1,6 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
+import com.epam.esm.spring.repository.model.PageParam;
 import com.epam.esm.spring.repository.model.Tag;
 import org.springframework.stereotype.Repository;
 
@@ -27,9 +28,17 @@ public class DefaultTagDao implements TagDao {
     }
 
     @Override
-    public List<Tag> findAll() {
+    public List<Tag> findAll(PageParam pageParam) {
         return entityManager.createQuery("SELECT t FROM Tag t ORDER BY t.id", Tag.class)
+                .setFirstResult(pageParam.getPage() * pageParam.getSize())
+                .setMaxResults(pageParam.getSize())
                 .getResultList();
+    }
+
+    @Override
+    public Long countEntry() {
+        return entityManager.createQuery("SELECT COUNT(t) FROM Tag t", Long.class)
+                .getSingleResult();
     }
 
     @Override

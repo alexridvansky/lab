@@ -1,6 +1,8 @@
 package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.TagService;
+import com.epam.esm.spring.service.dto.Page;
+import com.epam.esm.spring.service.dto.Pageable;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.web.hateoas.LinkBuilder;
 import com.epam.esm.spring.web.hateoas.TagLinkBuilder;
@@ -13,13 +15,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -48,13 +47,8 @@ public class TagController implements Controller<TagDto> {
 
     @Override
     @GetMapping()
-    public List<TagDto> findAll(@RequestParam(name = "page", required = false) Integer page,
-                                @RequestParam(name = "size", required = false) Integer size) {
-
-        return tagService.findAll().stream()
-                .map(linkBuilder::addFindByIdLink)
-                .map(linkBuilder::addRemoveLink)
-                .collect(Collectors.toList());
+    public ResponseEntity<Page<TagDto>> findAll(@Valid Pageable pageRequest) {
+        return new ResponseEntity<>(tagService.findAll(pageRequest), HttpStatus.OK);
     }
 
     /**

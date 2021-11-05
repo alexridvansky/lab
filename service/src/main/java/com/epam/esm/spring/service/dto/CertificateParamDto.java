@@ -29,7 +29,7 @@ public class CertificateParamDto {
     private String order = DEFAULT_SORT_ORDER;
 
     public boolean isRequestMeaningless() {
-        return tags.isEmpty() && search.equals(DEFAULT_SEARCH) && sort.equals(DEFAULT_SORT_FIELD)
-                && order.equals(DEFAULT_SORT_ORDER);
+        return tags.isEmpty() && search.equals(DEFAULT_SEARCH) && sort.equalsIgnoreCase(DEFAULT_SORT_FIELD)
+                && order.equalsIgnoreCase(DEFAULT_SORT_ORDER);
     }
 }
