@@ -12,7 +12,7 @@ import com.epam.esm.spring.service.dto.Page;
 import com.epam.esm.spring.service.dto.Pageable;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
-import com.epam.esm.spring.service.util.SearchRequestValidator;
+import com.epam.esm.spring.service.validator.SearchRequestValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

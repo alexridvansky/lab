@@ -16,7 +16,8 @@ import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.exception.SubEntryAlreadyAttachedException;
 import com.epam.esm.spring.service.exception.SubEntryNotFoundException;
-import com.epam.esm.spring.service.util.SearchRequestValidator;
+import com.epam.esm.spring.service.util.PageRequestProcessor;
+import com.epam.esm.spring.service.validator.SearchRequestValidator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,16 +41,19 @@ public class DefaultCertificateService implements CertificateService {
     private final CertificateDao certificateDao;
     private final TagService tagService;
     private final SearchRequestValidator searchRequestValidator;
+    private final PageRequestProcessor pageRequestProcessor;
     private final ModelMapper modelMapper;
 
     @Autowired
     public DefaultCertificateService(CertificateDao certificateDao,
                                      TagService tagService,
                                      SearchRequestValidator searchRequestValidator,
+                                     PageRequestProcessor pageRequestProcessor,
                                      ModelMapper modelMapper) {
         this.certificateDao = certificateDao;
         this.tagService = tagService;
         this.searchRequestValidator = searchRequestValidator;
+        this.pageRequestProcessor = pageRequestProcessor;
         this.modelMapper = modelMapper;
     }
 
@@ -59,6 +63,8 @@ public class DefaultCertificateService implements CertificateService {
     }
 
     private Page<CertificateDto> getCertificateDtoPage(Pageable pageRequest) {
+        pageRequestProcessor.processRequest(pageRequest);
+
         List<CertificateDto> result = certificateDao.findAll(modelMapper.map(pageRequest, PageParam.class))
                 .stream()
                 .map(certificate -> modelMapper.map(certificate, CertificateDto.class))

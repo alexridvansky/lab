@@ -1,4 +1,4 @@
-package com.epam.esm.spring.service.util;
+package com.epam.esm.spring.service.validator;
 
 import com.epam.esm.spring.repository.jdbc.querybuilder.CertificateFieldType;
 import com.epam.esm.spring.repository.jdbc.querybuilder.SortingOrderType;
