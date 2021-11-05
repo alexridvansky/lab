@@ -15,9 +15,9 @@ import javax.validation.constraints.PositiveOrZero;
 @NoArgsConstructor
 public class Pageable {
 
-    @Positive
+    @PositiveOrZero
     private Integer page;
 
-    @PositiveOrZero
+    @Positive
     private Integer size;
 }

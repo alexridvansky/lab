@@ -1,27 +1,25 @@
 package com.epam.esm.spring.service.util;
 
+import com.epam.esm.spring.service.config.ConfigProperties;
 import com.epam.esm.spring.service.dto.Pageable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
-@PropertySource("classpath:pagination.properties")
 public class PageRequestProcessor {
 
-    @Value("${page}")
-    private int defaultPage;
+    private final ConfigProperties configProperties;
 
-    @Value("${size}")
-    private int defaultSize;
+    public PageRequestProcessor(ConfigProperties configProperties) {
+        this.configProperties = configProperties;
+    }
 
     public void processRequest(Pageable pageRequest) {
         if (pageRequest.getPage() == null) {
-            pageRequest.setPage(defaultPage);
+            pageRequest.setPage(configProperties.getPage());
         }
 
         if (pageRequest.getSize() == null) {
-            pageRequest.setSize(defaultSize);
+            pageRequest.setSize(configProperties.getSize());
         }
     }
 }
