@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
+import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.SQL_FIND_MOST_USED_TAG;
 import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.ID;
 import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.NAME;
 
@@ -76,7 +77,8 @@ public class DefaultTagDao implements TagDao {
     }
 
     @Override
-    public Tag findMostUsed() {
-        return null;
+    public List<Tag> findMostUsed() {
+        return entityManager.createNativeQuery(SQL_FIND_MOST_USED_TAG, Tag.class)
+                .getResultList();
     }
 }

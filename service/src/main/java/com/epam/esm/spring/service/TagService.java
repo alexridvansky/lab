@@ -1,7 +1,6 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.model.Tag;
-import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.TagDto;
 
 import java.util.List;
@@ -38,5 +37,5 @@ public interface TagService extends CrudService<TagDto> {
      *
      * @return TagDto tag
      */
-    TagDto findMostUsed();
+    List<TagDto> findMostUsed();
 }

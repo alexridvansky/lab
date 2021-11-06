@@ -92,7 +92,9 @@ public class DefaultTagService implements TagService {
     }
 
     @Override
-    public TagDto findMostUsed() {
-        return modelMapper.map(tagDao.findMostUsed(), TagDto.class);
+    public List<TagDto> findMostUsed() {
+        return tagDao.findMostUsed().stream()
+                .map(tag -> modelMapper.map(tag, TagDto.class))
+                .collect(Collectors.toList());
     }
 }
