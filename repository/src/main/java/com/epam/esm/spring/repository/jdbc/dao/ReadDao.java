@@ -1,7 +1,7 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.model.AbstractEntity;
-import com.epam.esm.spring.repository.model.PageParam;
+import com.epam.esm.spring.repository.model.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +12,7 @@ public interface ReadDao<T extends AbstractEntity> {
      *
      * @return List<AbstractEntity>
      */
-    List<T> findAll(PageParam pageParam);
+    List<T> findAll(Pageable pageParam);
 
     /**
      * returns number of entries in the db.

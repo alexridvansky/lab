@@ -20,7 +20,7 @@ public class Page<T> {
     private Long totalPages;
     private Long totalEntries;
 
-    public Page(Collection<T> content, Pageable pageRequest, Long totalEntries) {
+    public Page(Collection<T> content, PageableDto pageRequest, Long totalEntries) {
         this.content = content;
         this.size = pageRequest.getSize();
         this.page = pageRequest.getPage();

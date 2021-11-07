@@ -5,7 +5,7 @@ import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.CertificateParamDto;
 import com.epam.esm.spring.service.dto.CertificateUpdateDto;
 import com.epam.esm.spring.service.dto.Page;
-import com.epam.esm.spring.service.dto.Pageable;
+import com.epam.esm.spring.service.dto.PageableDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +46,7 @@ public class CertificateController implements Controller<CertificateDto> {
     }
 
     @Override
-    public Page<CertificateDto> findAll(@Valid Pageable pageRequest) {
+    public Page<CertificateDto> findAll(@Valid PageableDto pageRequest) {
         return certificateService.findAll(pageRequest);
     }
 
@@ -57,11 +57,11 @@ public class CertificateController implements Controller<CertificateDto> {
      * @return List<CertificateDto> the list of certificates
      */
     @GetMapping
-    public Page<CertificateDto> findBy(@Valid Pageable pageable, CertificateParamDto searchParamDto) {
+    public Page<CertificateDto> findBy(@Valid PageableDto pageableDto, CertificateParamDto searchParamDto) {
         if (searchParamDto.isRequestMeaningless()) {
-            return certificateService.findAll(pageable);
+            return certificateService.findAll(pageableDto);
         } else {
-            return certificateService.findBy(searchParamDto, pageable);
+            return certificateService.findBy(searchParamDto, pageableDto);
         }
     }
 

@@ -2,7 +2,7 @@ package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.TagService;
 import com.epam.esm.spring.service.dto.Page;
-import com.epam.esm.spring.service.dto.Pageable;
+import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.web.hateoas.LinkBuilder;
 import com.epam.esm.spring.web.hateoas.TagLinkBuilder;
@@ -48,7 +48,7 @@ public class TagController implements Controller<TagDto> {
 
     @Override
     @GetMapping()
-    public Page<TagDto> findAll(@Valid Pageable pageRequest) {
+    public Page<TagDto> findAll(@Valid PageableDto pageRequest) {
         return tagService.findAll(pageRequest);
     }
 

@@ -4,12 +4,12 @@ import com.epam.esm.spring.repository.jdbc.dao.CertificateDao;
 import com.epam.esm.spring.repository.jdbc.dao.TagDao;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.CertificateParam;
-import com.epam.esm.spring.repository.model.PageParam;
+import com.epam.esm.spring.repository.model.Pageable;
 import com.epam.esm.spring.repository.model.Tag;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.CertificateParamDto;
 import com.epam.esm.spring.service.dto.Page;
-import com.epam.esm.spring.service.dto.Pageable;
+import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.validator.SearchRequestValidator;
@@ -120,7 +120,7 @@ class DefaultCertificateServiceTest {
             .search("Second")
             .build();
 
-    private final PageParam defaultPageParam = PageParam.builder()
+    private final Pageable defaultPageable = Pageable.builder()
             .page(0)
             .size(10)
             .build();
@@ -156,15 +156,15 @@ class DefaultCertificateServiceTest {
 
     @Test
     void findAll() {
-        when(certificateDao.findAll(defaultPageParam)).thenReturn(certificates);
-        Page<CertificateDto> actuals = certificateService.findAll(new Pageable());
+        when(certificateDao.findAll(defaultPageable)).thenReturn(certificates);
+        Page<CertificateDto> actuals = certificateService.findAll(new PageableDto());
         assertEquals(certificateDtos, actuals);
     }
 
     @Test
     void findBy() {
-        when(certificateDao.findBy(param)).thenReturn(certificatesByParams);
-        Page<CertificateDto> actual = certificateService.findBy(paramDto, new Pageable());
+        when(certificateDao.findBy(param, defaultPageable)).thenReturn(certificatesByParams);
+        Page<CertificateDto> actual = certificateService.findBy(paramDto, new PageableDto());
         assertEquals(certificatesDtoByParam, actual);
     }
 

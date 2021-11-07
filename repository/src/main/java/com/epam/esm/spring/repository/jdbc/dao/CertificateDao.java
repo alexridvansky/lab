@@ -2,6 +2,7 @@ package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.CertificateParam;
+import com.epam.esm.spring.repository.model.Pageable;
 
 import java.util.List;
 import java.util.Map;
@@ -12,9 +13,10 @@ public interface CertificateDao extends CreateDeleteDao<Certificate> {
      * Returns the list of certificates accordingly to search parameters.
      *
      * @param params list of parameters for search
+     * @param pageParam requested page params
      * @return List<Certificate>
      */
-    List<Certificate> findBy(CertificateParam params);
+    List<Certificate> findBy(CertificateParam params, Pageable pageParam);
 
     /**
      * Updates certificate entry in the db

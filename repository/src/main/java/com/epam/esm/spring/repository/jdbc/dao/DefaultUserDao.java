@@ -1,6 +1,6 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
-import com.epam.esm.spring.repository.model.PageParam;
+import com.epam.esm.spring.repository.model.Pageable;
 import com.epam.esm.spring.repository.model.User;
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +18,7 @@ public class DefaultUserDao implements UserDao {
     private EntityManager entityManager;
 
     @Override
-    public List<User> findAll(PageParam pageParam) {
+    public List<User> findAll(Pageable pageParam) {
         return entityManager.createQuery("SELECT u FROM User u", User.class)
                 .setFirstResult(pageParam.getPage() * pageParam.getSize())
                 .setMaxResults(pageParam.getSize())

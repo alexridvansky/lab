@@ -1,7 +1,7 @@
 package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.model.Order;
-import com.epam.esm.spring.repository.model.PageParam;
+import com.epam.esm.spring.repository.model.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -18,7 +18,7 @@ public class DefaultOrderDao implements OrderDao {
     private EntityManager entityManager;
 
     @Override
-    public List<Order> findAll(PageParam pageParam) {
+    public List<Order> findAll(Pageable pageParam) {
         return entityManager.createQuery("SELECT o FROM Order o", Order.class)
                 .setFirstResult(pageParam.getPage() * pageParam.getSize())
                 .setMaxResults(pageParam.getSize())

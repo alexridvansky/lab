@@ -1,7 +1,7 @@
 package com.epam.esm.spring.web.hateoas;
 
 import com.epam.esm.spring.service.dto.AbstractDto;
-import com.epam.esm.spring.service.dto.Pageable;
+import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.web.controller.Controller;
 import org.springframework.hateoas.Link;
 
@@ -23,7 +23,7 @@ public abstract class AbstractLinkBuilder<T extends AbstractDto> implements Link
 
     protected <K extends Controller<T>> T addFindAllLink(T entity, Class<K> controllerClass) {
         Link findAllLink = linkTo(methodOn(controllerClass)
-                .findAll(new Pageable())).withRel(LINK_TITLE_FIND_ALL);
+                .findAll(new PageableDto())).withRel(LINK_TITLE_FIND_ALL);
         entity.add(findAllLink);
 
         return entity;

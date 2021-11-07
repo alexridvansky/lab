@@ -3,13 +3,13 @@ package com.epam.esm.spring.service;
 import com.epam.esm.spring.repository.jdbc.dao.CertificateDao;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.CertificateParam;
-import com.epam.esm.spring.repository.model.PageParam;
+import com.epam.esm.spring.repository.model.Pageable;
 import com.epam.esm.spring.repository.model.Tag;
 import com.epam.esm.spring.service.dto.CertificateDto;
 import com.epam.esm.spring.service.dto.CertificateParamDto;
 import com.epam.esm.spring.service.dto.CertificateUpdateDto;
 import com.epam.esm.spring.service.dto.Page;
-import com.epam.esm.spring.service.dto.Pageable;
+import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntityIntersectionException;
 import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
@@ -58,30 +58,36 @@ public class DefaultCertificateService implements CertificateService {
     }
 
     @Override
-    public Page<CertificateDto> findAll(Pageable pageRequest) {
-        return getCertificateDtoPage(pageRequest);
-    }
+    public Page<CertificateDto> findAll(PageableDto pageRequestDto) {
+        pageRequestProcessor.processRequest(pageRequestDto);
 
-    private Page<CertificateDto> getCertificateDtoPage(Pageable pageRequest) {
-        pageRequestProcessor.processRequest(pageRequest);
+        Pageable pageParam = modelMapper.map(pageRequestDto, Pageable.class);
 
-        List<CertificateDto> result = certificateDao.findAll(modelMapper.map(pageRequest, PageParam.class))
+        List<CertificateDto> result = certificateDao.findAll(pageParam)
                 .stream()
                 .map(certificate -> modelMapper.map(certificate, CertificateDto.class))
                 .collect(Collectors.toList());
 
         Long totalEntries = certificateDao.countEntry();
 
-        return new Page<>(result, pageRequest, totalEntries);
+        return new Page<>(result, pageRequestDto, totalEntries);
     }
 
     @Override
-    public Page<CertificateDto> findBy(CertificateParamDto paramDto, Pageable pageRequest) {
+    public Page<CertificateDto> findBy(CertificateParamDto paramDto, PageableDto pageRequestDto) {
+        pageRequestProcessor.processRequest(pageRequestDto);
         searchRequestValidator.validateRequest(paramDto);
 
-        CertificateParam param = modelMapper.map(paramDto, CertificateParam.class);
+        Long totalEntries = certificateDao.countEntry();
+        CertificateParam certificateParam = modelMapper.map(paramDto, CertificateParam.class);
+        Pageable pageParam = modelMapper.map(pageRequestDto, Pageable.class);
 
-        return getCertificateDtoPage(pageRequest);
+        List<CertificateDto> result = certificateDao.findBy(certificateParam, pageParam)
+                .stream()
+                .map(certificate -> modelMapper.map(certificate, CertificateDto.class))
+                .collect(Collectors.toList());
+
+        return new Page<>(result, pageRequestDto, totalEntries);
     }
 
     @Override

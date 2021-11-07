@@ -3,7 +3,7 @@ package com.epam.esm.spring.repository.jdbc.dao;
 import com.epam.esm.spring.repository.jdbc.querybuilder.QueryBuilder;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.CertificateParam;
-import com.epam.esm.spring.repository.model.PageParam;
+import com.epam.esm.spring.repository.model.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -28,7 +28,7 @@ public class DefaultCertificateDao implements CertificateDao {
     private EntityManager entityManager;
 
     @Override
-    public List<Certificate> findAll(PageParam pageParam) {
+    public List<Certificate> findAll(Pageable pageParam) {
         return entityManager.createQuery("SELECT c FROM Certificate c", Certificate.class)
                 .setFirstResult(pageParam.getPage() * pageParam.getSize())
                 .setMaxResults(pageParam.getSize())
@@ -42,9 +42,12 @@ public class DefaultCertificateDao implements CertificateDao {
     }
 
     @Override
-    public List<Certificate> findBy(CertificateParam param) {
+    public List<Certificate> findBy(CertificateParam param, Pageable pageParam) {
         TypedQuery<Certificate> typedQuery = entityManager.createQuery(queryBuilder.buildQueryForSearch(param));
-        return typedQuery.getResultList();
+        return typedQuery
+                .setFirstResult(pageParam.getPage() * pageParam.getSize())
+                .setMaxResults(pageParam.getSize())
+                .getResultList();
     }
 
     @Override

@@ -1,10 +1,10 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.jdbc.dao.TagDao;
-import com.epam.esm.spring.repository.model.PageParam;
+import com.epam.esm.spring.repository.model.Pageable;
 import com.epam.esm.spring.repository.model.Tag;
 import com.epam.esm.spring.service.dto.Page;
-import com.epam.esm.spring.service.dto.Pageable;
+import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ class DefaultTagServiceTest {
     private static final String FIRST_TAG_NAME = "fitness";
     private static final String SECOND_TAG_NAME = "food";
     private static final String THIRD_TAG_NAME = "quest";
-    private PageParam defaultPageParam;
+    private Pageable defaultPageable;
     private TagDto firstTagDto;
     private TagDto secondTagDto;
     private TagDto thirdTagDto;
@@ -102,7 +102,7 @@ class DefaultTagServiceTest {
         tagsAfterDelete = new ArrayList<>();
         tagsAfterDelete.add(firstTag);
 
-        defaultPageParam = PageParam.builder()
+        defaultPageable = Pageable.builder()
                 .page(0)
                 .size(10)
                 .build();
@@ -116,8 +116,8 @@ class DefaultTagServiceTest {
 
     @Test
     void findAll() {
-        when(tagDao.findAll(defaultPageParam)).thenReturn(tags);
-        Page<TagDto> actualDtoList = tagService.findAll(new Pageable());
+        when(tagDao.findAll(defaultPageable)).thenReturn(tags);
+        Page<TagDto> actualDtoList = tagService.findAll(new PageableDto(0, 100));
         assertEquals(tagsDto, actualDtoList);
     }
 

@@ -1,7 +1,7 @@
 package com.epam.esm.spring.service.util;
 
 import com.epam.esm.spring.service.config.ConfigProperties;
-import com.epam.esm.spring.service.dto.Pageable;
+import com.epam.esm.spring.service.dto.PageableDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +13,7 @@ public class PageRequestProcessor {
         this.configProperties = configProperties;
     }
 
-    public void processRequest(Pageable pageRequest) {
+    public void processRequest(PageableDto pageRequest) {
         if (pageRequest.getPage() == null) {
             pageRequest.setPage(configProperties.getPage());
         }

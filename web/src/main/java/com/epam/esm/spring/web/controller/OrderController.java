@@ -4,7 +4,7 @@ import com.epam.esm.spring.service.OrderService;
 import com.epam.esm.spring.service.dto.OrderDto;
 import com.epam.esm.spring.service.dto.OrderInsertDto;
 import com.epam.esm.spring.service.dto.Page;
-import com.epam.esm.spring.service.dto.Pageable;
+import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.web.hateoas.LinkBuilder;
 import com.epam.esm.spring.web.hateoas.OrderLinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class OrderController implements Controller<OrderDto> {
 
     @Override
     @GetMapping
-    public Page<OrderDto> findAll(@Valid Pageable pageRequest) {
+    public Page<OrderDto> findAll(@Valid PageableDto pageRequest) {
         return orderService.findAll(pageRequest);
     }
 

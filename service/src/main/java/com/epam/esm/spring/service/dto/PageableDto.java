@@ -1,18 +1,23 @@
-package com.epam.esm.spring.repository.model;
+package com.epam.esm.spring.service.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Builder
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PageParam {
+public class PageableDto {
 
+    @PositiveOrZero
     private Integer page;
+
+    @Positive
     private Integer size;
 }

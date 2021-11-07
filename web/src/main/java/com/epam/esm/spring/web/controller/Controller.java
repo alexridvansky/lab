@@ -2,7 +2,7 @@ package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.dto.AbstractDto;
 import com.epam.esm.spring.service.dto.Page;
-import com.epam.esm.spring.service.dto.Pageable;
+import com.epam.esm.spring.service.dto.PageableDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +28,7 @@ public interface Controller<K extends AbstractDto> {
      *
      * @return List<EntityDto> the list of entities
      */
-    Page<K> findAll(@Valid Pageable pageRequest);
+    Page<K> findAll(@Valid PageableDto pageRequest);
 
     /**
      * Removes Entity by its ID

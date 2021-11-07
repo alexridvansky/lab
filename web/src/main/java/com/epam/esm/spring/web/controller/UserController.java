@@ -2,7 +2,7 @@ package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.UserService;
 import com.epam.esm.spring.service.dto.Page;
-import com.epam.esm.spring.service.dto.Pageable;
+import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.UserDto;
 import com.epam.esm.spring.web.hateoas.LinkBuilder;
 import com.epam.esm.spring.web.hateoas.UserLinkBuilder;
@@ -36,7 +36,7 @@ public class UserController implements Controller<UserDto> {
 
     @Override
     @GetMapping()
-    public Page<UserDto> findAll(@Valid Pageable pageRequest) {
+    public Page<UserDto> findAll(@Valid PageableDto pageRequest) {
         return userService.findAll(pageRequest);
     }
 

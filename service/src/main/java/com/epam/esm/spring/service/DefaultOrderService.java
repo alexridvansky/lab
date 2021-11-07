@@ -5,14 +5,15 @@ import com.epam.esm.spring.repository.jdbc.dao.OrderDao;
 import com.epam.esm.spring.repository.jdbc.dao.UserDao;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.Order;
-import com.epam.esm.spring.repository.model.PageParam;
+import com.epam.esm.spring.repository.model.Pageable;
 import com.epam.esm.spring.repository.model.User;
 import com.epam.esm.spring.service.dto.OrderDto;
 import com.epam.esm.spring.service.dto.OrderInsertDto;
 import com.epam.esm.spring.service.dto.Page;
-import com.epam.esm.spring.service.dto.Pageable;
+import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.exception.SubEntryNotFoundException;
+import com.epam.esm.spring.service.util.PageRequestProcessor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,22 +34,27 @@ public class DefaultOrderService implements OrderService {
     private final OrderDao orderDao;
     private final UserDao userDao;
     private final CertificateDao certificateDao;
+    private final PageRequestProcessor pageRequestProcessor;
     private final ModelMapper modelMapper;
 
     @Autowired
     public DefaultOrderService(OrderDao orderDao,
                                UserDao userDao,
                                CertificateDao certificateDao,
+                               PageRequestProcessor pageRequestProcessor,
                                ModelMapper modelMapper) {
         this.orderDao = orderDao;
         this.userDao = userDao;
         this.certificateDao = certificateDao;
+        this.pageRequestProcessor = pageRequestProcessor;
         this.modelMapper = modelMapper;
     }
 
     @Override
-    public Page<OrderDto> findAll(Pageable pageRequest) {
-        List<OrderDto> result =  orderDao.findAll(modelMapper.map(pageRequest, PageParam.class)).stream()
+    public Page<OrderDto> findAll(PageableDto pageRequest) {
+        pageRequestProcessor.processRequest(pageRequest);
+
+        List<OrderDto> result =  orderDao.findAll(modelMapper.map(pageRequest, Pageable.class)).stream()
                 .map(order -> modelMapper.map(order, OrderDto.class))
                 .collect(Collectors.toList());
 

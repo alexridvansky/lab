@@ -3,7 +3,7 @@ package com.epam.esm.spring.repository.jdbc.dao;
 import com.epam.esm.spring.repository.config.TestConfigJpa;
 import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.CertificateParam;
-import com.epam.esm.spring.repository.model.PageParam;
+import com.epam.esm.spring.repository.model.Pageable;
 import com.epam.esm.spring.repository.model.Tag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
@@ -45,8 +45,8 @@ class DefaultCertificateDaoTest {
     private static Certificate cert_one;
     private static Certificate cert_two;
     private static Certificate cert_three;
-    private static CertificateParam param;
-    private static PageParam defaultPageParam;
+    private static CertificateParam certificateParam;
+    private static Pageable defaultPageable;
     private CertificateDao certificateDao;
     private Set<String> tagNames;
     private List<Certificate> findAllExpected;
@@ -143,7 +143,7 @@ class DefaultCertificateDaoTest {
 
         tagNames = Collections.singleton("fitness");
 
-        param = CertificateParam.builder()
+        certificateParam = CertificateParam.builder()
                 .tags(tagNames)
                 .search("Second")
                 .build();
@@ -151,7 +151,7 @@ class DefaultCertificateDaoTest {
         findAllExpected = Arrays.asList(cert_one, cert_two, cert_three);
         findByExpected = Collections.singletonList(cert_one);
 
-        defaultPageParam = PageParam.builder()
+        defaultPageable = Pageable.builder()
                 .page(0)
                 .size(10)
                 .build();
@@ -161,7 +161,7 @@ class DefaultCertificateDaoTest {
     @Order(1)
     void findAll() {
         // Expected equality of given and provided lists
-        List<Certificate> actuals = certificateDao.findAll(defaultPageParam);
+        List<Certificate> actuals = certificateDao.findAll(defaultPageable);
         assertEquals(findAllExpected, actuals);
     }
 
@@ -169,7 +169,7 @@ class DefaultCertificateDaoTest {
     @Order(1)
     void findBy() {
         // Asking the list of certificates by parameters given expected the following list
-        List<Certificate> actuals = certificateDao.findBy(param);
+        List<Certificate> actuals = certificateDao.findBy(certificateParam, defaultPageable);
         assertEquals(findByExpected, actuals);
     }
 
