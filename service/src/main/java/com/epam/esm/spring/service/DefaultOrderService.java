@@ -67,7 +67,7 @@ public class DefaultOrderService implements OrderService {
     public OrderDto findById(Long id) {
         return orderDao.findById(id)
                 .map(order -> modelMapper.map(order, OrderDto.class))
-                .orElseThrow(() -> new SubEntryNotFoundException(ERROR_ORDER_NOT_FOUND, ID + id));
+                .orElseThrow(() -> new EntryNotFoundException(ERROR_ORDER_NOT_FOUND, ID + id));
     }
 
     @Override
