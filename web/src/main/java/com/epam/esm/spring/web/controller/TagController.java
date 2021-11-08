@@ -59,8 +59,10 @@ public class TagController implements Controller<TagDto> {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TagDto insert(@Valid @RequestBody TagDto tagDto) {
-        return tagService.insert(tagDto);
+    public ResponseEntity<Void> insert(@Valid @RequestBody TagDto tagDto) {
+        tagService.insert(tagDto);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
@@ -73,6 +75,7 @@ public class TagController implements Controller<TagDto> {
 
     @GetMapping("/popular")
     public TagDto findMostUsed() {
+
         return tagService.findMostUsed();
     }
 }

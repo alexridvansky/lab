@@ -72,8 +72,10 @@ public class CertificateController implements Controller<CertificateDto> {
      */
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public CertificateDto insert(@Valid @RequestBody CertificateDto certificateDto) {
-        return certificateService.insert(certificateDto);
+    public ResponseEntity<Void> insert(@Valid @RequestBody CertificateDto certificateDto) {
+        certificateService.insert(certificateDto);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     /**
@@ -83,10 +85,12 @@ public class CertificateController implements Controller<CertificateDto> {
      */
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CertificateDto update(@Valid @RequestBody CertificateUpdateDto certificateUpdateDto,
+    public ResponseEntity<Void> update(@Valid @RequestBody CertificateUpdateDto certificateUpdateDto,
                                  @PathVariable @Positive Long id) {
         certificateUpdateDto.setId(id);
-        return certificateService.update(certificateUpdateDto);
+        certificateService.update(certificateUpdateDto);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -96,10 +100,12 @@ public class CertificateController implements Controller<CertificateDto> {
      */
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CertificateDto update(@Valid @RequestBody CertificateDto certificateDto,
+    public ResponseEntity<Void> update(@Valid @RequestBody CertificateDto certificateDto,
                                  @PathVariable @Positive Long id) {
         certificateDto.setId(id);
-        return certificateService.update(certificateDto);
+        certificateService.update(certificateDto);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

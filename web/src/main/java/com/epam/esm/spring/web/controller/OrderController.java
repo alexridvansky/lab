@@ -43,7 +43,6 @@ public class OrderController implements Controller<OrderDto> {
         OrderDto orderDto = orderService.findById(id);
         linkBuilder.addFindAllLink(orderDto);
         linkBuilder.addRemoveLink(orderDto);
-
         return orderDto;
     }
 
@@ -65,8 +64,10 @@ public class OrderController implements Controller<OrderDto> {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderDto insert(@Valid @RequestBody OrderInsertDto orderDto) {
-        return orderService.insert(orderDto);
+    public ResponseEntity<Void> insert(@Valid @RequestBody OrderInsertDto orderDto) {
+        orderService.insert(orderDto);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
