@@ -12,7 +12,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -207,25 +208,17 @@ class DefaultTagDaoTest {
     @Test
     @Order(3)
     @Transactional
-    void deleteById() {
-        // Trying to delete existing Tag exception aren't expected
-        tagDao.delete(tag_one);
+    void deleteDetached() {
+        // Trying to delete detached entity exception are expected
+        assertThrowsExactly(InvalidDataAccessApiUsageException.class, () -> tagDao.delete(tag_one));
     }
-
-//    @Test
-//    @Order(3)
-//    void deleteByNonExistingId() {
-//        // Trying to delete NOT_existing Tag FALSE is expected
-//        boolean actual = tagDao.delete(15);
-//        assertFalse(actual);
-//    }
 
     @Test
     @Order(4)
     @Transactional
     void insert() {
         // Trying to add new Tag we are expecting to get the same tag back
-        Tag newTag = Tag.builder().id(11L).name("somename").build();
+        Tag newTag = Tag.builder().name("somename").build();
         Tag actual = tagDao.insert(newTag);
         assertEquals(newTag, actual);
     }
@@ -235,6 +228,6 @@ class DefaultTagDaoTest {
     @Transactional
     void insertAlreadyExistingEntryExceptionExpected() {
         // Inserting Tag which is already in the DB we exception is expected
-        assertThrowsExactly(DuplicateKeyException.class, () -> tagDao.insert(tag_five));
+        assertThrowsExactly(JpaSystemException.class, () -> tagDao.insert(tag_five));
     }
 }
