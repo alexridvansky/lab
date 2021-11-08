@@ -145,11 +145,11 @@ class DefaultCertificateDaoTest {
 
         certificateParam = CertificateParam.builder()
                 .tags(tagNames)
-                .search("Second")
                 .build();
 
         findAllExpected = Arrays.asList(cert_one, cert_two, cert_three);
-        findByExpected = Collections.singletonList(cert_one);
+
+        findByExpected = Collections.singletonList(cert_three);
 
         defaultPageable = Pageable.builder()
                 .page(0)
