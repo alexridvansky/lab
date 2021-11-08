@@ -36,13 +36,11 @@ public class CertificateDto extends AbstractDto {
     private String description;
 
     @NotNull
-    @Positive
     @Digits(integer = 6, fraction = 2)
     @DecimalMin(value = "0.10")
     private BigDecimal price;
 
     @NotNull
-    @Positive
     @Min(value = 1)
     @Max(value = 365)
     private Integer duration;

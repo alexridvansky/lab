@@ -29,12 +29,10 @@ public class CertificateUpdateDto {
     @Pattern(regexp = "^[^-,.%&$ ][a-zA-Z0-9,.%&$ ]{4,200}+$")
     private String description;
 
-    @Positive
     @Digits(integer = 6, fraction = 2)
     @DecimalMin(value = "0.10")
     private BigDecimal price;
 
-    @Positive
     @Min(value = 1)
     @Max(value = 365)
     private Integer duration;
