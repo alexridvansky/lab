@@ -37,5 +37,5 @@ public interface TagService extends CrudService<TagDto> {
      *
      * @return TagDto tag
      */
-    List<TagDto> findMostUsed();
+    TagDto findMostUsed();
 }

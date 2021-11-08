@@ -36,5 +36,5 @@ public interface TagDao extends CreateDeleteDao<Tag> {
      *
      * @return Tag tag
      */
-    List<Tag> findMostUsed();
+    Optional<Tag> findMostUsed();
 }

@@ -17,6 +17,7 @@ import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.N
 public class DefaultTagDao implements TagDao {
 
     public static final int EMPTY_RESULT = 0;
+    public static final int MAX_RESULT_ONE = 1;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -51,7 +52,7 @@ public class DefaultTagDao implements TagDao {
     public Optional<Tag> findByName(String name) {
         return entityManager.createQuery("SELECT t FROM Tag t WHERE t.name = :name", Tag.class)
                 .setParameter(NAME, name)
-                .setMaxResults(1)
+                .setMaxResults(MAX_RESULT_ONE)
                 .getResultList()
                 .stream()
                 .findFirst();
@@ -77,8 +78,10 @@ public class DefaultTagDao implements TagDao {
     }
 
     @Override
-    public List<Tag> findMostUsed() {
+    public Optional<Tag> findMostUsed() {
         return entityManager.createNativeQuery(SQL_FIND_MOST_USED_TAG, Tag.class)
-                .getResultList();
+                .getResultList()
+                .stream()
+                .findAny();
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -98,9 +99,9 @@ public class DefaultTagService implements TagService {
     }
 
     @Override
-    public List<TagDto> findMostUsed() {
-        return tagDao.findMostUsed().stream()
-                .map(tag -> modelMapper.map(tag, TagDto.class))
-                .collect(Collectors.toList());
+    public TagDto findMostUsed() {
+        Tag mostUsedTag = tagDao.findMostUsed().orElseThrow(EntityNotFoundException::new);
+
+        return modelMapper.map(mostUsedTag, TagDto.class);
     }
 }

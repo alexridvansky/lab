@@ -72,7 +72,7 @@ public class TagController implements Controller<TagDto> {
     }
 
     @GetMapping("/popular")
-    public List<TagDto> findMostUsed() {
+    public TagDto findMostUsed() {
         return tagService.findMostUsed();
     }
 }
