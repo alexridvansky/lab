@@ -83,7 +83,7 @@ public class CertificateController implements Controller<CertificateDto> {
      */
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CertificateDto update(@Validated @RequestBody CertificateUpdateDto certificateUpdateDto,
+    public CertificateDto update(@Valid @RequestBody CertificateUpdateDto certificateUpdateDto,
                                  @PathVariable @Positive Long id) {
         certificateUpdateDto.setId(id);
         return certificateService.update(certificateUpdateDto);
@@ -96,7 +96,7 @@ public class CertificateController implements Controller<CertificateDto> {
      */
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CertificateDto update(@Validated @RequestBody CertificateDto certificateDto,
+    public CertificateDto update(@Valid @RequestBody CertificateDto certificateDto,
                                  @PathVariable @Positive Long id) {
         certificateDto.setId(id);
         return certificateService.update(certificateDto);
