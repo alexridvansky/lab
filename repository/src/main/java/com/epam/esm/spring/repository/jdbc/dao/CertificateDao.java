@@ -5,9 +5,8 @@ import com.epam.esm.spring.repository.model.CertificateParam;
 import com.epam.esm.spring.repository.model.Pageable;
 
 import java.util.List;
-import java.util.Map;
 
-public interface CertificateDao extends CreateDeleteDao<Certificate> {
+public interface CertificateDao extends CreateReadDeleteDao<Certificate> {
 
     /**
      * Returns the list of certificates accordingly to search parameters.

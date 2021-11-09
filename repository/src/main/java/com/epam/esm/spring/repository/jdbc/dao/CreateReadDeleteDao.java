@@ -2,7 +2,7 @@ package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.model.AbstractEntity;
 
-public interface CreateDeleteDao<T extends AbstractEntity> extends ReadDao<T> {
+public interface CreateReadDeleteDao<T extends AbstractEntity> extends ReadDao<T> {
 
     /**
      * Adds new entry of AbstractEntity to the db

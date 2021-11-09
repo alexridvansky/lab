@@ -2,10 +2,9 @@ package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.model.Tag;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface TagDao extends CreateDeleteDao<Tag> {
+public interface TagDao extends CreateReadDeleteDao<Tag> {
 
     /**
      * Is used to get Tag by name given

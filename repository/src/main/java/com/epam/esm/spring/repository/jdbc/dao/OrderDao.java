@@ -4,7 +4,7 @@ import com.epam.esm.spring.repository.model.Order;
 
 import java.util.List;
 
-public interface OrderDao extends CreateDeleteDao<Order> {
+public interface OrderDao extends CreateReadDeleteDao<Order> {
     /**
      * Gets all purchases of user by id.
      *
