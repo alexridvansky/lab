@@ -60,7 +60,7 @@ public class DefaultTagDao implements TagDao {
 
     @Override
     public boolean isExist(String name) {
-        return (long) entityManager.createQuery("SELECT COUNT(t) FROM Tag t WHERE t.name = :name")
+        return entityManager.createQuery("SELECT COUNT(t) FROM Tag t WHERE t.name = :name", Long.class)
                 .setParameter(NAME, name)
                 .getSingleResult() > EMPTY_RESULT;
     }
