@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -48,6 +49,7 @@ class DefaultCertificateDaoTest {
     private static Certificate cert_three;
     private static CertificateParam certificateParam;
     private static Pageable defaultPageable;
+    private Certificate managedCertificate;
     private CertificateDao certificateDao;
     private Set<String> tagNames;
     private List<Certificate> findAllExpected;
@@ -155,6 +157,8 @@ class DefaultCertificateDaoTest {
                 .page(0)
                 .size(10)
                 .build();
+
+        managedCertificate = certificateDao.findById(ONE).get();
     }
 
     @Test
@@ -226,5 +230,13 @@ class DefaultCertificateDaoTest {
     void deleteDetached() {
         // Trying to delete detached entity exception are expected
         assertThrowsExactly(InvalidDataAccessApiUsageException.class, () -> certificateDao.delete(cert_one));
+    }
+
+    @Test
+    @Order(2)
+    @Transactional
+    void deleteManaged() {
+        // Trying to delete managed entity exception are not expected
+        assertDoesNotThrow(() -> certificateDao.delete(managedCertificate));
     }
 }
