@@ -13,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -51,7 +52,6 @@ class DefaultCertificateDaoTest {
     private Set<String> tagNames;
     private List<Certificate> findAllExpected;
     private List<Certificate> findByExpected;
-    private Map<String, String> params;
     private Tag tag_one;
     private Tag tag_two;
     private Tag tag_three;
@@ -221,19 +221,10 @@ class DefaultCertificateDaoTest {
         assertFalse(actual);
     }
 
-//    @Test
-//    @Order(2)
-//    void deleteById() {
-//        // Deleting existing certificate TRUE is expected
-//        boolean actual = certificateDao.deleteById(ONE);
-//        assertTrue(actual);
-//    }
-//
-//    @Test
-//    @Order(2)
-//    void deleteByIdNonExistingEntryExpectedFalse() {
-//        // Deleting non existing certificate FALSE is expected
-//        boolean actual = certificateDao.deleteById(TEN);
-//        assertFalse(actual);
-//    }
+    @Test
+    @Order(2)
+    void deleteDetached() {
+        // Trying to delete detached entity exception are expected
+        assertThrowsExactly(InvalidDataAccessApiUsageException.class, () -> certificateDao.delete(cert_one));
+    }
 }
