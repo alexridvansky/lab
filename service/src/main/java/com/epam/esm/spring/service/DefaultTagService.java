@@ -25,6 +25,7 @@ import static com.epam.esm.spring.service.exception.ErrorMessage.NAME;
 @Service
 public class DefaultTagService implements TagService {
 
+    private final static String ERROR_NO_MOST_USED_TAG = "error.most_used_tag_not_found";
     private final TagDao tagDao;
     private final PageRequestProcessor pageRequestProcessor;
     private final ModelMapper modelMapper;
@@ -100,7 +101,8 @@ public class DefaultTagService implements TagService {
 
     @Override
     public TagDto findMostUsed() {
-        Tag mostUsedTag = tagDao.findMostUsed().orElseThrow(EntityNotFoundException::new);
+        Tag mostUsedTag = tagDao.findMostUsed().orElseThrow(() ->
+                new EntryNotFoundException(ERROR_NO_MOST_USED_TAG, ""));
 
         return modelMapper.map(mostUsedTag, TagDto.class);
     }

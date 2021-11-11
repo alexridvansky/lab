@@ -11,6 +11,7 @@ import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.exception.NotValidSearchRequest;
 import com.epam.esm.spring.service.exception.SubEntryAlreadyAttachedException;
 import com.epam.esm.spring.service.exception.SubEntryNotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
@@ -141,7 +142,9 @@ public class ControllerAdvisor {
         Map<String, Object> response = new LinkedHashMap<>();
         response.put(ERROR_MESSAGE, messages.getMessage(errorMsg, null, locale));
         response.put(ERROR_CODE, errorCode);
-        response.put(ERROR_DESCRIPTION, errorDescription);
+        if (StringUtils.isNotBlank(errorDescription)) {
+            response.put(ERROR_DESCRIPTION, errorDescription);
+        }
 
         return response;
     }
