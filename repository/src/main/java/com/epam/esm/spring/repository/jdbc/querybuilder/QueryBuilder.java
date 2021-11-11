@@ -6,6 +6,8 @@ import com.epam.esm.spring.repository.model.Tag;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -25,11 +27,8 @@ import static com.epam.esm.spring.repository.jdbc.querybuilder.QueryDictionary.T
 @Component
 public class QueryBuilder {
 
-    private final CriteriaBuilder criteriaBuilder;
-
-    public QueryBuilder(CriteriaBuilder criteriaBuilder) {
-        this.criteriaBuilder = criteriaBuilder;
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public CriteriaQuery<Certificate> buildQueryForSearch(CertificateParam param) {
         Set<String> tagSet = param.getTags();
@@ -37,6 +36,7 @@ public class QueryBuilder {
         String sortBy = StringUtils.isNotBlank(param.getSort()) ? param.getSort() : ID;
         String order = StringUtils.isNotBlank(param.getOrder()) ? param.getOrder() : ASC;
 
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Certificate> query = criteriaBuilder.createQuery(Certificate.class);
         Root<Certificate> root = query.from(Certificate.class);
         query.select(root);
@@ -53,6 +53,7 @@ public class QueryBuilder {
     }
 
     private Predicate buildPredicateBySearch(Root<Certificate> root, String search) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         Predicate predicate = criteriaBuilder.conjunction();
 
         if (StringUtils.isNotBlank(search)) {
@@ -65,6 +66,7 @@ public class QueryBuilder {
     }
 
     private Predicate buildPredicateByTagName(Root<Certificate> root, Set<String> tagSet) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         if (tagSet.isEmpty()) {
             return criteriaBuilder.conjunction();
         } else {
@@ -78,6 +80,7 @@ public class QueryBuilder {
     }
 
     private Order buildSortOrder(Root<Certificate> root, String sortBy, String order) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         if (order.equalsIgnoreCase(ASC)) {
             return criteriaBuilder.asc(root.get(sortBy));
         } else {

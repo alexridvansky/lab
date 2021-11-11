@@ -1,11 +1,12 @@
-package com.epam.esm.spring.web.springapp;
+package com.epam.esm.spring;
 
 import com.epam.esm.spring.web.config.WebConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-public class Application {
+public class Application implements WebMvcConfigurer {
     public static void main(String[] args) {
         SpringApplication.run(WebConfig.class, args);
     }

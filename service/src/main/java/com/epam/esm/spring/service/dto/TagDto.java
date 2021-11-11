@@ -20,7 +20,7 @@ import javax.validation.constraints.Pattern;
 public class TagDto extends AbstractDto {
 
     @NotBlank
-    @Pattern(regexp = "^[^-,.%&$ ][a-zA-Z0-9,.%&$ ]{2,100}+$")
+    @Pattern(regexp = "^[^-,.%&$ ][a-zA-Z0-9-,.%&$ ]{2,100}+$")
     private String name;
 
     @Builder

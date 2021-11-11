@@ -55,7 +55,7 @@ public class TestConfigJpa {
 
     @Bean
     public DefaultCertificateDao defaultCertificateDao() {
-        return new DefaultCertificateDao(new QueryBuilder(criteriaBuilder()));
+        return new DefaultCertificateDao(new QueryBuilder());
     }
 
     @Bean
