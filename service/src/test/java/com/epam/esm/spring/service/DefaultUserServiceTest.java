@@ -9,7 +9,6 @@ import com.epam.esm.spring.service.dto.UserDto;
 import com.epam.esm.spring.service.util.PageRequestProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -110,8 +109,6 @@ class DefaultUserServiceTest {
         usersDtoExpected = Arrays.asList(userDtoOne, userDtoTwo, userDtoThree);
 
         expectedPage = new Page<>(usersDtoExpected, defaultPageableDto, NUMBER_OF_ENTRIES_TOTAL);
-
-//        doNothing().when(requestProcessor.processRequest(defaultPageableDto)).methodToMock();
     }
 
     @BeforeEach
