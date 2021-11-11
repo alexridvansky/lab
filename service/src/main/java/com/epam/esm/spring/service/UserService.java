@@ -1,6 +1,5 @@
 package com.epam.esm.spring.service;
 
-import com.epam.esm.spring.repository.model.User;
 import com.epam.esm.spring.service.dto.UserDto;
 
 public interface UserService extends CrudService<UserDto> {
@@ -11,5 +10,5 @@ public interface UserService extends CrudService<UserDto> {
      * @param username user name
      * @return User
      */
-    User findByUsername(String username);
+    UserDto findByUsername(String username);
 }

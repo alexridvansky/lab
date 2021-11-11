@@ -54,8 +54,8 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userDao.findByUsername(username)
+    public UserDto findByUsername(String username) {
+        return userDao.findByUsername(username).map(user -> modelMapper.map(user, UserDto.class))
                 .orElseThrow(() -> new EntryNotFoundException(ERROR_USER_NOT_FOUND, username));
     }
 

@@ -1,18 +1,14 @@
 package com.epam.esm.spring.service.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.util.Collection;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class Page<T> {
     private Collection<T> content;
     private Integer size;
