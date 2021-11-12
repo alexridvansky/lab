@@ -5,6 +5,7 @@ import com.epam.esm.spring.repository.model.Certificate;
 import com.epam.esm.spring.repository.model.CertificateParam;
 import com.epam.esm.spring.repository.model.Pageable;
 import com.epam.esm.spring.repository.model.Tag;
+import org.apache.commons.compress.utils.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -13,18 +14,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.orm.jpa.JpaSystemException;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfigJpa.class})
+@SpringBootTest(classes = {TestConfigJpa.class})
 class DefaultCertificateDaoTest {
     private static final long ONE = 1L;
     private static final long TWO = 2L;
@@ -118,7 +118,7 @@ class DefaultCertificateDaoTest {
                 .duration(2)
                 .createDate(LocalDateTime.of(2019, 11, 17, 11, 11, 11))
                 .lastUpdateDate(LocalDateTime.of(2021, 10, 18, 11, 11, 11))
-                .tags(Arrays.asList(tag_one, tag_two, tag_three))
+                .tags(Sets.newHashSet(tag_one, tag_two, tag_three))
                 .build();
 
         cert_two = Certificate.builder()
@@ -129,7 +129,7 @@ class DefaultCertificateDaoTest {
                 .duration(1)
                 .createDate(LocalDateTime.of(2019, 11, 17, 11, 11, 11))
                 .lastUpdateDate(LocalDateTime.of(2021, 10, 18, 11, 11, 11))
-                .tags(Arrays.asList(tag_three, tag_one, tag_two))
+                .tags(Sets.newHashSet(tag_three, tag_one, tag_two))
                 .build();
 
         cert_three = Certificate.builder()
@@ -140,7 +140,7 @@ class DefaultCertificateDaoTest {
                 .duration(30)
                 .createDate(LocalDateTime.of(2019, 11, 17, 11, 11, 11))
                 .lastUpdateDate(LocalDateTime.of(2021, 10, 18, 11, 11, 11))
-                .tags(Arrays.asList(tag_four, tag_five, tag_six, tag_seven, tag_eight))
+                .tags(Sets.newHashSet(tag_four, tag_five, tag_six, tag_seven, tag_eight))
                 .build();
 
         tagNames = Collections.singleton("fitness");
@@ -206,7 +206,7 @@ class DefaultCertificateDaoTest {
     @Transactional
     void insertDuplicateNameExceptionExpected() {
         // Trying to insert already existing certificate exception is expected
-        assertThrowsExactly(JpaSystemException.class, () -> certificateDao.insert(cert_one));
+        assertThrowsExactly(PersistenceException.class, () -> certificateDao.insert(cert_one));
     }
 
     @Test
@@ -227,9 +227,10 @@ class DefaultCertificateDaoTest {
 
     @Test
     @Order(2)
+    @Transactional
     void deleteDetached() {
         // Trying to delete detached entity exception are expected
-        assertThrowsExactly(InvalidDataAccessApiUsageException.class, () -> certificateDao.delete(cert_one));
+        assertThrowsExactly(IllegalArgumentException.class, () -> certificateDao.delete(cert_one));
     }
 
     @Test

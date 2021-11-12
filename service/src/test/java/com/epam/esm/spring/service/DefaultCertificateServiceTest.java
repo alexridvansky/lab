@@ -12,7 +12,9 @@ import com.epam.esm.spring.service.dto.Page;
 import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
+import com.epam.esm.spring.service.util.PageRequestProcessor;
 import com.epam.esm.spring.service.validator.SearchRequestValidator;
+import org.apache.commons.compress.utils.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +46,8 @@ class DefaultCertificateServiceTest {
     private static final String FIRST_TAG_NAME = "fitness";
     private static final String SECOND_TAG_NAME = "food";
 
+    private PageableDto defaultPageableDto = new PageableDto(0, 10);
+
     private Tag firstTag = Tag.builder()
             .id(FIRST_TAG_ID)
             .name(FIRST_TAG_NAME)
@@ -70,7 +74,7 @@ class DefaultCertificateServiceTest {
             .description("First certificate description")
             .price(BigDecimal.valueOf(100))
             .duration(10)
-            .tags(Arrays.asList(firstTag, secondTag))
+            .tags(Sets.newHashSet(firstTag, secondTag))
             .build();
 
     private Certificate secondCertificate = Certificate.builder()
@@ -79,7 +83,7 @@ class DefaultCertificateServiceTest {
             .description("Second certificate description")
             .price(BigDecimal.valueOf(200))
             .duration(20)
-            .tags(Collections.singletonList(firstTag))
+            .tags(Sets.newHashSet(firstTag))
             .build();
 
     private CertificateDto firstCertificateDto = CertificateDto.builder()
@@ -88,7 +92,7 @@ class DefaultCertificateServiceTest {
             .description("First certificate description")
             .price(BigDecimal.valueOf(100))
             .duration(10)
-            .tags(Arrays.asList(firstTagDto, secondTagDto))
+            .tags(Sets.newHashSet(firstTagDto, secondTagDto))
             .build();
 
     private CertificateDto secondCertificateDto = CertificateDto.builder()
@@ -97,7 +101,7 @@ class DefaultCertificateServiceTest {
             .description("Second certificate description")
             .price(BigDecimal.valueOf(200))
             .duration(20)
-            .tags(Collections.singletonList(firstTagDto))
+            .tags(Sets.newHashSet(firstTagDto))
             .build();
 
     private final List<Certificate> certificates = Arrays.asList(firstCertificate, secondCertificate);
@@ -125,6 +129,12 @@ class DefaultCertificateServiceTest {
             .size(10)
             .build();
 
+    private final Page<CertificateDto> expectedPageByParam =
+            new Page<>(certificatesDtoByParam, defaultPageableDto, 0L);
+
+    private final Page<CertificateDto> expectedPage =
+            new Page<>(certificateDtos, defaultPageableDto, 0L);
+
     @InjectMocks
     private DefaultCertificateService certificateService;
 
@@ -143,6 +153,9 @@ class DefaultCertificateServiceTest {
     @Mock
     private SearchRequestValidator searchRequestValidator;
 
+    @Mock
+    private PageRequestProcessor pageRequestProcessor;
+
     @BeforeEach
     void prepare() {
         lenient().when(modelMapper.map(firstTag, TagDto.class)).thenReturn(firstTagDto);
@@ -152,20 +165,22 @@ class DefaultCertificateServiceTest {
         lenient().when(modelMapper.map(firstCertificateDto, Certificate.class)).thenReturn(firstCertificate);
         lenient().when(modelMapper.map(secondCertificate, CertificateDto.class)).thenReturn(secondCertificateDto);
         lenient().when(modelMapper.map(secondCertificateDto, Certificate.class)).thenReturn(secondCertificate);
+        lenient().when(modelMapper.map(paramDto, CertificateParam.class)).thenReturn(param);
+        lenient().when(modelMapper.map(defaultPageableDto, Pageable.class)).thenReturn(defaultPageable);
     }
 
     @Test
     void findAll() {
         when(certificateDao.findAll(defaultPageable)).thenReturn(certificates);
-        Page<CertificateDto> actuals = certificateService.findAll(new PageableDto());
-        assertEquals(certificateDtos, actuals);
+        Page<CertificateDto> actuals = certificateService.findAll(defaultPageableDto);
+        assertEquals(expectedPage, actuals);
     }
 
     @Test
     void findBy() {
         when(certificateDao.findBy(param, defaultPageable)).thenReturn(certificatesByParams);
-        Page<CertificateDto> actual = certificateService.findBy(paramDto, new PageableDto());
-        assertEquals(certificatesDtoByParam, actual);
+        Page<CertificateDto> actual = certificateService.findBy(paramDto, defaultPageableDto);
+        assertEquals(expectedPageByParam, actual);
     }
 
     @Test

@@ -7,6 +7,7 @@ import com.epam.esm.spring.service.dto.Page;
 import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
+import com.epam.esm.spring.service.util.PageRequestProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,8 @@ class DefaultTagServiceTest {
     private static final String SECOND_TAG_NAME = "food";
     private static final String THIRD_TAG_NAME = "quest";
     private Pageable defaultPageable;
+    private PageableDto defaultPageableDto;
+    private Page<TagDto> pageExpected;
     private TagDto firstTagDto;
     private TagDto secondTagDto;
     private TagDto thirdTagDto;
@@ -55,6 +58,9 @@ class DefaultTagServiceTest {
 
     @Mock
     private ModelMapper modelMapper;
+
+    @Mock
+    private PageRequestProcessor pageRequestProcessor;
 
     @BeforeEach
     void prepare() {
@@ -102,23 +108,25 @@ class DefaultTagServiceTest {
         tagsAfterDelete = new ArrayList<>();
         tagsAfterDelete.add(firstTag);
 
-        defaultPageable = Pageable.builder()
-                .page(0)
-                .size(10)
-                .build();
+        defaultPageable = new Pageable(0, 10);
+
+        defaultPageableDto = new PageableDto(0, 10);
+
+        pageExpected = new Page<>(tagsDto, defaultPageableDto, 0L);
 
         lenient().when(modelMapper.map(firstTag, TagDto.class)).thenReturn(firstTagDto);
         lenient().when(modelMapper.map(secondTag, TagDto.class)).thenReturn(secondTagDto);
         lenient().when(modelMapper.map(thirdTag, TagDto.class)).thenReturn(thirdTagDto);
         lenient().when(modelMapper.map(thirdTagDto, Tag.class)).thenReturn(thirdTag);
         lenient().when(modelMapper.map(secondTagDto, Tag.class)).thenReturn(secondTag);
+        lenient().when(modelMapper.map(defaultPageableDto, Pageable.class)).thenReturn(defaultPageable);
     }
 
     @Test
     void findAll() {
         when(tagDao.findAll(defaultPageable)).thenReturn(tags);
-        Page<TagDto> actualDtoList = tagService.findAll(new PageableDto(0, 100));
-        assertEquals(tagsDto, actualDtoList);
+        Page<TagDto> actualDtoList = tagService.findAll(defaultPageableDto);
+        assertEquals(pageExpected, actualDtoList);
     }
 
     @Test

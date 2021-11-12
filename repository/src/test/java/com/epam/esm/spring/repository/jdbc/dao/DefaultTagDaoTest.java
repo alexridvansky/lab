@@ -12,12 +12,11 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.orm.jpa.JpaSystemException;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.PersistenceException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfigJpa.class})
+@SpringBootTest(classes = {TestConfigJpa.class})
 class DefaultTagDaoTest {
     private static final long ONE = 1L;
     private static final long TWO = 2L;
@@ -210,7 +209,7 @@ class DefaultTagDaoTest {
     @Transactional
     void deleteDetached() {
         // Trying to delete detached entity exception are expected
-        assertThrowsExactly(InvalidDataAccessApiUsageException.class, () -> tagDao.delete(tag_one));
+        assertThrowsExactly(IllegalArgumentException.class, () -> tagDao.delete(tag_one));
     }
 
     @Test
@@ -228,6 +227,6 @@ class DefaultTagDaoTest {
     @Transactional
     void insertAlreadyExistingEntryExceptionExpected() {
         // Inserting Tag which is already in the DB we exception is expected
-        assertThrowsExactly(JpaSystemException.class, () -> tagDao.insert(tag_five));
+        assertThrowsExactly(PersistenceException.class, () -> tagDao.insert(tag_five));
     }
 }
