@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -107,7 +106,7 @@ public class DefaultCertificateService implements CertificateService {
         Certificate certificate = modelMapper.map(certificateDto, Certificate.class);
 
         if (CollectionUtils.isNotEmpty(certificate.getTags())) {
-            List<Tag> processedTags = tagService.processTagList(certificate.getTags());
+            Set<Tag> processedTags = tagService.processTagList(certificate.getTags());
             certificate.setTags(processedTags);
         }
 
@@ -134,15 +133,15 @@ public class DefaultCertificateService implements CertificateService {
         originalCertificate.setPrice(certificateDto.getPrice());
 
         if (CollectionUtils.isNotEmpty(certificateDto.getTags())) {
-            List<Tag> tagsToUpdate = certificateDto.getTags().stream()
+            Set<Tag> tagsToUpdate = certificateDto.getTags().stream()
                     .map(tagDto -> modelMapper.map(tagDto, Tag.class))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
 
             tagsToUpdate = tagService.processTagList(tagsToUpdate);
 
             originalCertificate.setTags(tagsToUpdate);
         } else {
-            originalCertificate.setTags(new ArrayList<>());
+            originalCertificate.setTags(new HashSet<>());
         }
 
         return modelMapper.map(certificateDao.update(originalCertificate), CertificateDto.class);
@@ -250,19 +249,19 @@ public class DefaultCertificateService implements CertificateService {
 
     // attach Tags to be added to certificate
     private void attachTags(Certificate originalCertificate, Set<String> tagsToAdd) {
-        List<Tag> tagsToProcess = tagsToAdd.stream()
+        Set<Tag> tagsToProcess = tagsToAdd.stream()
                 .map(name -> Tag.builder()
                         .name(name)
                         .build())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
-        List<Tag> tagsProcessed = tagService.processTagList(tagsToProcess);
+        Set<Tag> tagsProcessed = tagService.processTagList(tagsToProcess);
 
         originalCertificate.getTags().addAll(tagsProcessed);
     }
 
     // Put names of TagDto into Set<String>
-    private Set<String> extractTagNames(List<TagDto> tagsDto) {
+    private Set<String> extractTagNames(Set<TagDto> tagsDto) {
         return Optional.ofNullable(tagsDto)
                 .map(tags -> tags.stream()
                         .map(TagDto::getName)

@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -49,10 +49,10 @@ public class CertificateDto extends AbstractDto {
     private LocalDateTime lastUpdateDate;
 
     @Valid
-    private List<TagDto> tags;
+    private Set<TagDto> tags;
 
     @Builder
-    public CertificateDto(Long id, String name, String description, BigDecimal price, Integer duration, List<TagDto> tags) {
+    public CertificateDto(Long id, String name, String description, BigDecimal price, Integer duration, Set<TagDto> tags) {
         super(id);
         this.name = name;
         this.description = description;

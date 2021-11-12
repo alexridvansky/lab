@@ -3,7 +3,7 @@ package com.epam.esm.spring.service;
 import com.epam.esm.spring.repository.model.Tag;
 import com.epam.esm.spring.service.dto.TagDto;
 
-import java.util.List;
+import java.util.Set;
 
 public interface TagService extends CrudService<TagDto> {
 
@@ -20,9 +20,9 @@ public interface TagService extends CrudService<TagDto> {
      * present in the db, if so - reads and stores ist id ,
      * if not - creates and stores id of just created one
      *
-     * @param tags list of Tags
+     * @param tags set of Tags
      */
-    List<Tag> processTagList(List<Tag> tags);
+    Set<Tag> processTagList(Set<Tag> tags);
 
     /**
      * Checks out whether Tag with NAME given exists

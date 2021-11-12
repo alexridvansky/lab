@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.epam.esm.spring.service.exception.ErrorMessage.ERROR_TAG_NOT_FOUND;
@@ -77,10 +77,10 @@ public class DefaultTagService implements TagService {
     }
 
     @Override
-    public List<Tag> processTagList(List<Tag> tags) {
+    public Set<Tag> processTagList(Set<Tag> tags) {
         return tags.stream()
                 .map(tag -> tagDao.findByName(tag.getName()).orElseGet(() -> tagDao.insert(tag)))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     @Transactional

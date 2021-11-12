@@ -12,7 +12,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -37,8 +37,8 @@ public class CertificateUpdateDto {
     private Integer duration;
 
     @Valid
-    private List<TagDto> tagsToAdd;
+    private Set<TagDto> tagsToAdd;
 
     @Valid
-    private List<TagDto> tagsToRemove;
+    private Set<TagDto> tagsToRemove;
 }
