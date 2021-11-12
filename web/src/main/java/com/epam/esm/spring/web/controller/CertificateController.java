@@ -6,6 +6,8 @@ import com.epam.esm.spring.service.dto.CertificateParamDto;
 import com.epam.esm.spring.service.dto.CertificateUpdateDto;
 import com.epam.esm.spring.service.dto.Page;
 import com.epam.esm.spring.service.dto.PageableDto;
+import com.epam.esm.spring.service.dto.TagDto;
+import com.epam.esm.spring.web.hateoas.LinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,16 +35,23 @@ import javax.validation.constraints.Positive;
 public class CertificateController implements Controller<CertificateDto> {
 
     private final CertificateService certificateService;
+    private final LinkBuilder<CertificateDto> linkBuilder;
 
     @Autowired
-    public CertificateController(CertificateService certificateService) {
+    public CertificateController(CertificateService certificateService,
+                                 LinkBuilder<CertificateDto> linkBuilder) {
         this.certificateService = certificateService;
+        this.linkBuilder = linkBuilder;
     }
 
     @Override
     @GetMapping("/{id}")
     public CertificateDto findById(@PathVariable Long id) {
-        return certificateService.findById(id);
+        CertificateDto certificateDto = certificateService.findById(id);
+        linkBuilder.addRemoveLink(certificateDto);
+        linkBuilder.addFindAllLink(certificateDto);
+
+        return certificateDto;
     }
 
     @Override

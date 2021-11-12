@@ -44,7 +44,6 @@ public class UserController implements Controller<UserDto> {
     public UserDto findById(@PathVariable @Positive Long id) {
         UserDto user = userService.findById(id);
         linkBuilder.addFindAllLink(user);
-        linkBuilder.addRemoveLink(user);
 
         return user;
     }
