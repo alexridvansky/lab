@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS user
 (
     id                  BIGINT AUTO_INCREMENT,
     username            VARCHAR(45) NOT NULL UNIQUE,
-    password            VARCHAR(45) NOT NULL,
+    password            VARCHAR(60) NOT NULL,
     firstname           VARCHAR(45),
     lastname            VARCHAR(45),
     role_id             BIGINT NOT NULL,
