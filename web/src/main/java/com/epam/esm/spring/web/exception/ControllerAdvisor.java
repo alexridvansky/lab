@@ -58,8 +58,7 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(CustomAuthenticationException.class)
     public ResponseEntity<Object> handleCustomAuthenticationException(CustomAuthenticationException e, Locale locale) {
-        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale, e.getLocalizedMessage()),
-                e.getHttpStatus());
+        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale), e.getHttpStatus());
     }
 
     @ExceptionHandler(EntryNotFoundException.class)

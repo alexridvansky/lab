@@ -5,7 +5,7 @@ import org.springframework.security.core.AuthenticationException;
 
 public class CustomAuthenticationException extends AuthenticationException {
     private static final HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
-    private static final int ERROR_CODE = 40401;
+    private static final int ERROR_CODE = 40101;
 
     public CustomAuthenticationException(String msg) {
         super(msg);
