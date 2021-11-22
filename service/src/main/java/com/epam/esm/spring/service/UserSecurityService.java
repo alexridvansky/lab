@@ -27,14 +27,12 @@ public class UserSecurityService implements UserDetailsService {
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new EntryNotFoundException(ERROR_USER_NOT_FOUND, username));
 
-        UserDetailsDto userDetailsDto = UserDetailsDto.builder()
+        return UserDetailsDto.builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .authorities(user.getAuthorities())
                 .isActive(user.isActive())
                 .build();
-
-        return userDetailsDto;
     }
 }

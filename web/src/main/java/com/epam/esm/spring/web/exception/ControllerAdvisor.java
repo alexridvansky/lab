@@ -56,6 +56,12 @@ public class ControllerAdvisor {
                 HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(CustomAuthenticationException.class)
+    public ResponseEntity<Object> handleCustomAuthenticationException(CustomAuthenticationException e, Locale locale) {
+        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale, e.getLocalizedMessage()),
+                e.getHttpStatus());
+    }
+
     @ExceptionHandler(EntryNotFoundException.class)
     public ResponseEntity<Object> handleEntryNotFoundException(EntryNotFoundException e, Locale locale) {
         return new ResponseEntity<>(createResponse(e.getDescription(), e.getErrorCode(), e.getItems(), locale),

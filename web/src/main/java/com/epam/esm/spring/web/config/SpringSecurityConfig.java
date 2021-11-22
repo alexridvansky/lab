@@ -7,6 +7,7 @@ import com.epam.esm.spring.web.security.JwtConfigurer;
 import com.epam.esm.spring.web.security.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,6 +24,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String AUTHENTICATION_ERROR_MSG = "error.incorrect_token";
     private static final String ROOT_ROLE = "ROOT";
+    private static final String USER_ROLE = "USER";
+    private static final String USERS_ENDPOINT = "/api/users/**";
+    private static final String TAGS_ENDPOINT = "/api/tags/**";
+    private static final String CERTIFICATES_ENDPOINT = "/api/certificates/**";
+    private static final String ORDERS_ENDPOINT = "/api/orders/**";
+    private static final String ACTUATOR_ENDPOINT = "/actuator";
+    private static final String LOGIN_LINK = "/api/auth/login";
+    private static final String SIGN_UP_LINK = "/api/users";
 
     private final JwtTokenFilter jwtTokenFilter;
     private final JwtConfigurer jwtConfigurer;
@@ -54,9 +63,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/auth/login").permitAll()
-                .antMatchers("/api/users/**").hasRole(ROOT_ROLE)
-//                .antMatchers("/api/users/**").permitAll()
+                .antMatchers(LOGIN_LINK).permitAll()
+                .antMatchers(HttpMethod.POST, SIGN_UP_LINK).permitAll()
+                .antMatchers(HttpMethod.GET, TAGS_ENDPOINT).hasRole(USER_ROLE)
+                .antMatchers(TAGS_ENDPOINT).hasRole(ROOT_ROLE)
+                .antMatchers(HttpMethod.GET, CERTIFICATES_ENDPOINT).permitAll()
+                .antMatchers(CERTIFICATES_ENDPOINT).hasRole(ROOT_ROLE)
+                .antMatchers(USERS_ENDPOINT).hasRole(ROOT_ROLE)
+                .antMatchers(ORDERS_ENDPOINT).hasRole(ROOT_ROLE)
+                .antMatchers(ACTUATOR_ENDPOINT).hasRole(ROOT_ROLE)
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)

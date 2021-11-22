@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthenticationController {
 
-    private static final String AUTHENTICATION_ERROR_MESSAGE = "Wrong combination of username and password";
+    private static final String AUTHENTICATION_ERROR_MESSAGE = "error.wrong_username_password_combination";
     private static final String USER_NOT_FOUND_MESSAGE = "User not found";
 
     private final AuthenticationManager authenticationManager;
@@ -49,6 +49,7 @@ public class AuthenticationController {
 
             UserDto user = jpaUserService.findByUsername(username);
 
+            // pretty much impossible scenario after authenticate() method...
             if (user == null) {
                 throw new UsernameNotFoundException(USER_NOT_FOUND_MESSAGE);
             }
