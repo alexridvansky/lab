@@ -79,8 +79,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedHandler(
                         new CustomAccessDeniedHandler(jsonResponseSender, controllerAdvisor))
                 .and()
-                .exceptionHandling()
-                .authenticationEntryPoint((httpServletRequest, httpServletResponse, e) ->
+                .exceptionHandling().authenticationEntryPoint((httpServletRequest, httpServletResponse, e) ->
                         handleError(httpServletRequest, httpServletResponse))
                 .and()
                 .apply(jwtConfigurer);
@@ -94,10 +93,4 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
         jsonResponseSender.send(response, responseObject);
     }
-
-//    @Override
-//    protected UserDetailsService userDetailsService() {
-//        return super.userDetailsService();
-//    }
-
 }
