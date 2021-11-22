@@ -1,10 +1,13 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.jdbc.jparepository.UserRepository;
+import com.epam.esm.spring.repository.model.Role;
 import com.epam.esm.spring.repository.model.User;
 import com.epam.esm.spring.service.dto.Page;
 import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.UserDto;
+import com.epam.esm.spring.service.dto.UserRequestDto;
+import com.epam.esm.spring.service.exception.EntryAlreadyExistsException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.util.PageRequestProcessor;
 import org.modelmapper.ModelMapper;
@@ -17,9 +20,13 @@ import java.util.Optional;
 import static com.epam.esm.spring.service.exception.ErrorMessage.ERROR_USER_NOT_FOUND;
 
 @Service
-public class JpaUserService implements UserService {
+public class JpaUserService {
 
     private static final String USER_NOT_FOUND_ERROR = "error.user_not_found";
+    private static final long DEFAULT_USER_ROLE_ID = 1L;
+    private static final String DEFAULT_USER_ROLE_NAME = "ROLE_USER";
+    private static final Role DEFAULT_USER_ROLE = new Role(DEFAULT_USER_ROLE_ID, DEFAULT_USER_ROLE_NAME);
+    private static final boolean DEFAULT_USER_STATE_ACTIVE = true;
 
     private final PageRequestProcessor pageRequestProcessor;
     private final ModelMapper modelMapper;
@@ -37,7 +44,6 @@ public class JpaUserService implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
     public Page<UserDto> findAll(PageableDto pageRequest) {
 //        pageRequestProcessor.processRequest(pageRequest);
 //
@@ -52,13 +58,11 @@ public class JpaUserService implements UserService {
         throw new UnsupportedOperationException();
     }
 
-    @Override
     public UserDto findById(Long id) {
         return userRepository.findById(id).map(user -> modelMapper.map(user, UserDto.class))
                 .orElseThrow(() -> new EntryNotFoundException(ERROR_USER_NOT_FOUND, id.toString()));
     }
 
-    @Override
     public UserDto findByUsername(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new EntryNotFoundException(USER_NOT_FOUND_ERROR, username));
@@ -66,12 +70,23 @@ public class JpaUserService implements UserService {
         return modelMapper.map(user, UserDto.class);
     }
 
-    @Override
-    public UserDto insert(UserDto userDto) {
-        throw new UnsupportedOperationException();
+    public UserDto insert(UserRequestDto userRequestDto) {
+        Optional<User> userExistenceCheck = userRepository.findByUsername(userRequestDto.getUsername());
+
+        if (userExistenceCheck.isPresent()) {
+            throw new EntryAlreadyExistsException(userRequestDto.getUsername());
+        }
+
+        User userToSave = modelMapper.map(userRequestDto, User.class);
+        userToSave.setRole(DEFAULT_USER_ROLE);
+        userToSave.setActive(DEFAULT_USER_STATE_ACTIVE);
+        userToSave.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+
+        userToSave = userRepository.save(userToSave);
+
+        return modelMapper.map(userToSave, UserDto.class);
     }
 
-    @Override
     public UserDto deleteById(Long id) {
         throw new UnsupportedOperationException();
     }

@@ -1,6 +1,7 @@
 package com.epam.esm.spring.web.config;
 
 import com.epam.esm.spring.web.exception.ControllerAdvisor;
+import com.epam.esm.spring.web.exception.CustomAccessDeniedHandler;
 import com.epam.esm.spring.web.exception.CustomAuthenticationException;
 import com.epam.esm.spring.web.exception.JsonResponseSender;
 import com.epam.esm.spring.web.security.JwtConfigurer;
@@ -75,6 +76,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling().accessDeniedHandler(
+                        new CustomAccessDeniedHandler(jsonResponseSender, controllerAdvisor))
+                .and()
                 .exceptionHandling()
                 .authenticationEntryPoint((httpServletRequest, httpServletResponse, e) ->
                         handleError(httpServletRequest, httpServletResponse))

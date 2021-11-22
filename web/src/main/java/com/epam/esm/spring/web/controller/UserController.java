@@ -5,6 +5,7 @@ import com.epam.esm.spring.service.UserService;
 import com.epam.esm.spring.service.dto.Page;
 import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.UserDto;
+import com.epam.esm.spring.service.dto.UserRequestDto;
 import com.epam.esm.spring.web.hateoas.LinkBuilder;
 import com.epam.esm.spring.web.hateoas.UserLinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,8 +66,8 @@ public class UserController implements Controller<UserDto> {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> insert(@Valid @RequestBody UserDto userDto) {
-        jpaUserService.insert(userDto);
+    public ResponseEntity<Void> insert(@Valid @RequestBody UserRequestDto userRequestDto) {
+        jpaUserService.insert(userRequestDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

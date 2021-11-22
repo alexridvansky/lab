@@ -1,7 +1,5 @@
 package com.epam.esm.spring.web.exception;
 
-import ch.qos.logback.core.net.ObjectWriter;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -17,7 +15,7 @@ public class JsonResponseSender {
     private static final String RESPONSE_CONTENT = "application/json";
 
     public void send(HttpServletResponse response, Object responseObject) throws IOException {
-        ResponseEntity responseEntity = (ResponseEntity) responseObject;
+        ResponseEntity<Object> responseEntity = (ResponseEntity) responseObject;
         Map<String, Object> responseMap = (Map<String, Object>) responseEntity.getBody();
         response.setCharacterEncoding(RESPONSE_ENCODING);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
