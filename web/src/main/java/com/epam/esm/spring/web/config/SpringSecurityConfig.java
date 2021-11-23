@@ -30,7 +30,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String TAGS_ENDPOINT = "/api/tags/**";
     private static final String CERTIFICATES_ENDPOINT = "/api/certificates/**";
     private static final String ORDERS_ENDPOINT = "/api/orders/**";
-    private static final String SPECIFIC_USER_ORDER_ENDPOINT = "/api/orders/user/{id}";
+    private static final String SPECIFIC_USER_ORDER_ENDPOINT = "/api/orders/user/{userId}/**";
     private static final String ACTUATOR_ENDPOINT = "/actuator";
     private static final String LOGIN_LINK = "/api/auth/login";
     private static final String SIGN_UP_LINK = "/api/users";
@@ -72,6 +72,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, CERTIFICATES_ENDPOINT).permitAll()
                 .antMatchers(CERTIFICATES_ENDPOINT).hasRole(ROOT_ROLE)
                 .antMatchers(USERS_ENDPOINT).hasRole(ROOT_ROLE)
+                .antMatchers(SPECIFIC_USER_ORDER_ENDPOINT).access(
+                        "@userSecurity.hasUserId(authentication, #userId)")
                 .antMatchers(ORDERS_ENDPOINT).hasRole(ROOT_ROLE)
                 .antMatchers(ACTUATOR_ENDPOINT).hasRole(ROOT_ROLE)
                 .anyRequest().authenticated()
