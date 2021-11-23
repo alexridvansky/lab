@@ -8,10 +8,10 @@ import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.UserDetailsDto;
 import com.epam.esm.spring.web.exception.CustomAccessDeniedException;
 import com.epam.esm.spring.web.hateoas.LinkBuilder;
-import com.epam.esm.spring.web.hateoas.OrderLinkBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +27,7 @@ import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/orders")
 public class OrderController implements Controller<OrderDto> {
 
@@ -34,14 +35,8 @@ public class OrderController implements Controller<OrderDto> {
     private final OrderService orderService;
     private final LinkBuilder<OrderDto> linkBuilder;
 
-    @Autowired
-    public OrderController(OrderService orderService,
-                           OrderLinkBuilder linkBuilder) {
-        this.orderService = orderService;
-        this.linkBuilder = linkBuilder;
-    }
-
     @Override
+    @PreAuthorize("ó")
     @GetMapping("/{id}")
     public OrderDto findById(@PathVariable Long id) {
         OrderDto orderDto = orderService.findById(id);

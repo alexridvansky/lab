@@ -27,3 +27,9 @@ VALUES (1, 1),
        (3, 7),
        (3, 8);
 
+INSERT INTO roles (name)
+VALUES ('ROLE_ROOT');
+
+INSERT INTO users (username, password, firstname, lastname, role_id, state)
+VALUES ('root', '$2a$10$rZ5zSZPzLMKyznWqGB1SSOLFskKuPwF/HSYGioJs4ScU0ayyYlNFO', 'root', 'root', 1, 1),
+       ('petja', '$2a$10$PuNVbEHw23jZLcYngF6DM.Mho.vWZ7nV2wDx0SFD89vqXZ2Smwwu.', 'petja', 'petja', 2, 1);

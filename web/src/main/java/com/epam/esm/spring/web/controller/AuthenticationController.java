@@ -3,11 +3,12 @@ package com.epam.esm.spring.web.controller;
 import com.epam.esm.spring.service.JpaUserService;
 import com.epam.esm.spring.service.dto.AuthenticationRequestDto;
 import com.epam.esm.spring.service.dto.AuthenticationResponseDto;
-import com.epam.esm.spring.service.dto.UserDto;
+import com.epam.esm.spring.service.dto.UserResponseDto;
 import com.epam.esm.spring.web.exception.CustomAuthenticationException;
 import com.epam.esm.spring.web.security.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthenticationController {
 
@@ -29,15 +31,7 @@ public class AuthenticationController {
     private final JwtTokenProvider jwtTokenProvider;
     private final JpaUserService jpaUserService;
 
-    @Autowired
-    public AuthenticationController(AuthenticationManager authenticationManager,
-                                    JwtTokenProvider jwtTokenProvider,
-                                    JpaUserService jpaUserService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.jpaUserService = jpaUserService;
-    }
-
+    @PreAuthorize("permitAll()")
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponseDto> login(@RequestBody AuthenticationRequestDto authRequestDto) {
         try {
@@ -47,7 +41,7 @@ public class AuthenticationController {
             Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
             authenticationManager.authenticate(authentication);
 
-            UserDto user = jpaUserService.findByUsername(username);
+            UserResponseDto user = jpaUserService.findByUsername(username);
 
             // pretty much impossible scenario after authenticate() method...
             if (user == null) {

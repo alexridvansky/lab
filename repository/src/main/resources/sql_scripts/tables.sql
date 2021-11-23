@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS certificate_tag_xref
         ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS user
+CREATE TABLE IF NOT EXISTS users
 (
     id                  BIGINT AUTO_INCREMENT,
     username            VARCHAR(45) NOT NULL UNIQUE,
