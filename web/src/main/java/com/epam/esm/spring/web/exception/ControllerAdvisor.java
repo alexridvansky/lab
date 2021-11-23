@@ -17,6 +17,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,11 +41,30 @@ public class ControllerAdvisor {
     private static final String ERROR_ITEMS_IN_CONFLICT = "Items in conflict: ";
     private static final int NOT_VALID_REQUEST_CODE = 40000;
     private static final int NOT_VALID_EXCEPTION_CODE = 40008;
+    private static final int NOT_AUTHORISED_EXCEPTION_CODE = 40101;
     private final ResourceBundleMessageSource messages;
 
     @Autowired
     public ControllerAdvisor(ResourceBundleMessageSource messages) {
         this.messages = messages;
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException e, Locale locale) {
+        return new ResponseEntity<>(createResponseWithDescription(NOT_AUTHORISED_EXCEPTION_CODE, locale,
+                e.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(CustomAccessDeniedException.class)
+    public ResponseEntity<Object> handleCustomAccessDeniedException(CustomAccessDeniedException e, Locale locale) {
+        return new ResponseEntity<>(createResponseWithDescription(e.getErrorCode(), locale, e.getLocalizedMessage()),
+                HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(CustomAuthenticationException.class)
+    public ResponseEntity<Object> handleCustomAuthenticationException(CustomAuthenticationException e, Locale locale) {
+        return new ResponseEntity<>(createResponseWithDescription(e.getErrorCode(), locale, e.getMessage()),
+                e.getHttpStatus());
     }
 
     @ExceptionHandler(EntryNotFoundException.class)
@@ -160,6 +180,13 @@ public class ControllerAdvisor {
     private Map<String, Object> createResponse(int errorCode, Locale locale, String errorDescription) {
         Map<String, Object> response = createResponse(errorCode, locale);
         response.put(ERROR_DESCRIPTION, errorDescription);
+
+        return response;
+    }
+
+    private Map<String, Object> createResponseWithDescription(int errorCode, Locale locale, String errorDescription) {
+        Map<String, Object> response = createResponse(errorCode, locale);
+        response.put(ERROR_DESCRIPTION, messages.getMessage(errorDescription, null, locale));
 
         return response;
     }

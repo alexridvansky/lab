@@ -1,8 +1,8 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.jdbc.dao.UserDao;
+import com.epam.esm.spring.repository.jdbc.jparepository.UserRepository;
 import com.epam.esm.spring.repository.model.Pageable;
-import com.epam.esm.spring.repository.model.User;
 import com.epam.esm.spring.service.dto.Page;
 import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.UserDto;
@@ -10,6 +10,7 @@ import com.epam.esm.spring.service.exception.EntryNotFoundException;
 import com.epam.esm.spring.service.util.PageRequestProcessor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,14 +24,20 @@ public class DefaultUserService implements UserService {
     private final UserDao userDao;
     private final PageRequestProcessor pageRequestProcessor;
     private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     DefaultUserService(UserDao userDao,
                        PageRequestProcessor pageRequestProcessor,
-                       ModelMapper modelMapper) {
+                       ModelMapper modelMapper,
+                       UserRepository userRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
         this.pageRequestProcessor = pageRequestProcessor;
         this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override

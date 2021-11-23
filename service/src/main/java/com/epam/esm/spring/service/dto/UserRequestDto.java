@@ -15,11 +15,15 @@ import javax.validation.constraints.Pattern;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto extends AbstractDto {
+public class UserRequestDto extends AbstractDto {
 
     @NotBlank
     @Pattern(regexp = "^[a-zA-Z0-9]{3,45}+$")
     private String username;
+
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z0-9!@#$%^&*()=+_-]{3,45}+$")
+    private String password;
 
     @Pattern(regexp = "^[a-zA-Z0-9]{3,45}+$")
     private String firstname;
@@ -27,17 +31,12 @@ public class UserDto extends AbstractDto {
     @Pattern(regexp = "^[a-zA-Z0-9]{3,45}+$")
     private String lastname;
 
-    private String role;
-
-    private boolean isActive;
-
     @Builder
-    public UserDto(long id, String username, String firstname, String lastname, String role, boolean isActive) {
+    public UserRequestDto(long id, String username, String password, String firstname, String lastname) {
         super(id);
         this.username = username;
+        this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
-        this.role = role;
-        this.isActive = isActive;
     }
 }

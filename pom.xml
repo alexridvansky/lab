@@ -36,5 +36,6 @@
         <hibernate.validator.version>6.2.0.Final</hibernate.validator.version>
         <junit.jupiter.version>5.8.1</junit.jupiter.version>
         <mockito.junit.version>4.0.0</mockito.junit.version>
+        <json.webtoken.version>0.9.1</json.webtoken.version>
     </properties>
 </project>
