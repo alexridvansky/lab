@@ -2,22 +2,30 @@ package com.epam.esm.spring.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
 
-@Data
-@Builder
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = false)
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagDto implements Serializable {
-    private Long id;
+public class TagDto extends AbstractDto {
+
     @NotBlank
-    @Size(min = 3, max = 100)
-    @Pattern(regexp = "^[a-zA-Z0-9]")
+    @Pattern(regexp = "^[^-,.%&$ ][a-zA-Z0-9-,.%&$ ]{2,100}+$")
     private String name;
+
+    @Builder
+    public TagDto(long id, String name) {
+        super(id);
+        this.name = name;
+    }
 }

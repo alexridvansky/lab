@@ -1,17 +1,20 @@
 package com.epam.esm.spring.service;
 
 import com.epam.esm.spring.repository.jdbc.dao.TagDao;
+import com.epam.esm.spring.repository.model.Pageable;
 import com.epam.esm.spring.repository.model.Tag;
-import com.epam.esm.spring.service.converter.DtoToTagConverter;
-import com.epam.esm.spring.service.converter.TagToDtoConverter;
+import com.epam.esm.spring.service.dto.Page;
+import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
+import com.epam.esm.spring.service.util.PageRequestProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,9 @@ class DefaultTagServiceTest {
     private static final String FIRST_TAG_NAME = "fitness";
     private static final String SECOND_TAG_NAME = "food";
     private static final String THIRD_TAG_NAME = "quest";
+    private Pageable defaultPageable;
+    private PageableDto defaultPageableDto;
+    private Page<TagDto> pageExpected;
     private TagDto firstTagDto;
     private TagDto secondTagDto;
     private TagDto thirdTagDto;
@@ -51,10 +57,10 @@ class DefaultTagServiceTest {
     private TagDao tagDao;
 
     @Mock
-    private TagToDtoConverter tagToDtoConverter;
+    private ModelMapper modelMapper;
 
     @Mock
-    private DtoToTagConverter dtoToTagConverter;
+    private PageRequestProcessor pageRequestProcessor;
 
     @BeforeEach
     void prepare() {
@@ -102,18 +108,25 @@ class DefaultTagServiceTest {
         tagsAfterDelete = new ArrayList<>();
         tagsAfterDelete.add(firstTag);
 
-        lenient().when(tagToDtoConverter.convert(firstTag)).thenReturn(firstTagDto);
-        lenient().when(tagToDtoConverter.convert(secondTag)).thenReturn(secondTagDto);
-        lenient().when(tagToDtoConverter.convert(thirdTag)).thenReturn(thirdTagDto);
-        lenient().when(dtoToTagConverter.convert(thirdTagDto)).thenReturn(thirdTag);
-        lenient().when(dtoToTagConverter.convert(secondTagDto)).thenReturn(secondTag);
+        defaultPageable = new Pageable(0, 10);
+
+        defaultPageableDto = new PageableDto(0, 10);
+
+        pageExpected = new Page<>(tagsDto, defaultPageableDto, 0L);
+
+        lenient().when(modelMapper.map(firstTag, TagDto.class)).thenReturn(firstTagDto);
+        lenient().when(modelMapper.map(secondTag, TagDto.class)).thenReturn(secondTagDto);
+        lenient().when(modelMapper.map(thirdTag, TagDto.class)).thenReturn(thirdTagDto);
+        lenient().when(modelMapper.map(thirdTagDto, Tag.class)).thenReturn(thirdTag);
+        lenient().when(modelMapper.map(secondTagDto, Tag.class)).thenReturn(secondTag);
+        lenient().when(modelMapper.map(defaultPageableDto, Pageable.class)).thenReturn(defaultPageable);
     }
 
     @Test
     void findAll() {
-        when(tagDao.findAll()).thenReturn(tags);
-        List<TagDto> actualDtoList = tagService.findAll();
-        assertEquals(tagsDto, actualDtoList);
+        when(tagDao.findAll(defaultPageable)).thenReturn(tags);
+        Page<TagDto> actualDtoList = tagService.findAll(defaultPageableDto);
+        assertEquals(pageExpected, actualDtoList);
     }
 
     @Test
@@ -146,7 +159,6 @@ class DefaultTagServiceTest {
     @Test
     void deleteById() {
         when(tagDao.findById(SECOND_TAG_ID)).thenReturn(Optional.of(secondTag));
-        when(tagDao.deleteById(SECOND_TAG_ID)).thenReturn(true);
         TagDto actual = tagService.deleteById(SECOND_TAG_ID);
         assertEquals(secondTagDto, actual);
     }

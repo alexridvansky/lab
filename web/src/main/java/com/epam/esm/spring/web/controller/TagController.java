@@ -1,12 +1,14 @@
 package com.epam.esm.spring.web.controller;
 
 import com.epam.esm.spring.service.TagService;
+import com.epam.esm.spring.service.dto.Page;
+import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.TagDto;
-import com.epam.esm.spring.service.exception.EntryNonValidTagNameException;
+import com.epam.esm.spring.web.hateoas.LinkBuilder;
+import com.epam.esm.spring.web.hateoas.TagLinkBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.Errors;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,61 +19,63 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 import java.util.List;
 
-/**
- * Controller provides service within Tag.class entities.
- */
+
 @RestController
-@Validated
-@RequestMapping("/api/tags")
-public class TagController {
+@RequestMapping(value = "/api/tags")
+public class TagController implements Controller<TagDto> {
+
     private final TagService tagService;
+    private final LinkBuilder<TagDto> linkBuilder;
 
     @Autowired
-    public TagController(TagService tagService) {
+    public TagController(TagService tagService,
+                         TagLinkBuilder linkBuilder) {
         this.tagService = tagService;
+        this.linkBuilder = linkBuilder;
     }
 
-    /**
-     * Is used for getting tag by ID
-     *
-     * @return TagDto
-     */
+    @Override
     @GetMapping("/{id}")
-    public TagDto findById(@PathVariable @Positive Long id) {
-        return tagService.findById(id);
+    public TagDto findById(@PathVariable Long id) {
+        TagDto tag = tagService.findById(id);
+        linkBuilder.addRemoveLink(tag);
+        linkBuilder.addFindAllLink(tag);
+
+        return tag;
     }
 
-    /**
-     * Is used for getting list of tags available
-     *
-     * @return List<TagDto> the list of certificates
-     */
+    @Override
     @GetMapping()
-    public List<TagDto> findAll() {
-        return tagService.findAll();
+    public Page<TagDto> findAll(@Valid PageableDto pageRequest) {
+        return tagService.findAll(pageRequest);
     }
 
     /**
-     * Is used for inserting new Tag
+     * Inserts new Tag
      *
      * @return TagDto just inserted
      */
-    @PostMapping()
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TagDto insert(@Valid @RequestBody TagDto tagDto) {
-        return tagService.insert(tagDto);
+    public ResponseEntity<Void> insert(@Valid @RequestBody TagDto tagDto) {
+        tagService.insert(tagDto);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    /**
-     * Is used for Removing Tag by ID given
-     *
-     * @param id the id of Tag to remove
-     */
+    @Override
     @DeleteMapping("/{id}")
-    public TagDto deleteTag(@PathVariable @Positive Long id) {
-        return tagService.deleteById(id);
+    public ResponseEntity<Void> remove(@PathVariable Long id) {
+        tagService.deleteById(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/popular")
+    public TagDto findMostUsed() {
+
+        return tagService.findMostUsed();
     }
 }

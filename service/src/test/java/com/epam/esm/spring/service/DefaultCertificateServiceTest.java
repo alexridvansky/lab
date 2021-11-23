@@ -3,29 +3,32 @@ package com.epam.esm.spring.service;
 import com.epam.esm.spring.repository.jdbc.dao.CertificateDao;
 import com.epam.esm.spring.repository.jdbc.dao.TagDao;
 import com.epam.esm.spring.repository.model.Certificate;
+import com.epam.esm.spring.repository.model.CertificateParam;
+import com.epam.esm.spring.repository.model.Pageable;
 import com.epam.esm.spring.repository.model.Tag;
-import com.epam.esm.spring.service.converter.CertificateToDtoConverter;
-import com.epam.esm.spring.service.converter.DtoToCertificateConverter;
-import com.epam.esm.spring.service.converter.DtoToTagConverter;
-import com.epam.esm.spring.service.converter.TagToDtoConverter;
 import com.epam.esm.spring.service.dto.CertificateDto;
+import com.epam.esm.spring.service.dto.CertificateParamDto;
+import com.epam.esm.spring.service.dto.Page;
+import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
-import com.epam.esm.spring.service.util.CertificateValidator;
-import com.epam.esm.spring.service.util.SearchRequestValidator;
+import com.epam.esm.spring.service.util.PageRequestProcessor;
+import com.epam.esm.spring.service.validator.SearchRequestValidator;
+import org.apache.commons.compress.utils.Sets;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -42,6 +45,8 @@ class DefaultCertificateServiceTest {
 
     private static final String FIRST_TAG_NAME = "fitness";
     private static final String SECOND_TAG_NAME = "food";
+
+    private PageableDto defaultPageableDto = new PageableDto(0, 10);
 
     private Tag firstTag = Tag.builder()
             .id(FIRST_TAG_ID)
@@ -69,7 +74,7 @@ class DefaultCertificateServiceTest {
             .description("First certificate description")
             .price(BigDecimal.valueOf(100))
             .duration(10)
-            .tags(Arrays.asList(firstTag, secondTag))
+            .tags(Sets.newHashSet(firstTag, secondTag))
             .build();
 
     private Certificate secondCertificate = Certificate.builder()
@@ -78,7 +83,7 @@ class DefaultCertificateServiceTest {
             .description("Second certificate description")
             .price(BigDecimal.valueOf(200))
             .duration(20)
-            .tags(Arrays.asList(firstTag))
+            .tags(Sets.newHashSet(firstTag))
             .build();
 
     private CertificateDto firstCertificateDto = CertificateDto.builder()
@@ -87,7 +92,7 @@ class DefaultCertificateServiceTest {
             .description("First certificate description")
             .price(BigDecimal.valueOf(100))
             .duration(10)
-            .tags(Arrays.asList(firstTagDto, secondTagDto))
+            .tags(Sets.newHashSet(firstTagDto, secondTagDto))
             .build();
 
     private CertificateDto secondCertificateDto = CertificateDto.builder()
@@ -96,21 +101,39 @@ class DefaultCertificateServiceTest {
             .description("Second certificate description")
             .price(BigDecimal.valueOf(200))
             .duration(20)
-            .tags(Arrays.asList(firstTagDto))
+            .tags(Sets.newHashSet(firstTagDto))
             .build();
 
     private final List<Certificate> certificates = Arrays.asList(firstCertificate, secondCertificate);
 
-    private final List<Certificate> certificatesByParams = Arrays.asList(secondCertificate);
+    private final List<Certificate> certificatesByParams = Collections.singletonList(secondCertificate);
 
     private final List<CertificateDto> certificateDtos = Arrays.asList(firstCertificateDto, secondCertificateDto);
 
-    private final List<CertificateDto> certificatesDtoByParam = Arrays.asList(secondCertificateDto);
+    private final List<CertificateDto> certificatesDtoByParam = Collections.singletonList(secondCertificateDto);
 
-    public Map<String, String> paramMap = new HashMap() {{
-        put("tag", "fitness");
-        put("search", "Second");
-    }};
+    private final Set<String> tagNames = Collections.singleton("fitness");
+
+    private final CertificateParam param = CertificateParam.builder()
+            .tags(tagNames)
+            .search("Second")
+            .build();
+
+    private final CertificateParamDto paramDto = CertificateParamDto.builder()
+            .tags(tagNames)
+            .search("Second")
+            .build();
+
+    private final Pageable defaultPageable = Pageable.builder()
+            .page(0)
+            .size(10)
+            .build();
+
+    private final Page<CertificateDto> expectedPageByParam =
+            new Page<>(certificatesDtoByParam, defaultPageableDto, 0L);
+
+    private final Page<CertificateDto> expectedPage =
+            new Page<>(certificateDtos, defaultPageableDto, 0L);
 
     @InjectMocks
     private DefaultCertificateService certificateService;
@@ -125,46 +148,39 @@ class DefaultCertificateServiceTest {
     private CertificateDao certificateDao;
 
     @Mock
-    private TagToDtoConverter tagToDtoConverter;
-
-    @Mock
-    private DtoToTagConverter dtoToTagConverter;
-
-    @Mock
-    private CertificateToDtoConverter certificateToDtoConverter;
-
-    @Mock
-    private DtoToCertificateConverter dtoToCertificateConverter;
-
-    @Mock
-    private CertificateValidator certificateValidator;
+    private ModelMapper modelMapper;
 
     @Mock
     private SearchRequestValidator searchRequestValidator;
 
+    @Mock
+    private PageRequestProcessor pageRequestProcessor;
+
     @BeforeEach
     void prepare() {
-        lenient().when(tagToDtoConverter.convert(firstTag)).thenReturn(firstTagDto);
-        lenient().when(tagToDtoConverter.convert(secondTag)).thenReturn(secondTagDto);
-        lenient().when(dtoToTagConverter.convert(secondTagDto)).thenReturn(secondTag);
-        lenient().when(certificateToDtoConverter.convert(firstCertificate)).thenReturn(firstCertificateDto);
-        lenient().when(dtoToCertificateConverter.convert(firstCertificateDto)).thenReturn(firstCertificate);
-        lenient().when(certificateToDtoConverter.convert(secondCertificate)).thenReturn(secondCertificateDto);
-        lenient().when(dtoToCertificateConverter.convert(secondCertificateDto)).thenReturn(secondCertificate);
+        lenient().when(modelMapper.map(firstTag, TagDto.class)).thenReturn(firstTagDto);
+        lenient().when(modelMapper.map(secondTag, TagDto.class)).thenReturn(secondTagDto);
+        lenient().when(modelMapper.map(secondTagDto, Tag.class)).thenReturn(secondTag);
+        lenient().when(modelMapper.map(firstCertificate, CertificateDto.class)).thenReturn(firstCertificateDto);
+        lenient().when(modelMapper.map(firstCertificateDto, Certificate.class)).thenReturn(firstCertificate);
+        lenient().when(modelMapper.map(secondCertificate, CertificateDto.class)).thenReturn(secondCertificateDto);
+        lenient().when(modelMapper.map(secondCertificateDto, Certificate.class)).thenReturn(secondCertificate);
+        lenient().when(modelMapper.map(paramDto, CertificateParam.class)).thenReturn(param);
+        lenient().when(modelMapper.map(defaultPageableDto, Pageable.class)).thenReturn(defaultPageable);
     }
 
     @Test
     void findAll() {
-        when(certificateDao.findAll()).thenReturn(certificates);
-        List<CertificateDto> actuals = certificateService.findAll();
-        assertEquals(certificateDtos, actuals);
+        when(certificateDao.findAll(defaultPageable)).thenReturn(certificates);
+        Page<CertificateDto> actuals = certificateService.findAll(defaultPageableDto);
+        assertEquals(expectedPage, actuals);
     }
 
     @Test
-    void findAllByParam() {
-        when(certificateDao.findBy(paramMap)).thenReturn(certificatesByParams);
-        List<CertificateDto> actual = certificateService.findBy(paramMap);
-        assertEquals(certificatesDtoByParam, actual);
+    void findBy() {
+        when(certificateDao.findBy(param, defaultPageable)).thenReturn(certificatesByParams);
+        Page<CertificateDto> actual = certificateService.findBy(paramDto, defaultPageableDto);
+        assertEquals(expectedPageByParam, actual);
     }
 
     @Test
@@ -196,7 +212,6 @@ class DefaultCertificateServiceTest {
 
     @Test
     void deleteById() {
-        when(certificateDao.deleteById(FIRST_CERTIFICATE_ID)).thenReturn(true);
         when(certificateDao.findById(FIRST_CERTIFICATE_ID)).thenReturn(Optional.of(firstCertificate));
         CertificateDto actual = certificateService.deleteById(FIRST_CERTIFICATE_ID);
         assertEquals(firstCertificateDto, actual);
