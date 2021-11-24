@@ -24,8 +24,8 @@ import java.io.IOException;
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String AUTHENTICATION_ERROR_MSG = "error.incorrect_token";
-    private static final String ROOT_ROLE = "ROOT";
-    private static final String USER_ROLE = "USER";
+    private static final String ROLE_ROOT = "ROOT";
+    private static final String ROLE_USER = "USER";
     private static final String USERS_ENDPOINT = "/api/users/**";
     private static final String TAGS_ENDPOINT = "/api/tags/**";
     private static final String CERTIFICATES_ENDPOINT = "/api/certificates/**";
@@ -67,15 +67,17 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(LOGIN_LINK).permitAll()
                 .antMatchers(HttpMethod.POST, SIGN_UP_LINK).permitAll()
-                .antMatchers(HttpMethod.GET, TAGS_ENDPOINT).hasRole(USER_ROLE)
-                .antMatchers(TAGS_ENDPOINT).hasRole(ROOT_ROLE)
+                .antMatchers(HttpMethod.GET, TAGS_ENDPOINT).hasRole(ROLE_USER)
+                .antMatchers(TAGS_ENDPOINT).hasRole(ROLE_ROOT)
                 .antMatchers(HttpMethod.GET, CERTIFICATES_ENDPOINT).permitAll()
-                .antMatchers(CERTIFICATES_ENDPOINT).hasRole(ROOT_ROLE)
-                .antMatchers(USERS_ENDPOINT).hasRole(ROOT_ROLE)
+                .antMatchers(CERTIFICATES_ENDPOINT).hasRole(ROLE_ROOT)
+                .antMatchers(USERS_ENDPOINT).hasRole(ROLE_ROOT)
                 .antMatchers(SPECIFIC_USER_ORDER_ENDPOINT).access(
-                        "@userSecurity.hasUserId(authentication, #userId)")
-                .antMatchers(ORDERS_ENDPOINT).hasRole(ROOT_ROLE)
-                .antMatchers(ACTUATOR_ENDPOINT).hasRole(ROOT_ROLE)
+                        "hasRole('ROOT') or @userSecurity.hasUserId(authentication, #userId)")
+                .antMatchers(HttpMethod.GET, ORDERS_ENDPOINT).hasRole(ROLE_ROOT)
+                .antMatchers(HttpMethod.DELETE, ORDERS_ENDPOINT).hasRole(ROLE_ROOT)
+                .antMatchers(HttpMethod.POST, ORDERS_ENDPOINT).hasRole(ROLE_USER)
+                .antMatchers(ACTUATOR_ENDPOINT).hasRole(ROLE_ROOT)
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)

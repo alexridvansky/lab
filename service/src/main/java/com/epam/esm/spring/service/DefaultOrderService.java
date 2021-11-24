@@ -12,8 +12,10 @@ import com.epam.esm.spring.service.dto.OrderInsertDto;
 import com.epam.esm.spring.service.dto.Page;
 import com.epam.esm.spring.service.dto.PageableDto;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
+import com.epam.esm.spring.service.exception.NotValidCertificateListException;
 import com.epam.esm.spring.service.exception.SubEntryNotFoundException;
 import com.epam.esm.spring.service.util.PageRequestProcessor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,6 +85,10 @@ public class DefaultOrderService implements OrderService {
         User user = userDao.findById(orderDto.getUserId())
                 .orElseThrow(() -> new SubEntryNotFoundException(ERROR_USER_NOT_FOUND,
                         ID + orderDto.getUserId().toString()));
+
+        if (CollectionUtils.isEmpty(orderDto.getCertificates())) {
+            throw new NotValidCertificateListException();
+        }
 
         List<Certificate> certificates = orderDto.getCertificates().stream()
                 .map(certificateDto -> certificateDao.findById(certificateDto.getId())

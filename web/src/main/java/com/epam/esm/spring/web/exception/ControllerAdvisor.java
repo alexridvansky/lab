@@ -8,6 +8,7 @@ import com.epam.esm.spring.service.exception.EntryNonValidPriceException;
 import com.epam.esm.spring.service.exception.EntryNonValidRequestException;
 import com.epam.esm.spring.service.exception.EntryNonValidTagNameException;
 import com.epam.esm.spring.service.exception.EntryNotFoundException;
+import com.epam.esm.spring.service.exception.NotValidCertificateListException;
 import com.epam.esm.spring.service.exception.NotValidSearchRequest;
 import com.epam.esm.spring.service.exception.SubEntryAlreadyAttachedException;
 import com.epam.esm.spring.service.exception.SubEntryNotFoundException;
@@ -65,6 +66,13 @@ public class ControllerAdvisor {
     public ResponseEntity<Object> handleCustomAuthenticationException(CustomAuthenticationException e, Locale locale) {
         return new ResponseEntity<>(createResponseWithDescription(e.getErrorCode(), locale, e.getMessage()),
                 e.getHttpStatus());
+    }
+
+    @ExceptionHandler(NotValidCertificateListException.class)
+    public ResponseEntity<Object> handleNotValidCertificateListException(NotValidCertificateListException e,
+                                                                         Locale locale) {
+        return new ResponseEntity<>(createResponse(e.getErrorCode(), locale),
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EntryNotFoundException.class)
