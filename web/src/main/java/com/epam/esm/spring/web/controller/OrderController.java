@@ -36,7 +36,6 @@ public class OrderController implements Controller<OrderDto> {
     private final LinkBuilder<OrderDto> linkBuilder;
 
     @Override
-    @PreAuthorize("ó")
     @GetMapping("/{id}")
     public OrderDto findById(@PathVariable Long id) {
         OrderDto orderDto = orderService.findById(id);
@@ -46,11 +45,13 @@ public class OrderController implements Controller<OrderDto> {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public Page<OrderDto> findAll(@Valid PageableDto pageRequest) {
         return orderService.findAll(pageRequest);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @userSecurity.hasUserId(authentication, #id)")
     @GetMapping("/user/{id}")
     public List<OrderDto> findByUserId(@PathVariable @Positive Long id) {
         return orderService.findByUserId(id);
@@ -61,8 +62,8 @@ public class OrderController implements Controller<OrderDto> {
      *
      * @return OrderDto just inserted
      */
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> insert(@Valid @RequestBody OrderInsertDto orderDto, Authentication authentication) {
         Long userId = extractUserIdFromAuthentication(authentication);
         orderDto.setUserId(userId);
@@ -85,6 +86,7 @@ public class OrderController implements Controller<OrderDto> {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remove(@PathVariable Long id) {
         orderService.deleteById(id);
