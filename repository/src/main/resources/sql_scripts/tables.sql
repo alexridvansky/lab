@@ -37,8 +37,11 @@ CREATE TABLE IF NOT EXISTS users
     firstname           VARCHAR(45),
     lastname            VARCHAR(45),
     role_id             BIGINT NOT NULL,
-    PRIMARY KEY (id)
-);
+    state				TINYINT(1) NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    FOREIGN KEY (role_id)
+        REFERENCES roles(id)
+    );
 
 CREATE TABLE IF NOT EXISTS roles
 (
