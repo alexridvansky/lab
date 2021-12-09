@@ -52,6 +52,7 @@ public class OrderController implements Controller<OrderDto> {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or @userSecurity.hasUserId(authentication, #id)")
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal.id")
     @GetMapping("/user/{id}")
     public List<OrderDto> findByUserId(@PathVariable @Positive Long id) {
         return orderService.findByUserId(id);

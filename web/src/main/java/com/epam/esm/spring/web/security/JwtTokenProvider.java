@@ -26,10 +26,11 @@ public class JwtTokenProvider {
 
     private static final String ROLE = "role";
     private static final String BEARER = "Bearer ";
+    private static final int OFFSET_TOKEN_STARTS_FROM = 7;
+    private static String secretKey;
 
     private final JwtProperties jwtProperties;
     private final UserDetailsService userDetailsService;
-    private String secretKey;
 
     @PostConstruct
     protected void init() {
@@ -79,7 +80,7 @@ public class JwtTokenProvider {
         String requestToken = request.getHeader(jwtProperties.getHeader());
 
         if (StringUtils.isNotBlank(requestToken) && StringUtils.startsWith(requestToken, BEARER)) {
-            token = requestToken.substring(7);
+            token = requestToken.substring(OFFSET_TOKEN_STARTS_FROM);
         }
 
         return token;
