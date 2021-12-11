@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @ComponentScan("com.epam.esm.spring")
 public class WebConfig implements WebMvcConfigurer {
+
     @Bean
     public ResourceBundleMessageSource getResourceBundleMessageSource() {
         ResourceBundleMessageSource messages = new ResourceBundleMessageSource();

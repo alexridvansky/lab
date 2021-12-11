@@ -6,9 +6,11 @@ import com.epam.esm.spring.web.exception.CustomAuthenticationException;
 import com.epam.esm.spring.web.exception.JsonResponseSender;
 import com.epam.esm.spring.web.security.JwtConfigurer;
 import com.epam.esm.spring.web.security.JwtTokenFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -20,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String AUTHENTICATION_ERROR_MSG = "error.incorrect_token";
@@ -30,17 +34,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtConfigurer jwtConfigurer;
     private final ControllerAdvisor controllerAdvisor;
     private final JsonResponseSender jsonResponseSender;
-
-    @Autowired
-    public SpringSecurityConfig(JwtTokenFilter jwtTokenFilter,
-                                JwtConfigurer jwtConfigurer,
-                                ControllerAdvisor controllerAdvisor,
-                                JsonResponseSender jsonResponseSender) {
-        this.jwtTokenFilter = jwtTokenFilter;
-        this.jwtConfigurer = jwtConfigurer;
-        this.controllerAdvisor = controllerAdvisor;
-        this.jsonResponseSender = jsonResponseSender;
-    }
 
     @Bean
     @Override
