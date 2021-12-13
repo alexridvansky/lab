@@ -6,11 +6,11 @@ import com.epam.esm.spring.service.dto.CertificateParamDto;
 import com.epam.esm.spring.service.dto.CertificateUpdateDto;
 import com.epam.esm.spring.service.dto.Page;
 import com.epam.esm.spring.service.dto.PageableDto;
-import com.epam.esm.spring.service.dto.TagDto;
 import com.epam.esm.spring.web.hateoas.LinkBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,20 +31,15 @@ import javax.validation.constraints.Positive;
  */
 @RestController
 @Validated
+@RequiredArgsConstructor
 @RequestMapping("/api/certificates")
 public class CertificateController implements Controller<CertificateDto> {
 
     private final CertificateService certificateService;
     private final LinkBuilder<CertificateDto> linkBuilder;
 
-    @Autowired
-    public CertificateController(CertificateService certificateService,
-                                 LinkBuilder<CertificateDto> linkBuilder) {
-        this.certificateService = certificateService;
-        this.linkBuilder = linkBuilder;
-    }
-
     @Override
+    @PreAuthorize("permitAll()")
     @GetMapping("/{id}")
     public CertificateDto findById(@PathVariable Long id) {
         CertificateDto certificateDto = certificateService.findById(id);
@@ -55,6 +50,7 @@ public class CertificateController implements Controller<CertificateDto> {
     }
 
     @Override
+    @PreAuthorize("permitAll()")
     public Page<CertificateDto> findAll(@Valid PageableDto pageRequest) {
         return certificateService.findAll(pageRequest);
     }
@@ -65,6 +61,7 @@ public class CertificateController implements Controller<CertificateDto> {
      * @param searchParamDto Search parameters
      * @return List<CertificateDto> the list of certificates
      */
+    @PreAuthorize("permitAll()")
     @GetMapping
     public Page<CertificateDto> findBy(@Valid PageableDto pageableDto, CertificateParamDto searchParamDto) {
         if (searchParamDto.isRequestMeaningless()) {
@@ -79,8 +76,8 @@ public class CertificateController implements Controller<CertificateDto> {
      *
      * @return CertificateDto just inserted
      */
+    @PreAuthorize("hasRole('ROLE_ROOT')")
     @PostMapping()
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> insert(@Valid @RequestBody CertificateDto certificateDto) {
         certificateService.insert(certificateDto);
 
@@ -92,8 +89,8 @@ public class CertificateController implements Controller<CertificateDto> {
      *
      * @return CertificateDto just updated
      */
+    @PreAuthorize("hasRole('ROLE_ROOT')")
     @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> update(@Valid @RequestBody CertificateUpdateDto certificateUpdateDto,
                                  @PathVariable @Positive Long id) {
         certificateUpdateDto.setId(id);
@@ -107,8 +104,8 @@ public class CertificateController implements Controller<CertificateDto> {
      *
      * @return CertificateDto just updated
      */
+    @PreAuthorize("hasRole('ROLE_ROOT')")
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> update(@Valid @RequestBody CertificateDto certificateDto,
                                  @PathVariable @Positive Long id) {
         certificateDto.setId(id);
@@ -117,6 +114,7 @@ public class CertificateController implements Controller<CertificateDto> {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ROOT')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remove(@PathVariable Long id) {
         certificateService.deleteById(id);

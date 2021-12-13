@@ -2,16 +2,14 @@ package com.epam.esm.spring.service.util;
 
 import com.epam.esm.spring.service.config.ConfigProperties;
 import com.epam.esm.spring.service.dto.PageableDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class PageRequestProcessor {
 
     private final ConfigProperties configProperties;
-
-    public PageRequestProcessor(ConfigProperties configProperties) {
-        this.configProperties = configProperties;
-    }
 
     public void processRequest(PageableDto pageRequest) {
         if (pageRequest.getPage() == null) {

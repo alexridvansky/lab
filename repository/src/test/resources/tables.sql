@@ -23,20 +23,27 @@ CREATE TABLE IF NOT EXISTS certificate_tag_xref
     tag_id                  BIGINT,
     PRIMARY KEY (certificate_id, tag_id),
     FOREIGN KEY (certificate_id)
-    REFERENCES gift_certificate(id)
-    ON DELETE CASCADE,
+    REFERENCES gift_certificate(id),
     FOREIGN KEY (tag_id)
     REFERENCES tag(id)
     ON DELETE CASCADE
     );
 
-CREATE TABLE IF NOT EXISTS user
+CREATE TABLE IF NOT EXISTS users
 (
     id                  BIGINT AUTO_INCREMENT,
     username            VARCHAR(45) NOT NULL UNIQUE,
     password            VARCHAR(45) NOT NULL,
     firstname           VARCHAR(45),
     lastname            VARCHAR(45),
+    role_id             BIGINT NOT NULL,
+    PRIMARY KEY (id)
+    );
+
+CREATE TABLE IF NOT EXISTS roles
+(
+    id                  BIGINT AUTO_INCREMENT,
+    role                VARCHAR(45) NOT NULL UNIQUE,
     PRIMARY KEY (id)
     );
 
@@ -57,9 +64,7 @@ CREATE TABLE IF NOT EXISTS order_certificate_xref
     certificate_id      BIGINT,
     PRIMARY KEY (order_id, certificate_id),
     FOREIGN KEY (order_id)
-    REFERENCES orders(id)
-    ON DELETE CASCADE,
+    REFERENCES orders(id),
     FOREIGN KEY (certificate_id)
     REFERENCES gift_certificate(id)
-    ON DELETE CASCADE
     );

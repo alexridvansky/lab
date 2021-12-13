@@ -5,11 +5,14 @@ import com.epam.esm.spring.service.dto.OrderDto;
 import com.epam.esm.spring.service.dto.OrderInsertDto;
 import com.epam.esm.spring.service.dto.Page;
 import com.epam.esm.spring.service.dto.PageableDto;
+import com.epam.esm.spring.service.dto.UserDetailsDto;
+import com.epam.esm.spring.web.exception.CustomAccessDeniedException;
 import com.epam.esm.spring.web.hateoas.LinkBuilder;
-import com.epam.esm.spring.web.hateoas.OrderLinkBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,18 +27,13 @@ import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/orders")
 public class OrderController implements Controller<OrderDto> {
 
+    private static final String ACCESS_DENIED_ERROR_MESSAGE = "error.access_denied";
     private final OrderService orderService;
     private final LinkBuilder<OrderDto> linkBuilder;
-
-    @Autowired
-    public OrderController(OrderService orderService,
-                           OrderLinkBuilder linkBuilder) {
-        this.orderService = orderService;
-        this.linkBuilder = linkBuilder;
-    }
 
     @Override
     @GetMapping("/{id}")
@@ -47,11 +45,14 @@ public class OrderController implements Controller<OrderDto> {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public Page<OrderDto> findAll(@Valid PageableDto pageRequest) {
         return orderService.findAll(pageRequest);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @userSecurity.hasUserId(authentication, #id)")
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal.id")
     @GetMapping("/user/{id}")
     public List<OrderDto> findByUserId(@PathVariable @Positive Long id) {
         return orderService.findByUserId(id);
@@ -62,15 +63,31 @@ public class OrderController implements Controller<OrderDto> {
      *
      * @return OrderDto just inserted
      */
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> insert(@Valid @RequestBody OrderInsertDto orderDto) {
+    public ResponseEntity<Void> insert(@Valid @RequestBody OrderInsertDto orderDto, Authentication authentication) {
+        Long userId = extractUserIdFromAuthentication(authentication);
+        orderDto.setUserId(userId);
+
         orderService.insert(orderDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    private Long extractUserIdFromAuthentication(Authentication authentication) {
+        Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof UserDetailsDto)) {
+            throw new CustomAccessDeniedException(ACCESS_DENIED_ERROR_MESSAGE);
+        }
+
+        UserDetailsDto user = (UserDetailsDto) principal;
+
+        return user.getId();
+    }
+
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remove(@PathVariable Long id) {
         orderService.deleteById(id);

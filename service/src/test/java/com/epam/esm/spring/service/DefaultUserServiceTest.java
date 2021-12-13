@@ -5,7 +5,7 @@ import com.epam.esm.spring.repository.model.Pageable;
 import com.epam.esm.spring.repository.model.User;
 import com.epam.esm.spring.service.dto.Page;
 import com.epam.esm.spring.service.dto.PageableDto;
-import com.epam.esm.spring.service.dto.UserDto;
+import com.epam.esm.spring.service.dto.UserResponseDto;
 import com.epam.esm.spring.service.util.PageRequestProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,12 +47,12 @@ class DefaultUserServiceTest {
     private static final User userOne;
     private static final User userTwo;
     private static final User userThree;
-    private static final UserDto userDtoOne;
-    private static final UserDto userDtoTwo;
-    private static final UserDto userDtoThree;
+    private static final UserResponseDto userDtoOne;
+    private static final UserResponseDto userDtoTwo;
+    private static final UserResponseDto userDtoThree;
     private static final List<User> users;
-    private static final List<UserDto> usersDtoExpected;
-    private static final Page<UserDto> expectedPage;
+    private static final List<UserResponseDto> usersDtoExpected;
+    private static final Page<UserResponseDto> expectedPage;
 
     static {
         defaultPageable = new Pageable(0, 10);
@@ -83,21 +83,21 @@ class DefaultUserServiceTest {
                 .password("iL0vep@scal")
                 .build();
 
-        userDtoOne = UserDto.builder()
+        userDtoOne = UserResponseDto.builder()
                 .id(1L)
                 .firstname("Sergey")
                 .lastname("Petrow")
                 .username(USER_ONE_NAME)
                 .build();
 
-        userDtoTwo = UserDto.builder()
+        userDtoTwo = UserResponseDto.builder()
                 .id(2L)
                 .firstname("Anton")
                 .lastname("Tarakanow")
                 .username(USER_TWO_NAME)
                 .build();
 
-        userDtoThree = UserDto.builder()
+        userDtoThree = UserResponseDto.builder()
                 .id(3L)
                 .firstname("Pasha")
                 .lastname("Rubin")
@@ -113,9 +113,9 @@ class DefaultUserServiceTest {
 
     @BeforeEach
     void prepare() {
-        lenient().when(modelMapper.map(userOne, UserDto.class)).thenReturn(userDtoOne);
-        lenient().when(modelMapper.map(userTwo, UserDto.class)).thenReturn(userDtoTwo);
-        lenient().when(modelMapper.map(userThree, UserDto.class)).thenReturn(userDtoThree);
+        lenient().when(modelMapper.map(userOne, UserResponseDto.class)).thenReturn(userDtoOne);
+        lenient().when(modelMapper.map(userTwo, UserResponseDto.class)).thenReturn(userDtoTwo);
+        lenient().when(modelMapper.map(userThree, UserResponseDto.class)).thenReturn(userDtoThree);
         lenient().when(modelMapper.map(defaultPageableDto, Pageable.class)).thenReturn(defaultPageable);
         lenient().when(userDao.countEntry()).thenReturn(NUMBER_OF_ENTRIES_TOTAL);
     }
@@ -135,15 +135,15 @@ class DefaultUserServiceTest {
     @Test
     void findAll() {
         when(userDao.findAll(defaultPageable)).thenReturn(users);
-        Page<UserDto> actualPageUsers = userService.findAll(defaultPageableDto);
+        Page<UserResponseDto> actualPageUsers = userService.findAll(defaultPageableDto);
         assertEquals(expectedPage, actualPageUsers);
     }
 
     @ParameterizedTest
     @MethodSource("setOfUsersById")
-    void findById(Long userIdRequested, User userToMock, UserDto userDtoExpected) {
+    void findById(Long userIdRequested, User userToMock, UserResponseDto userDtoExpected) {
         when(userDao.findById(userIdRequested)).thenReturn(Optional.of(userToMock));
-        UserDto actualUserDto = userService.findById(userIdRequested);
+        UserResponseDto actualUserDto = userService.findById(userIdRequested);
         assertEquals(userDtoExpected, actualUserDto);
     }
 
@@ -157,9 +157,9 @@ class DefaultUserServiceTest {
 
     @ParameterizedTest
     @MethodSource("setOfUsersByName")
-    void findByUsername(String userNameToLookFor, User userToMock, UserDto userDtoExpected) {
+    void findByUsername(String userNameToLookFor, User userToMock, UserResponseDto userDtoExpected) {
         when(userDao.findByUsername(userNameToLookFor)).thenReturn(Optional.of(userToMock));
-        UserDto actualUserDto = userService.findByUsername(userNameToLookFor);
+        UserResponseDto actualUserDto = userService.findByUsername(userNameToLookFor);
         assertEquals(userDtoExpected, actualUserDto);
     }
 
