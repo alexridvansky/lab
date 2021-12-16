@@ -19,6 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <maven.surefire.version>2.22.2</maven.surefire.version>
         <spring.version>5.3.10</spring.version>
         <spring.boot.version>2.5.6</spring.boot.version>
         <spring.hateoas.version>1.3.5</spring.hateoas.version>
@@ -38,4 +39,23 @@
         <mockito.junit.version>4.0.0</mockito.junit.version>
         <json.webtoken.version>0.9.1</json.webtoken.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${maven.surefire.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
