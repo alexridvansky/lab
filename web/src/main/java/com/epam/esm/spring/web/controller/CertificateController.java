@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -92,7 +91,7 @@ public class CertificateController implements Controller<CertificateDto> {
     @PreAuthorize("hasRole('ROLE_ROOT')")
     @PatchMapping("/{id}")
     public ResponseEntity<Void> update(@Valid @RequestBody CertificateUpdateDto certificateUpdateDto,
-                                 @PathVariable @Positive Long id) {
+                                       @PathVariable @Positive Long id) {
         certificateUpdateDto.setId(id);
         certificateService.update(certificateUpdateDto);
 
@@ -107,7 +106,7 @@ public class CertificateController implements Controller<CertificateDto> {
     @PreAuthorize("hasRole('ROLE_ROOT')")
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@Valid @RequestBody CertificateDto certificateDto,
-                                 @PathVariable @Positive Long id) {
+                                       @PathVariable @Positive Long id) {
         certificateDto.setId(id);
         certificateService.update(certificateDto);
 
