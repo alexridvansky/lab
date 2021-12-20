@@ -39,6 +39,7 @@
         <mockito.junit.version>4.0.0</mockito.junit.version>
         <json.webtoken.version>0.9.1</json.webtoken.version>
         <sonar.scanner.version>3.9.1.2184</sonar.scanner.version>
+        <jacoco.scanner.version>0.8.7</jacoco.scanner.version>
     </properties>
 
     <dependencies>
@@ -52,6 +53,12 @@
             <artifactId>sonar-maven-plugin</artifactId>
             <version>${sonar.scanner.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.scanner.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -65,6 +72,11 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>${sonar.scanner.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.scanner.version}</version>
             </plugin>
         </plugins>
     </build>
