@@ -38,6 +38,7 @@
         <junit.jupiter.version>5.8.1</junit.jupiter.version>
         <mockito.junit.version>4.0.0</mockito.junit.version>
         <json.webtoken.version>0.9.1</json.webtoken.version>
+        <sonar.scanner.version>3.9.1.2184</sonar.scanner.version>
     </properties>
 
     <dependencies>
@@ -45,6 +46,11 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <version>${maven.surefire.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>${sonar.scanner.version}</version>
         </dependency>
     </dependencies>
 
@@ -55,6 +61,11 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.version}</version>
             </plugin>
+            <plugnin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar.scanner.version}</version>
+            </plugnin>
         </plugins>
     </build>
 
