@@ -2,7 +2,6 @@ package com.epam.esm.spring.repository.jdbc.dao;
 
 import com.epam.esm.spring.repository.model.User;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UserDao extends ReadDao<User> {
