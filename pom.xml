@@ -61,11 +61,11 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.version}</version>
             </plugin>
-            <plugnin>
+            <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>${sonar.scanner.version}</version>
-            </plugnin>
+            </plugin>
         </plugins>
     </build>
 
