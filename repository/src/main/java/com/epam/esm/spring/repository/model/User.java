@@ -1,6 +1,5 @@
 package com.epam.esm.spring.repository.model;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,7 +20,6 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @SuperBuilder
 public class User extends AbstractEntity {
@@ -48,4 +46,5 @@ public class User extends AbstractEntity {
     public List<GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role.getRole()));
     }
+
 }

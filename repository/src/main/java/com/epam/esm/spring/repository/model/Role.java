@@ -14,7 +14,6 @@ import javax.persistence.Table;
 @Table(name = "roles")
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Role extends AbstractEntity {
@@ -26,4 +25,5 @@ public class Role extends AbstractEntity {
         super(roleId);
         this.role = role;
     }
+
 }

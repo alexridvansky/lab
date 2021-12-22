@@ -23,7 +23,6 @@ import java.util.Set;
 @Table(name = "gift_certificate")
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @SuperBuilder
 public class Certificate extends AbstractEntity {
@@ -63,4 +62,5 @@ public class Certificate extends AbstractEntity {
     private void preUpdateBatch() {
         lastUpdateDate = LocalDateTime.now();
     }
+
 }

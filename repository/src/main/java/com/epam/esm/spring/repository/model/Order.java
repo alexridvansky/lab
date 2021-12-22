@@ -23,7 +23,6 @@ import java.util.List;
 @Table(name = "orders")
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @SuperBuilder
 public class Order extends AbstractEntity {
@@ -50,4 +49,5 @@ public class Order extends AbstractEntity {
     void prePersistBatch() {
         this.purchaseDate = LocalDateTime.now();
     }
+
 }

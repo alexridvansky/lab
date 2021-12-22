@@ -22,4 +22,5 @@ public class CertificateParam {
     private String sort;
 
     private String order;
+
 }
